@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ทบทวน JavaScript — 12 บท</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F6F7F9; --ink:#1B2430; --ink-2:#4B5563; --line:#D9DEE5;
+    --mark:#FFE566; --code-bg:#1C2633; --code-ink:#E6EDF3;
+    --ok:#1F7A4D; --ok-bg:#E3F4EA; --bad:#B42318; --bad-bg:#FBE7E4;
+    --info:#1D4ED8; --info-bg:#E7EEFF;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"IBM Plex Sans Thai",system-ui,sans-serif;font-size:16px;line-height:1.7}
+  code,pre,kbd,.mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+  a{color:inherit}
+  .layout{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+  nav.toc{position:sticky;top:0;height:100vh;overflow:auto;border-right:1px solid var(--line);padding:24px 16px;background:#fff}
+  nav.toc h1{font-size:18px;margin:0 0 4px}
+  nav.toc .score{font-size:13px;color:var(--ink-2);margin-bottom:16px}
+  nav.toc .score b{color:var(--ink)}
+  nav.toc ol{list-style:none;margin:0;padding:0}
+  nav.toc li a{display:block;padding:6px 8px;border-radius:6px;text-decoration:none;font-size:14px;color:var(--ink-2)}
+  nav.toc li a:hover{background:var(--paper)}
+  nav.toc li a.active{background:var(--ink);color:#fff}
+  nav.toc li a span{display:inline-block;width:22px;color:inherit;opacity:.6}
+  main{padding:40px 48px 120px;max-width:820px}
+  header.hero{margin-bottom:56px}
+  header.hero h2{font-size:38px;line-height:1.2;margin:0 0 12px;font-weight:700}
+  header.hero h2 mark{background:linear-gradient(transparent 55%,var(--mark) 55%);padding:0 2px}
+  header.hero p{color:var(--ink-2);max-width:60ch;margin:0}
+  section.ch{padding:48px 0;border-top:1px solid var(--line)}
+  section.ch h3{font-size:26px;margin:0 0 4px;line-height:1.3}
+  section.ch .lead{color:var(--ink-2);margin:0 0 24px}
+  .outcomes{background:#fff;border:1px solid var(--line);border-left:4px solid var(--mark);padding:14px 18px;margin:0 0 24px;border-radius:0 8px 8px 0}
+  .outcomes p{margin:0 0 6px;font-weight:600}
+  .outcomes ul{margin:0;padding-left:20px}
+  .outcomes li{margin:2px 0}
+  h4{font-size:17px;margin:28px 0 8px}
+  pre{background:var(--code-bg);color:var(--code-ink);padding:14px 16px;border-radius:8px;overflow:auto;font-size:13.5px;line-height:1.6;margin:10px 0}
+  pre .c{color:#8B9BB4}
+  pre .k{color:#F2A0A0}
+  pre .s{color:#A5D6A7}
+  pre .n{color:#FFD180}
+  p code,li code,td code{background:#fff;border:1px solid var(--line);padding:0 5px;border-radius:4px;font-size:.92em}
+  table{border-collapse:collapse;width:100%;font-size:14.5px;margin:10px 0}
+  th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{font-weight:600;background:#fff}
+  .play{background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin:12px 0}
+  .play .t{font-weight:600;margin:0 0 10px;display:flex;align-items:center;gap:8px}
+  .play .t::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--mark);border:1px solid #D9C33E}
+  .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0}
+  button{font:inherit;font-size:14px;padding:6px 12px;border:1px solid var(--ink);background:#fff;border-radius:6px;cursor:pointer;color:var(--ink)}
+  button:hover{background:var(--ink);color:#fff}
+  button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--info);outline-offset:2px}
+  button.primary{background:var(--ink);color:#fff}
+  button.primary:hover{background:#000}
+  button.chip{border-color:var(--line);color:var(--ink-2)}
+  button.chip.on{border-color:var(--ink);color:var(--ink);background:var(--mark)}
+  input[type=text],input[type=number],input[type=date],textarea{font:inherit;padding:6px 10px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--ink)}
+  textarea{width:100%;min-height:70px;font-family:"IBM Plex Mono",monospace;font-size:13px}
+  input[type=range]{width:220px}
+  .out{margin-top:10px;padding:10px 12px;border-radius:6px;background:var(--paper);font-family:"IBM Plex Mono",monospace;font-size:13.5px;white-space:pre-wrap;min-height:20px}
+  .out.ok{background:var(--ok-bg);color:var(--ok)}
+  .out.bad{background:var(--bad-bg);color:var(--bad)}
+  .out.info{background:var(--info-bg);color:var(--info)}
+  .mistakes{margin:20px 0 0;padding:12px 16px;border:1px dashed var(--bad);border-radius:8px;background:#fff}
+  .mistakes p{margin:0 0 6px;font-weight:600;color:var(--bad)}
+  .mistakes ul{margin:0;padding-left:20px;font-size:14.5px}
+  .coder{border:2px solid var(--ink);border-radius:10px;padding:18px 20px;margin:16px 0;background:#fff}
+  .coder .t{font-weight:600;margin:0 0 6px}
+  .coder .spec{font-size:14.5px;color:var(--ink-2);margin:0 0 10px}
+  .coder textarea{min-height:150px;tab-size:2}
+  .coder .tests{margin-top:10px;font-family:"IBM Plex Mono",monospace;font-size:13px}
+  .coder .tc{padding:6px 10px;border-radius:6px;margin:4px 0;white-space:pre-wrap;background:var(--paper)}
+  .coder .tc.ok{background:var(--ok-bg);color:var(--ok)} .coder .tc.bad{background:var(--bad-bg);color:var(--bad)}
+  .coder .ws{background:#FFD6D6;border-radius:2px}
+  .weak{font-size:13px;color:var(--ink-2);margin:0 0 14px;padding:8px 10px;border-radius:6px;background:var(--paper)}
+  .weak b{color:var(--bad)}
+  @media print{ nav.toc,.play,.quiz,.coder,#pm-wrap,button,.note{display:none!important} .layout{display:block} main{max-width:none;padding:0} section.ch{page-break-before:always;padding:12px 0} header.hero{margin-bottom:12px} pre{white-space:pre-wrap;border:1px solid #999;background:#fff;color:#000} pre span{color:#000} .mistakes{border-color:#000} .mistakes p{color:#000} body{font-size:12px} h3{font-size:20px} }
+  .note{background:var(--info-bg);color:var(--info);padding:10px 14px;border-radius:8px;margin:12px 0;font-size:14.5px}
+  .warn{background:var(--bad-bg);color:var(--bad);padding:10px 14px;border-radius:8px;margin:12px 0;font-size:14.5px}
+  .quiz{border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin:16px 0;background:#fff}
+  .quiz .q{font-weight:600;margin:0 0 10px}
+  .quiz label{display:block;padding:8px 10px;border:1px solid var(--line);border-radius:6px;margin:6px 0;cursor:pointer}
+  .quiz label:hover{background:var(--paper)}
+  .quiz label.right{border-color:var(--ok);background:var(--ok-bg)}
+  .quiz label.wrong{border-color:var(--bad);background:var(--bad-bg)}
+  .quiz input{margin-right:8px}
+  .quiz .exp{margin-top:10px;font-size:14.5px;display:none;padding:10px 12px;border-radius:6px;background:var(--paper)}
+  .quiz .exp.show{display:block}
+  .quiz .exp.ok{background:var(--ok-bg);color:var(--ok)}
+  .quiz .exp.bad{background:var(--bad-bg);color:var(--bad)}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .box{padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--paper);font-size:14px}
+  .box b{display:block;margin-bottom:4px}
+  .step-line{padding:4px 8px;border-radius:4px;font-family:"IBM Plex Mono",monospace;font-size:13.5px}
+  .step-line.hl{background:var(--mark)}
+  .pill{display:inline-block;padding:1px 8px;border-radius:99px;font-size:12px;background:var(--paper);border:1px solid var(--line);color:var(--ink-2)}
+  .toc-toggle{display:none}
+  @media (max-width:860px){
+    .layout{grid-template-columns:1fr}
+    nav.toc{position:relative;height:auto;border-right:0;border-bottom:1px solid var(--line);padding:16px}
+    nav.toc ol{display:flex;flex-wrap:wrap;gap:4px}
+    nav.toc li a{padding:4px 8px}
+    nav.toc li a span{width:auto;margin-right:4px}
+    main{padding:24px 18px 80px}
+    header.hero h2{font-size:28px}
+    .cols{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+<nav class="toc" aria-label="สารบัญ">
+  <h1>ทบทวน JavaScript</h1>
+  <div class="score">คะแนน quiz: <b id="score">0</b> / <b id="score-total">0</b></div>
+  <div class="weak" id="weak">ยังไม่มีข้อที่ตอบผิด</div>
+  <ol id="toc"></ol>
+  <button class="chip" style="margin-top:14px;font-size:12px" onclick="window.print()">พิมพ์เป็น cheat sheet</button>
+</nav>
+
+<main>
+<header class="hero">
+  <h2>สิ่งที่ต้องแม่น <mark>ก่อนเขียนเว็บ</mark> — 12 บท มีของให้กดเล่นทุกบท</h2>
+  <p>แต่ละบทมีสรุปสิ่งที่ต้องทำได้ ตัวอย่างโค้ด กล่องทดลองที่ลองพิมพ์ได้จริง และ quiz ปิดท้าย ตอบผิดจะบอกเหตุผลให้ทันที</p>
+</header>
+
+<!-- ============ 01 ============ -->
+<section class="ch" id="ch01">
+<h3>01 ตัวแปรกับค่า</h3>
+<p class="lead">ตรรกะถูกทั้งหมดแต่ยังได้ 0 คะแนน มักเกิดจากพื้นฐานในบทนี้</p>
+<div class="outcomes"><p>จบบทนี้ต้องทำได้</p><ul>
+<li>อธิบายว่า <code>const</code> ล็อกอะไร และทำไมยังแก้ property ของ object ได้</li>
+<li>แยก primitive กับ object และรู้กับดัก <code>typeof null</code></li>
+<li>เลือก <code>===</code> แทน <code>==</code> ได้อย่างมีเหตุผล</li>
+<li>บอก falsy 6 ตัวได้ครบ และรู้ว่า <code>[]</code> กับ <code>"0"</code> เป็น truthy</li>
+<li>เขียน template literal ให้ output ตรง spec ทุกช่องว่าง</li></ul></div>
+
+<h4>const ล็อก "ป้าย" ไม่ได้ล็อก "ของข้างใน"</h4>
+<pre><span class="k">const</span> cart = { qty: <span class="n">1</span> };
+cart.qty = <span class="n">2</span>;      <span class="c">// ได้ — แก้ของข้างในกล่องเดิม</span>
+cart = { qty: <span class="n">5</span> };  <span class="c">// TypeError — เปลี่ยนป้ายไปชี้กล่องใหม่ไม่ได้</span></pre>
+
+<h4>primitive คัดลอกค่า · object คัดลอกที่อยู่</h4>
+<pre><span class="k">let</span> a = <span class="n">100</span>; <span class="k">let</span> b = a; b = <span class="n">250</span>;
+console.log(a);  <span class="c">// 100 — คนละก้อน</span>
+
+<span class="k">const</span> c1 = { total: <span class="n">100</span> }; <span class="k">const</span> c2 = c1; c2.total = <span class="n">500</span>;
+console.log(c1.total);  <span class="c">// 500 — ก้อนเดียวกัน</span></pre>
+
+<div class="play"><p class="t">truthy หรือ falsy — กดแล้วดูว่าเข้า if ไหม</p>
+<div class="row" id="tf-btns"></div>
+<div class="out" id="tf-out">เลือกค่าด้านบน</div></div>
+
+<div class="play"><p class="t">typeof — เครื่องมือเช็คชนิดที่มีรูรั่ว 1 จุด</p>
+<div class="row" id="ty-btns"></div>
+<div class="out" id="ty-out">กดค่าแล้วดูว่า typeof ตอบอะไร</div></div>
+
+<div class="play"><p class="t">== กับ === ต่างกันยังไง — พิมพ์ค่าสองฝั่งแล้วเทียบ</p>
+<div class="row">
+<input type="text" id="eq-a" value="0" style="width:120px"> vs <input type="text" id="eq-b" value='""' style="width:120px">
+<button class="primary" onclick="cmpEq()">เทียบ</button>
+<span class="pill">พิมพ์แบบ JS เช่น null, "1", [], 0</span></div>
+<div class="out" id="eq-out"></div></div>
+
+<div class="play"><p class="t">template literal — ต้องได้ <code>เสื้อยืด x3 = 750 บาท</code> เป๊ะ</p>
+<div class="row"><span class="mono">`${p.name} x${qty} = ${</span><input type="text" id="tl-in" placeholder="เติมตรงนี้" style="width:160px"><span class="mono">} บาท`</span>
+<button class="primary" onclick="checkTL()">ตรวจ</button></div>
+<div class="out" id="tl-out"></div></div>
+
+<div class="quiz" data-q='{"q":"ค่าไหนเป็น truthy","opts":["0","[] (array ว่าง)","\"\" (สตริงว่าง)","NaN"],"ans":1,"exp":"array ว่างเป็น object — ภาษาเช็คแค่ว่าเป็น object ไหม ไม่ได้เช็คว่าข้างในมีอะไร"}'></div>
+<div class="quiz" data-q='{"q":"0 == \"\" กับ 0 === \"\" ได้อะไรตามลำดับ","opts":["true, true","true, false","false, false","false, true"],"ans":1,"exp":"== แปลง \"\" เป็นเลข 0 ก่อนเทียบ ส่วน === คนละชนิดคือ false ทันที"}'></div>
+<div class="coder" data-id="c01"></div>
+<div class="mistakes"><p>พลาดกันบ่อย</p><ul><li>เทียบด้วย <code>==</code> แล้วเจอบั๊กเงียบ — ใช้ <code>===</code> เป็นค่าเริ่มต้นเสมอ</li><li>เช็ค array ว่างด้วย <code>if (arr)</code> — array ว่างเป็น truthy ต้องดู <code>.length</code></li><li>พิมพ์ output ผิดช่องว่างแล้วไปไล่แก้ตรรกะ — เทียบ spec ทีละตัวอักษรก่อน</li></ul></div>
+<div class="quiz" data-q='{"q":"typeof null คืนอะไร","opts":["\"null\"","\"undefined\"","\"object\"","error"],"ans":2,"exp":"บั๊กเก่าแก่ของภาษาที่แก้ไม่ได้แล้ว — เช็ค null ต้องใช้ === null เท่านั้น"}'></div>
+</section>
+
+<!-- ============ 02 ============ -->
+<section class="ch" id="ch02">
+<h3>02 เงื่อนไข</h3>
+<p class="lead">โปรแกรมเช็คจากบนลงล่าง เจอทางแรกที่จริงก็เข้าทันที — เรียงผิด เคสพิเศษหลุด</p>
+<div class="outcomes"><p>จบบทนี้ต้องทำได้</p><ul>
+<li>อธิบายลำดับ if / else if / else ว่าเช็คทีละบรรทัดจากบนลงล่าง</li>
+<li>ใช้ ternary แทน if/else สั้น ๆ และรู้ว่าต้องเก็บผลไว้</li>
+<li>เรียงเงื่อนไข "แคบก่อนกว้าง"</li>
+<li>รู้ว่า <code>a &lt;= x &lt;= b</code> ไม่ทำงาน ต้องใช้ <code>&amp;&amp;</code></li>
+<li>แยกวิธีเช็ค "ว่าง" — <code>length === 0</code> · <code>=== ""</code> · <code>== null</code></li></ul></div>
+
+<h4>เช็คแคบก่อนกว้าง</h4>
+<pre><span class="c">// ผิด — -50 เข้า if แรกไปเลย ไม่มีวันถึง throw</span>
+<span class="k">if</span> (amount &lt; <span class="n">1000</span>) <span class="k">return</span> <span class="s">'ปกติ'</span>;
+<span class="k">if</span> (amount &lt; <span class="n">0</span>)    <span class="k">return</span> <span class="s">'ติดลบ'</span>;
+
+<span class="c">// ถูก — เคสแคบไว้บน</span>
+<span class="k">if</span> (amount &lt; <span class="n">0</span>)    <span class="k">return</span> <span class="s">'ติดลบ'</span>;
+<span class="k">if</span> (amount &lt; <span class="n">1000</span>) <span class="k">return</span> <span class="s">'ปกติ'</span>;</pre>
+
+<h4>ternary คือ expression — ต้องมีที่รับค่า</h4>
+<pre><span class="k">const</span> label = total &gt;= <span class="n">500</span> ? <span class="s">'ส่งฟรี'</span> : <span class="s">'ค่าส่ง 50 บาท'</span>;
+total &gt;= <span class="n">500</span> ? <span class="s">'ส่งฟรี'</span> : <span class="s">'ค่าส่ง 50 บาท'</span>;  <span class="c">// ❌ คำนวณแล้วทิ้ง</span></pre>
+
+<div class="play"><p class="t">เลื่อนยอดใช้จ่าย — ดูว่าหยุดที่บรรทัดไหน</p>
+<div class="row"><input type="range" id="tier-r" min="0" max="12000" step="500" value="2000" oninput="tier()"> <b id="tier-v"></b> บาท</div>
+<div id="tier-code"></div>
+<div class="out" id="tier-out"></div></div>
+
+<div class="play"><p class="t">ทำไม <code>0 &lt;= x &lt;= 100</code> จริงเกือบเสมอ</p>
+<div class="row">x = <input type="number" id="rng-x" value="-999" style="width:100px"> <button class="primary" onclick="rng()">ลอง</button></div>
+<div class="out" id="rng-out"></div></div>
+
+<div class="quiz" data-q='{"q":"เช็คว่าตะกร้า (array) ว่างไหม ควรเขียนยังไง","opts":["if (cartItems)","if (cartItems == null)","if (cartItems.length === 0)","if (cartItems === [])"],"ans":2,"exp":"array ว่างเป็น truthy และ === [] เทียบ reference คนละก้อนได้ false เสมอ — ต้องดู length"}'></div>
+<div class="coder" data-id="c02"></div>
+<div class="mistakes"><p>พลาดกันบ่อย</p><ul><li>เรียง guard กว้างก่อนแคบ — เคสพิเศษหลุด</li><li>เขียน <code>a &lt;= x &lt;= b</code> — ต้องแยกด้วย <code>&amp;&amp;</code></li><li>ใช้ <code>if (str)</code> เช็คสตริงว่าง — <code>"0"</code> กับช่องว่างล้วนเป็น truthy</li></ul></div>
+<div class="quiz" data-q='{"q":"ต้องการเช็คว่า userProfile.phone ยังไม่มีค่า (null หรือ undefined ก็ได้) เขียนสั้นที่สุดยังไง","opts":["phone === null","phone === undefined","phone == null","!phone"],"ans":2,"exp":"== null ครอบทั้ง null และ undefined — จุดเดียวที่ตั้งใจใช้ == ส่วน !phone จะโดน \"\" กับ 0 ไปด้วย"}'></div>
+<div class="quiz" data-q='{"q":"amount = -20 กับโค้ด if (amount < 1000) return \"A\"; if (amount < 0) return \"B\"; ได้อะไร","opts":["\"A\"","\"B\"","undefined","error"],"ans":0,"exp":"-20 < 1000 เป็นจริง เข้า if แรกทันที บรรทัดที่สองไม่มีวันทำงาน — นี่คือ guard เรียงผิด"}'></div>
+</section>
+
+<!-- ============ 03 ============ -->
+<section class="ch" id="ch03">
+<h3>03 วนซ้ำ</h3>
+<p class="lead">กับดักหลักไม่ใช่เลือกลูปผิด แต่คือสับสน "ตัวที่วนอยู่" กับ "array ทั้งก้อน"</p>
+<div class="outcomes"><p>จบบทนี้ต้องทำได้</p><ul>
+<li>เลือก <code>for</code>, <code>for...of</code>, <code>for...in</code>, <code>while</code> ได้ถูกสถานการณ์</li>
+<li>อธิบายว่าทำไม <code>for...in</code> กับ array ได้ key เป็นสตริง</li>
+<li>แยก <code>break</code> กับ <code>continue</code></li>
+<li>ไม่สับสน <code>item</code> กับ <code>items</code></li>
+<li>ประกาศตัวแปรสะสมไว้นอกลูป</li></ul></div>
+
+<table><tr><th></th><th>for...of</th><th>for...in</th><th>forEach</th></tr>
+<tr><td>ได้อะไร</td><td>สมาชิกแต่ละตัว</td><td>key เป็นสตริง "0","1"</td><td>(item, index)</td></tr>
+<tr><td>break/continue</td><td>ได้</td><td>ได้</td><td>ไม่ได้</td></tr>
+<tr><td>เหมาะกับ</td><td>array, string</td><td>property ของ object</td><td>array ที่ไม่ต้องหยุดกลางทาง</td></tr></table>
+
+<pre><span class="k">for</span> (<span class="k">const</span> key <span class="k">in</span> [<span class="s">'A1'</span>,<span class="s">'B2'</span>]) console.log(key + <span class="n">1</span>); <span class="c">// "01", "11" — ต่อสตริง</span>
+
+<span class="k">let</span> total = <span class="n">0</span>;                          <span class="c">// ประกาศนอกลูป</span>
+<span class="k">for</span> (<span class="k">const</span> item <span class="k">of</span> cartItems) {
+  total += item.price * item.qty;         <span class="c">// item ไม่ใช่ cartItems</span>
+}</pre>
+
+<div class="play"><p class="t">เดินลูปทีละรอบ — ดู i กับ total</p>
+<div class="row"><button onclick="loopStep(-1)">← ย้อน</button><button class="primary" onclick="loopStep(1)">ถัดไป →</button><button onclick="loopReset()">รีเซ็ต</button></div>
+<div id="loop-code"></div>
+<div class="out" id="loop-out"></div></div>
+
+<div class="play"><p class="t">while — ต้องมีจุดจบ</p>
+<div class="row"><button class="chip on" onclick="wh('ok',this)">มี stock-- ในลูป</button><button class="chip" onclick="wh('inf',this)">ลืม stock--</button></div>
+<pre id="wh-code" style="margin:6px 0"></pre>
+<div class="out" id="wh-out"></div></div>
+
+<div class="play"><p class="t">break vs continue — วน orders หายอดเกินงบ / ข้ามที่ยกเลิก</p>
+<div class="row"><button class="chip on" onclick="bc('break',this)">break</button><button class="chip" onclick="bc('continue',this)">continue</button></div>
+<pre id="bc-code" style="margin:6px 0"></pre>
+<div class="out" id="bc-out"></div></div>
+
+<div class="play"><p class="t">ลูปเดียวกัน 3 แบบ — ผลต่างกันตรงไหน</p>
+<div class="row"><button class="chip on" onclick="loopKind('of',this)">for...of</button><button class="chip" onclick="loopKind('in',this)">for...in</button><button class="chip" onclick="loopKind('each',this)">forEach</button></div>
+<div class="out" id="lk-out"></div></div>
+
+<div class="quiz" data-q='{"q":"for (const item of cartItems) { console.log(cartItems.price) } ได้อะไร","opts":["ราคาแต่ละชิ้น","undefined ทุกรอบ","error","ราคาชิ้นแรก"],"ans":1,"exp":"cartItems เป็น array ไม่มี property price — ต้องใช้ item.price"}'></div>
+<div class="coder" data-id="c03"></div>
+<div class="mistakes"><p>พลาดกันบ่อย</p><ul><li>ใช้ <code>for...in</code> กับ array แล้วเอา key ไปบวกเลข — ได้ต่อสตริง</li><li>ประกาศตัวแปรสะสมในลูป — รีเซ็ตทุกรอบ</li><li>เขียน <code>items.price</code> ในลูปที่ตัวแปรวนคือ <code>item</code> — ได้ undefined เงียบ ๆ</li></ul></div>
+<div class="quiz" data-q='{"q":"อยากข้ามออเดอร์ที่ถูกยกเลิก แล้วนับตัวถัดไปต่อ ใช้อะไร","opts":["break","continue","return","ไม่ต้องใช้อะไร"],"ans":1,"exp":"continue ข้ามแค่รอบนี้ break ออกจากลูปเลย"}'></div>
+<div class="quiz" data-q='{"q":"ประกาศ let total = 0 ไว้ข้างในลูป จะเกิดอะไร","opts":["ทำงานปกติ","total ถูกรีเซ็ตทุกรอบ เหลือแค่ค่ารอบสุดท้าย","error","total เป็น undefined"],"ans":1,"exp":"ตัวแปรถูกสร้างใหม่ทุกรอบ ค่าที่สะสมมาก่อนหน้าหายหมด"}'></div>
+</section>
+
+<!-- ============ 04 ============ -->
+<section class="ch" id="ch04">
+<h3>04 ฟังก์ชัน</h3>
+<p class="lead">รับของเข้าทางหนึ่ง ต้องส่งคำตอบออกให้ถูกทาง — ลืม return คำเดียว งานที่ถูก 100% กลายเป็นศูนย์</p>
+<div class="outcomes"><p>จบบทนี้ต้องทำได้</p><ul>
+<li>อธิบายว่า <code>return</code> กับ <code>console.log</code> ให้ผลต่างกันสำหรับคนเรียก</li>
+<li>แยก parameter กับ argument และรู้ว่าส่งไม่ครบจะได้ <code>undefined</code></li>
+<li>บอกว่า default parameter ทำงานเฉพาะตอนได้ <code>undefined</code></li>
+<li>เทียบ arrow function กับ function declaration ทั้ง this, arguments, new, hoisting</li>
+<li>ยื่น callback โดยไม่ใส่วงเล็บเรียก</li></ul></div>
+
+<h4>return vs console.log</h4>
+<pre><span class="k">function</span> getTotal(items) { console.log(<span class="n">1170</span>); }
+<span class="k">const</span> r = getTotal(cartItems);  <span class="c">// r = undefined — จอโชว์เลข แต่ไม่มีอะไรส่งออกมา</span></pre>
+
+<table><tr><th></th><th>function declaration</th><th>arrow function</th></tr>
+<tr><td><code>this</code></td><td>ดูตอนเรียก — ใครอยู่หน้าจุด</td><td>ยืมจาก scope ที่ห่อตอนประกาศ</td></tr>
+<tr><td><code>arguments</code></td><td>มี</td><td>ไม่มี</td></tr>
+<tr><td><code>new</code></td><td>ได้</td><td>ไม่ได้ (TypeError)</td></tr>
+<tr><td>hoisting</td><td>เรียกก่อนบรรทัดประกาศได้ (hoist ทั้งตัว)</td><td>ไม่ได้ — เพราะเก็บใน <code>const</code>/<code>let</code> (TDZ) ตัวตัดสินคือวิธีประกาศ ไม่ใช่ตัว arrow</td></tr>
+<tr><td>implicit return</td><td>ต้องเขียน return</td><td>ไม่มี {} จะ return ให้เอง</td></tr></table>
+
+<div class="play"><p class="t">default parameter — ค่าไหนทำให้ default ทำงาน</p>
+<pre style="margin-top:0">const greet = (name = 'ลูกค้า') => `สวัสดีคุณ ${name}`;</pre>
+<div class="row" id="dp-btns"></div>
+<div class="out" id="dp-out">กดค่าที่จะส่งเข้าไป</div></div>
+
+<div class="play"><p class="t">hoisting — เรียกก่อนประกาศได้ไหม</p>
+<div class="row"><button class="chip on" onclick="hoist('decl',this)">function declaration</button><button class="chip" onclick="hoist('arrow',this)">const + arrow</button></div>
+<pre id="hoist-code" style="margin:6px 0"></pre>
+<div class="out" id="hoist-out"></div></div>
+
+<div class="play"><p class="t">callback — ใส่วงเล็บหรือไม่ใส่</p>
+<div class="row" id="cb-row"><button class="chip on" onclick="cb('a',this)">filter(hasStock)</button><button class="chip" onclick="cb('b',this)">filter(hasStock())</button><button class="chip" onclick="cb('c',this)">filter(i =&gt; i.qty &gt; 0)</button></div>
+<div class="out" id="cb-out"></div></div>
+
+<div class="coder" data-id="c04"></div>
+<div class="mistakes"><p>พลาดกันบ่อย</p><ul><li>คิดว่า default ทำงานกับ <code>null</code> / <code>""</code> / <code>0</code> — เฉพาะ <code>undefined</code> เท่านั้น</li><li>มี if ครบทุกเคสแต่ไม่มี return ปิดท้าย — เดินตกขอบได้ undefined</li><li>ส่ง callback แบบ <code>filter(fn())</code> — วงเล็บคือเรียกทันที</li></ul></div>
+<div class="quiz" data-q='{"q":"greet(null) เมื่อ greet = (name = \"เพื่อน\") => `สวัสดี ${name}` ได้อะไร","opts":["สวัสดี เพื่อน","สวัสดี null","error","สวัสดี undefined"],"ans":1,"exp":"default ทำงานเฉพาะตอนได้ undefined เท่านั้น — null ถือว่าส่งของมาแล้ว"}'></div>
+<div class="quiz" data-q='{"q":"const f = () => { name: \"หมวก\" }; f() ได้อะไร","opts":["{ name: \"หมวก\" }","undefined","\"หมวก\"","SyntaxError"],"ans":1,"exp":"JS มอง {} เป็น block body ไม่ใช่ object และไม่มี return → undefined ต้องครอบ ({ ... })"}'></div>
+<div class="quiz" data-q='{"q":"console.log(f()); const f = () => 1; เกิดอะไร","opts":["พิมพ์ 1","พิมพ์ undefined","ReferenceError","TypeError"],"ans":2,"exp":"const ถูก hoist แค่ชื่อ ยังอยู่ใน temporal dead zone — Cannot access before initialization"}'></div>
+</section>
+
+<!-- ============ 05 ============ -->
+<section class="ch" id="ch05">
+<h3>05 Array</h3>
+<p class="lead">ก่อนเรียก method ไหน ถามก่อนเสมอ: มันแก้ของเดิม หรือคืนของใหม่</p>
+<div class="outcomes"><p>จบบทนี้ต้องทำได้</p><ul>
+<li>บอกได้ว่า method ไหนแก้ต้นฉบับ (mutate) ไหนคืนของใหม่</li>
+<li>แยก <code>map</code> / <code>filter</code> / <code>find</code> ว่าคืนอะไร</li>
+<li>อธิบาย 4 จังหวะของ <code>reduce</code> และรู้ว่าทำไมต้องมี initial value</li>
+<li>เขียน <code>reduce</code> จัดกลุ่มด้วย <code>groups[key] = groups[key] || []</code></li>
+<li>รู้ว่า <code>sort()</code> ไม่ใส่ comparator เรียงแบบ string</li></ul></div>
+
+<table><tr><th>แก้ต้นฉบับ</th><th>คืนของใหม่</th></tr>
+<tr><td><code>push</code> <code>pop</code> <code>shift</code> <code>unshift</code> <code>splice</code> <code>sort</code> <code>reverse</code> <code>fill</code></td>
+<td><code>slice</code> <code>concat</code> <code>map</code> <code>filter</code> <code>find</code> <code>some</code> <code>every</code> <code>join</code> <code>[...arr]</code></td></tr></table>
+
+<table><tr><th>method</th><th>คืนอะไร</th></tr>
+<tr><td><code>map</code></td><td>array ใหม่ ยาวเท่าเดิม</td></tr>
+<tr><td><code>filter</code></td><td>array ใหม่ อาจสั้นกว่า (ไม่เจอเลยได้ <code>[]</code>)</td></tr>
+<tr><td><code>find</code></td><td>สมาชิกตัวแรกที่ผ่าน หรือ <code>undefined</code></td></tr></table>
+
+<pre><span class="k">const</span> total = cartItems.reduce((acc, item) =&gt; acc + item.price * item.qty, <span class="n">0</span>);
+<span class="c">//                                                       ↑ ถังตั้งต้น — ห้ามลืม</span>
+[<span class="n">40</span>, <span class="n">5</span>, <span class="n">100</span>].sort();              <span class="c">// [100, 40, 5] — เรียงแบบ string</span>
+[<span class="n">40</span>, <span class="n">5</span>, <span class="n">100</span>].sort((a,b) =&gt; a-b);  <span class="c">// [5, 40, 100]</span></pre>
+
+<div class="play"><p class="t">กด method แล้วดูว่าต้นฉบับเปลี่ยนไหม (เริ่มจากชุดเดิมทุกครั้ง)</p>
+<div class="row" id="arr-btns"></div>
+<div class="out" id="arr-out">ต้นฉบับ: ["เสื้อยืด","หมวก","กางเกง"]</div></div>
+
+<div class="play"><p class="t">เดิน reduce ทีละก้าว — ดูถัง (acc) สะสม</p>
+<div class="row"><button onclick="redStep(-1)">← ย้อน</button><button class="primary" onclick="redStep(1)">ถัดไป →</button><button onclick="redReset()">รีเซ็ต</button></div>
+<div class="out" id="red-out"></div></div>
+
+<div class="play"><p class="t">sort ตัวเลข — มี comparator หรือไม่มี</p>
+<div class="row"><input type="text" id="sort-in" value="40, 5, 100, 9" style="width:200px"><button onclick="doSort(false)">sort()</button><button class="primary" onclick="doSort(true)">sort((a,b)=&gt;a-b)</button></div>
+<div class="out" id="sort-out"></div></div>
+
+<div class="quiz" data-q='{"q":"products.filter(p => p.inStock); เรียกลอย ๆ ไม่เก็บผล products จะเป็นยังไง","opts":["ถูกกรองเหลือแต่ที่ inStock","เหมือนเดิมทุกอย่าง","กลายเป็น []","error"],"ans":1,"exp":"filter คืนของใหม่ ไม่แตะต้นฉบับ — ไม่เก็บผลลัพธ์ = หายไปเฉย ๆ"}'></div>
+<div class="coder" data-id="c05"></div>
+<div class="mistakes"><p>พลาดกันบ่อย</p><ul><li>เรียก non-mutating method ลอย ๆ ไม่เก็บผล</li><li>ลืม initial value ให้ <code>reduce</code></li><li><code>groups[key].push(...)</code> ก่อนสร้าง array — ต้อง <code>groups[key] = groups[key] || []</code></li></ul></div>
+<div class="quiz" data-q='{"q":"products.find(p => p.qty > 99) ถ้าไม่มีสักตัว ได้อะไร","opts":["[]","null","undefined","false"],"ans":2,"exp":"find คืนสมาชิกตัวแรกที่ผ่าน ไม่เจอเลยได้ undefined (filter ต่างหากที่คืน [])"}'></div>
+<div class="quiz" data-q='{"q":"[].reduce((s, x) => s + x) โดยไม่ใส่ initial value ได้อะไร","opts":["0","undefined","TypeError","[]"],"ans":2,"exp":"array ว่าง + ไม่มี initial value → Reduce of empty array with no initial value"}'></div>
+</section>
+
+<!-- ============ 06 ============ -->
+<section class="ch" id="ch06">
+<h3>06 Object</h3>
+<p class="lead">ตัวแปรที่เก็บ object แค่ "ชี้" ไปหาก้อนข้อมูล ไม่ได้ "ถือ" ไว้</p>
+<div class="outcomes"><p>จบบทนี้ต้องทำได้</p><ul>
+<li>เข้าถึง property ได้ทั้ง dot และ bracket และรู้ว่าใช้แบบไหนตอนไหน</li>
+<li>เพิ่ม แก้ ลบ property และเช็คว่ามี key อยู่จริงไหม</li>
+<li>วน object ได้ 3 วิธี</li>
+<li>อธิบายว่าทำไม <code>=</code> ไม่ใช่การคัดลอก</li>
+<li>ระวังสะกด key ผิดแล้ว JS สร้าง key ใหม่เงียบ ๆ</li></ul></div>
+
+<pre><span class="k">const</span> u = { name: <span class="s">'มด'</span>, points: <span class="n">120</span> };
+<span class="k">const</span> key = <span class="s">'points'</span>;
+u.name       <span class="c">// dot — รู้ชื่อ key แน่นอน</span>
+u[<span class="s">'name'</span>]    <span class="c">// bracket — ต้องมี quote</span>
+u[key]       <span class="c">// bracket — key มาจากตัวแปร</span>
+u.key        <span class="c">// undefined — หา property ชื่อ "key" ตรงตัว</span>
+
+u.pionts = <span class="n">200</span>;  <span class="c">// สะกดผิด → สร้าง key ใหม่ ไม่ error, points ไม่เปลี่ยน</span></pre>
+
+<table><tr><th>เช็ค</th><th>เขียน</th></tr>
+<tr><td>มี key ไหม</td><td><code>'phone' in u</code></td></tr>
+<tr><td>อ่านซ้อนชั้นแบบไม่พัง</td><td><code>u.address?.city</code></td></tr>
+<tr><td>วน key/value</td><td><code>for...in</code> · <code>Object.keys()</code> · <code>Object.entries()</code></td></tr></table>
+
+<div class="play"><p class="t">reference — แก้ userB แล้ว userA เปลี่ยนไหม</p>
+<div class="row"><button class="chip on" onclick="refMode('same',this)">userB = userA</button><button class="chip" onclick="refMode('copy',this)">userB = { ...userA }</button></div>
+<div class="row">แก้ userB.points = <input type="number" id="ref-in" value="999" style="width:90px"><button class="primary" onclick="refApply()">แก้</button></div>
+<div class="cols"><div class="box"><b>userA</b><span id="ref-a" class="mono"></span></div><div class="box"><b>userB</b><span id="ref-b" class="mono"></span></div></div>
+<div class="out" id="ref-out"></div></div>
+
+<div class="play"><p class="t">เช็คว่ามี key ไหม / อ่านซ้อนชั้นแบบไม่พัง</p>
+<div class="row"><span class="mono">u = { name:'มด', points:120, phone: undefined }</span></div>
+<div class="row" id="in-btns"></div>
+<div class="out" id="in-out">กดดูผลแต่ละแบบ</div></div>
+
+<div class="play"><p class="t">วน object 3 วิธี — ผลเหมือนกัน</p>
+<div class="row"><button class="chip on" onclick="ol('in',this)">for...in</button><button class="chip" onclick="ol('keys',this)">Object.keys().forEach()</button><button class="chip" onclick="ol('entries',this)">Object.entries()</button></div>
+<pre id="ol-code" style="margin:6px 0"></pre>
+<div class="out" id="ol-out"></div></div>
+
+<div class="play"><p class="t">เข้าถึง property — พิมพ์ expression แล้วดูผล</p>
+<div class="row"><span class="mono">const u = { name:'มด', points:120 }; const key = 'points';</span></div>
+<div class="row"><input type="text" id="acc-in" value="u.key" style="width:200px"><button class="primary" onclick="accRun()">รัน</button>
+<button class="chip" onclick="accSet('u.points')">u.points</button><button class="chip" onclick="accSet('u[key]')">u[key]</button><button class="chip" onclick="accSet('u.key')">u.key</button><button class="chip" onclick="accSet('u[points]')">u[points]</button><button class="chip" onclick="accSet('u[&quot;points&quot;]')">u["points"]</button></div>
+<div class="note">ระวัง: ใน browser <code>u[name]</code> จะได้ <code>undefined</code> ไม่ error เพราะ <code>name</code> เป็น global อยู่แล้ว (<code>window.name</code>) — กับดักนี้เกิดเฉพาะชื่อที่บังเอิญเป็น global</div>
+<div class="out" id="acc-out"></div></div>
+
+<div class="quiz" data-q='{"q":"const a = {x:1}; const b = a; b.x = 99; a.x ได้อะไร","opts":["1","99","undefined","error"],"ans":1,"exp":"a กับ b ชี้ก้อนเดียวกัน — แก้ผ่าน b กระทบ a"}'></div>
+<div class="coder" data-id="c06"></div>
+<div class="mistakes"><p>พลาดกันบ่อย</p><ul><li>bracket ลืม quote — JS ไปหาตัวแปร</li><li>คิดว่า <code>const b = a</code> สร้างสำเนา — ชี้ก้อนเดียวกัน</li><li>สะกด key ผิดตอนแก้ — ได้ key ใหม่เงียบ ๆ ค่าเดิมไม่เปลี่ยน</li></ul></div>
+<div class="quiz" data-q='{"q":"u = { phone: undefined }; \"phone\" in u ได้อะไร","opts":["true","false","undefined","error"],"ans":0,"exp":"in เช็คว่ามี key อยู่จริงไหม — มี แม้ค่าจะเป็น undefined (ต่างจาก u.phone === undefined ที่แยกไม่ออก)"}'></div>
+<div class="quiz" data-q='{"q":"u[points] โดยไม่มี quote และไม่มีตัวแปร points จะเกิดอะไร","opts":["ได้ค่าของ property points","undefined","ReferenceError","ได้ property ทั้งหมด"],"ans":2,"exp":"JS ไปหาตัวแปรชื่อ points มาใช้เป็น key — ไม่มีตัวแปรนี้ → ReferenceError (ยกเว้นชื่อที่บังเอิญเป็น global ใน browser เช่น name = window.name จะได้ undefined แทน)"}'></div>
+</section>
+
+<!-- ============ 07 ============ -->
+<section class="ch" id="ch07">
+<h3>07 Destructuring + Spread</h3>
+<p class="lead">แกะกล่อง แจกจ่าย คัดลอก — สั้นลงเยอะ แต่พลาดง่ายตรงวงเล็บกับของซ้อน</p>
+<div class="outcomes"><p>จบบทนี้ต้องทำได้</p><ul>
+<li>แกะค่าจาก object/array ได้ ทั้ง rename และ default</li>
+<li>destructure ตรงพารามิเตอร์ได้ รวมถึง arrow function ที่ต้องครอบ <code>()</code></li>
+<li>ใช้ spread คัดลอก/รวม และรู้ว่า key ชนกันตัวหลังชนะ</li>
+<li>รู้ว่า spread คัดลอกแค่ชั้นบนสุด (shallow)</li></ul></div>
+
+<pre><span class="k">const</span> { name: fullName, phone = <span class="s">'ไม่ระบุ'</span> } = user;   <span class="c">// rename + default</span>
+<span class="k">const</span> [first, second] = [<span class="s">'A'</span>, <span class="s">'B'</span>, <span class="s">'C'</span>];              <span class="c">// array ใช้ตำแหน่ง</span>
+
+<span class="k">const</span> f = ({ name, price }) =&gt; <span class="s">`${name} ${price}`</span>;     <span class="c">// ต้องครอบ ( )</span>
+<span class="k">const</span> g = { name, price } =&gt; ...;                     <span class="c">// ❌ SyntaxError</span>
+
+<span class="k">const</span> merged = { ...defaults, ...override };          <span class="c">// override ชนะ</span>
+<span class="k">function</span> sum(...nums) {}                              <span class="c">// rest ต้องท้ายสุด</span></pre>
+
+<div class="play"><p class="t">spread แล้วใครทับใคร — สลับลำดับดู</p>
+<div class="row"><span class="mono">defaults = {theme:'light', discount:0}</span> · <span class="mono">override = {discount:0.1}</span></div>
+<div class="row"><button class="chip on" onclick="spr('a',this)">{ ...defaults, ...override }</button><button class="chip" onclick="spr('b',this)">{ ...override, ...defaults }</button></div>
+<div class="out" id="spr-out"></div></div>
+
+<div class="play"><p class="t">shallow copy — แก้ของซ้อนผ่านสำเนา</p>
+<div class="row"><button class="chip on" onclick="shallow('spread',this)">{ ...original }</button><button class="chip" onclick="shallow('deep',this)">structuredClone(original)</button><button class="primary" onclick="shallowEdit()">copy.address.city = 'เชียงใหม่'</button></div>
+<div class="cols"><div class="box"><b>original</b><span id="sh-o" class="mono"></span></div><div class="box"><b>copy</b><span id="sh-c" class="mono"></span></div></div>
+<div class="out" id="sh-out"></div></div>
+
+<div class="play"><p class="t">arrow function + destructuring — ลืม ( ) แล้วเกิดอะไร</p>
+<div class="row"><input type="text" id="ad-in" value="{ name, price } => `${name} ${price}`" style="width:360px"><button class="primary" onclick="adRun()">parse</button><button class="chip" onclick="$('ad-in').value='({ name, price }) => `${name} ${price}`';adRun()">ใส่ ( )</button></div>
+<div class="out" id="ad-out"></div></div>
+
+<div class="play"><p class="t">เติม destructuring ให้ได้ fullName, email, contactPhone (default 'ไม่ระบุ')</p>
+<div class="row"><span class="mono">const {</span><input type="text" id="ds-in" style="width:360px" placeholder="เติมตรงนี้"><span class="mono">} = user;</span><button class="primary" onclick="dsCheck()">ตรวจ</button></div>
+<div class="out" id="ds-out"></div></div>
+
+<div class="quiz" data-q='{"q":"const copy = {...user}; copy.address.city = \"X\"; user.address.city เป็นอะไร","opts":["ค่าเดิม","\"X\"","undefined","error"],"ans":1,"exp":"spread คัดลอกแค่ชั้นบน address ยังเป็น reference เดิม"}'></div>
+<div class="coder" data-id="c07"></div>
+<div class="mistakes"><p>พลาดกันบ่อย</p><ul><li>arrow function ลืม <code>()</code> ครอบ destructuring</li><li><code>...rest</code> ไม่อยู่ท้ายสุด</li><li>คิดว่า spread คัดลอกลึก</li></ul></div>
+<div class="quiz" data-q='{"q":"const { phone = \"ไม่ระบุ\" } = { phone: null }; phone ได้อะไร","opts":["\"ไม่ระบุ\"","null","undefined","error"],"ans":1,"exp":"default ของ destructuring ทำงานเฉพาะ undefined เหมือน default parameter — null ถูกใช้ตรง ๆ"}'></div>
+<div class="quiz" data-q='{"q":"function f(...rest, last) {} เกิดอะไร","opts":["ทำงานปกติ","rest เป็น []","SyntaxError","last เป็น undefined"],"ans":2,"exp":"rest ต้องอยู่ตำแหน่งสุดท้ายเสมอ"}'></div>
+</section>
+
+<!-- ============ 08 ============ -->
+<section class="ch" id="ch08">
+<h3>08 Date</h3>
+<p class="lead">ข้างใน Date คือตัวเลข ms ตัวเดียว — เทียบวันที่ = เทียบตัวเลข</p>
+<div class="outcomes"><p>จบบทนี้ต้องทำได้</p><ul>
+<li>อธิบายว่า Date เก็บอะไร และสร้างได้ 4 แบบ</li>
+<li>แยก <code>getMonth()</code> (0–11) / <code>getDate()</code> (วันที่) / <code>getDay()</code> (0 = อาทิตย์)</li>
+<li>หาผลต่างวันได้ถูก — วงเล็บครอบตัวหาร + <code>Math.floor</code></li>
+<li>ใช้ <code>toLocaleDateString</code> และรู้ว่าสะกด option ผิดไม่ error</li></ul></div>
+
+<pre><span class="k">new</span> Date();                  <span class="c">// ตอนนี้</span>
+<span class="k">new</span> Date(<span class="s">'2026-08-23'</span>);      <span class="c">// สตริง — ห้ามลืม quote</span>
+<span class="k">new</span> Date(<span class="n">2026</span>, <span class="n">7</span>, <span class="n">23</span>);      <span class="c">// เดือน 0–11 → 7 = สิงหาคม</span>
+Date.now();                  <span class="c">// ตัวเลข ms ไม่ใช่ Date object</span>
+
+<span class="k">const</span> days = Math.floor((later - earlier) / (<span class="n">1000</span>*<span class="n">60</span>*<span class="n">60</span>*<span class="n">24</span>));
+a &lt; b            <span class="c">// เทียบได้เลย</span>
+a === b          <span class="c">// false เสมอ (object) — ใช้ a.getTime() === b.getTime()</span></pre>
+
+<div class="play"><p class="t">หาผลต่างวัน — ใส่วงเล็บกับไม่ใส่</p>
+<div class="row"><input type="date" id="d1" value="2026-08-10"> ถึง <input type="date" id="d2" value="2026-08-23"><button class="primary" onclick="dateDiff()">คำนวณ</button></div>
+<div class="out" id="date-out"></div></div>
+
+<div class="play"><p class="t">getMonth / getDate / getDay ของวันที่เลือก</p>
+<div class="row"><input type="date" id="d3" value="2026-08-23" oninput="dateParts()"></div>
+<div class="out" id="dp2-out"></div></div>
+
+<div class="play"><p class="t">toLocaleDateString — ต่อ option ให้ได้ "วันอาทิตย์ที่ 23 สิงหาคม 2569"</p>
+<div class="row" id="tl-opts"></div>
+<div class="out" id="tld-out"></div></div>
+
+<div class="play"><p class="t">โปรโมชันยังใช้ได้ไหม — เติมเงื่อนไข</p>
+<div class="row"><span class="mono">return </span><input type="text" id="promo-in" style="width:320px" placeholder="เช่น now >= start && ..."><button class="primary" onclick="promoCheck()">ตรวจ</button></div>
+<div class="row"><span class="pill">ตัวแปรที่มี: now, startDate, endDate</span></div>
+<div class="out" id="promo-out"></div></div>
+
+<h4>Temporal — ของใหม่ที่กำลังมาแทน</h4>
+<p>Date ถูกออกแบบตั้งแต่ปี 1995 มีปัญหาที่เพิ่งเจอในบทนี้ครบ: mutable (<code>setDate()</code> แก้ต้นฉบับ), เดือน 0–11, แยก timezone ไม่ชัด — <code>Temporal</code> แก้ทั้งหมด (<code>.month</code> นับ 1–12, <code>.add()</code> คืนของใหม่, <code>d1.until(d2).days</code> ได้จำนวนวันตรง ๆ) เข้า ES2026 แล้ว แต่ Safari ยังไม่รองรับ — โจทย์ที่เจอตอนนี้ยังใช้ Date ทั้งหมด รู้ไว้ก่อนพอ</p>
+<div class="coder" data-id="c08"></div>
+<div class="mistakes"><p>พลาดกันบ่อย</p><ul><li>ลืมวงเล็บครอบตัวหารตอนหาผลต่างวัน</li><li><code>new Date(2026-08-23)</code> ไม่มี quote — กลายเป็นลบเลข</li><li>สะกด option ผิด (<code>weekDay</code>) — ไม่ error แค่เมิน</li></ul></div>
+<div class="quiz" data-q='{"q":"Date.now() คืนอะไร","opts":["Date object","ตัวเลข ms นับจาก 1970","สตริงวันที่","undefined"],"ans":1,"exp":"เป็น number เรียก .getMonth() ต่อไม่ได้ ต้อง new Date() ถ้าอยากได้ object"}'></div>
+<div class="quiz" data-q='{"q":"new Date(2026, 7, 23).getMonth() ได้อะไร","opts":["8","7","\"August\"","23"],"ans":1,"exp":"getMonth นับ 0–11 — สิงหาคมคือ 7"}'></div>
+<div class="quiz" data-q='{"q":"diffMs / 1000 * 60 * 60 * 24 ทำไมได้เลขมหาศาล","opts":["diffMs ผิด","/ กับ * อ่านซ้ายไปขวา กลายเป็นหาร 1000 แล้วคูณ 86400","ต้องใช้ Math.round","Date ไม่ลบกันได้"],"ans":1,"exp":"ต้องครอบตัวหารด้วยวงเล็บ (1000*60*60*24)"}'></div>
+</section>
+
+<!-- ============ 09 ============ -->
+<section class="ch" id="ch09">
+<h3>09 Regex</h3>
+<p class="lead">อ่านออกเสียงทีละชิ้นก่อนเขียน — สัญลักษณ์มีไม่กี่ตัว</p>
+<div class="outcomes"><p>จบบทนี้ต้องทำได้</p><ul>
+<li>อ่าน pattern ทีละชิ้นด้วยตารางตัวอักษรพิเศษ</li>
+<li>แยก <code>test</code> (boolean) / <code>match</code> (array หรือ null) / <code>replace</code> (string ใหม่)</li>
+<li>ใช้ escape <code>\.</code>, anchor <code>^ $</code>, character class <code>[...]</code>, flags <code>g i</code></li>
+<li>ประกอบ pattern ตรวจอีเมลที่รองรับโดเมนหลายชั้น</li></ul></div>
+
+<table><tr><th>สัญลักษณ์</th><th>ความหมาย</th><th>สัญลักษณ์</th><th>ความหมาย</th></tr>
+<tr><td><code>^</code> <code>$</code></td><td>ต้น / ท้ายข้อความ</td><td><code>+</code> <code>*</code> <code>?</code></td><td>1+ / 0+ / มีหรือไม่มี</td></tr>
+<tr><td><code>.</code></td><td>ตัวอะไรก็ได้ 1 ตัว</td><td><code>{n,m}</code></td><td>ซ้ำ n ถึง m</td></tr>
+<tr><td><code>\d</code> <code>\w</code> <code>\s</code></td><td>ตัวเลข / ตัวอักษร / ช่องว่าง</td><td><code>[...]</code> <code>(...)</code> <code>|</code></td><td>ชุดตัวอักษร / กลุ่ม / หรือ</td></tr>
+<tr><td><code>\.</code></td><td>จุดจริง ๆ</td><td><code>/.../g</code> <code>/.../i</code></td><td>ทุกจุด / ไม่สนตัวพิมพ์</td></tr></table>
+
+<pre><span class="s">/^\d{3}-\d{4}$/</span>   <span class="c">// ต้น → เลข 3 ตัว → ขีด → เลข 4 ตัว → จบ</span>
+<span class="s">/^[\w.-]+@[\w-]+(\.[\w-]+)+$/</span>   <span class="c">// อีเมล รองรับ .co.th</span>
+
+re.test(s)       <span class="c">// true/false</span>
+s.match(re)      <span class="c">// ['2026'] หรือ null — ไม่ใช่ boolean</span>
+s.replace(re, x) <span class="c">// สตริงใหม่</span></pre>
+
+<div class="play"><p class="t">ห้องทดลอง regex — พิมพ์ pattern แล้วดูว่าผ่านกี่เคส</p>
+<div class="row"><span class="mono">/</span><input type="text" id="re-in" value=".+@.+" style="width:300px" oninput="reRun()"><span class="mono">/</span>
+<button class="chip" onclick="reSet('.+@.+')">หลวม</button><button class="chip" onclick="reSet('^[\\w.-]+@[\\w-]+\\.[a-z]{2,}$')">ปักหมุด</button><button class="chip" onclick="reSet('^[\\w.-]+@[\\w-]+(\\.[\\w-]+)+$')">หลายชั้น</button></div>
+<div class="out" id="re-out"></div></div>
+
+<div class="play"><p class="t">[...] vs (...) — ชุดตัวอักษร กับ กลุ่ม</p>
+<div class="row" id="cg-btns"></div>
+<div class="out" id="cg-out">กดดูว่าแต่ละ pattern จับอะไร</div></div>
+
+<div class="play"><p class="t">flag g กับ .test() — ทำไมผลสลับ true/false</p>
+<div class="row"><button class="primary" onclick="gflag()">เรียก re.test('a1') 4 รอบติด</button></div>
+<div class="out" id="g-out"></div></div>
+
+<div class="play"><p class="t">test / match / replace คืนคนละอย่าง</p>
+<div class="row">ข้อความ <input type="text" id="tm-s" value="order2026 ส่ง 15 ชิ้น" style="width:220px"> pattern /<input type="text" id="tm-p" value="\d+" style="width:80px">/<input type="text" id="tm-f" value="" style="width:40px" placeholder="flags"><button class="primary" onclick="tmRun()">รัน</button></div>
+<div class="out" id="tm-out"></div></div>
+
+<div class="quiz" data-q='{"q":"\"shop.co.th\".match(/^\\w+$/) คืนอะไร","opts":["true","[\"shop.co.th\"]","null","[\"shop\"]"],"ans":2,"exp":"\\w ไม่รวมจุด และ ^$ บังคับทั้งสตริง — จับไม่ได้ match คืน null"}'></div>
+<div class="coder" data-id="c09"></div>
+<div class="mistakes"><p>พลาดกันบ่อย</p><ul><li>ลืม anchor <code>^ $</code> — เจอบางส่วนก็ผ่าน</li><li>ลืม escape จุด — <code>.</code> จับอะไรก็ได้</li><li>คิดว่า <code>match</code> คืน boolean — คืน array หรือ null</li></ul></div>
+<div class="quiz" data-q='{"q":"/(cat|dog)/ กับ /[cat|dog]/ ต่างกันยังไง","opts":["เหมือนกัน","อันแรกจับคำว่า cat หรือ dog อันหลังจับตัวอักษร 1 ตัวจากชุด c,a,t,|,d,o,g","อันหลังจับได้มากกว่า","อันแรก error"],"ans":1,"exp":"[...] คือเลือก 1 ตัวจากชุด ส่วน (...) คือกลุ่มลำดับตัวอักษร ใช้ | ได้"}'></div>
+<div class="quiz" data-q='{"q":"/shop.com/.test(\"shop9com\") ได้อะไร","opts":["true","false","null","error"],"ans":0,"exp":". จับตัวอะไรก็ได้รวมถึง 9 — อยากได้จุดจริงต้อง \\."}'></div>
+</section>
+
+<!-- ============ 10 ============ -->
+<section class="ch" id="ch10">
+<h3>10 Exception</h3>
+<p class="lead">try/catch คือด่านสุดท้ายกันไม่ให้ error เล็ก ๆ ลากทั้งไฟล์ล้ม</p>
+<div class="outcomes"><p>จบบทนี้ต้องทำได้</p><ul>
+<li>เขียนโครง try/catch/finally และอธิบายลำดับเมื่อเกิด error</li>
+<li>แยก <code>throw</code> จาก <code>return</code> — throw เป็นคำสั่ง ไม่ใช่ค่า</li>
+<li>ดึงข้อความด้วย <code>error.message</code> ไม่ใช่ <code>${error}</code></li>
+<li>เรียง guard ให้ throw ทำงานก่อนคำนวณ</li>
+<li>สร้าง custom Error ด้วย <code>extends Error</code> + <code>super(message)</code> และเช็คด้วย <code>instanceof</code></li></ul></div>
+
+<pre><span class="k">try</span> {
+  <span class="k">const</span> order = JSON.parse(text);   <span class="c">// พังตรงนี้ → กระโดดเข้า catch ทันที</span>
+} <span class="k">catch</span> (error) {
+  console.error(error.message);     <span class="c">// ไม่ใช่ ${error} — จะติด "Error:" นำหน้า</span>
+} <span class="k">finally</span> {
+  loading = <span class="k">false</span>;                  <span class="c">// ทำงานเสมอ ทั้งผ่านและพัง</span>
+}
+
+<span class="k">throw</span> <span class="k">new</span> Error(<span class="s">'ยอดติดลบ'</span>);   <span class="c">// ขว้างจริง</span>
+<span class="k">return</span> <span class="k">new</span> Error(<span class="s">'ยอดติดลบ'</span>);  <span class="c">// แค่คืน object — catch ไม่ทำงาน</span>
+
+<span class="k">class</span> ApiError <span class="k">extends</span> Error {
+  constructor(msg, status) { <span class="k">super</span>(msg); <span class="k">this</span>.name = <span class="s">'ApiError'</span>; <span class="k">this</span>.status = status; }
+}</pre>
+
+<div class="play"><p class="t">เดิน try/catch/finally — ข้อมูลดี vs ข้อมูลเสีย</p>
+<div class="row"><textarea id="tc-in">{"id": 1, "total": 590}</textarea></div>
+<div class="row"><button class="chip" onclick="tcSet('good')">ข้อมูลดี</button><button class="chip" onclick="tcSet('bad')">ข้อมูลเสีย</button><button class="primary" onclick="tcRun()">รัน</button></div>
+<div class="out" id="tc-out"></div></div>
+
+<div class="play"><p class="t">throw vs return — catch ทำงานไหม</p>
+<div class="row"><button class="chip on" onclick="tr('throw',this)">throw new Error(...)</button><button class="chip" onclick="tr('return',this)">return new Error(...)</button></div>
+<div class="out" id="tr-out"></div></div>
+
+<div class="play"><p class="t">guard เรียงผิด — throw ไม่มีวันทำงาน</p>
+<div class="row"><button class="chip on" onclick="gd('wrong',this)">กว้างก่อนแคบ (ผิด)</button><button class="chip" onclick="gd('right',this)">แคบก่อนกว้าง (ถูก)</button> total = <input type="number" id="gd-in" value="-20" style="width:90px" oninput="gd()"></div>
+<pre id="gd-code" style="margin:6px 0"></pre>
+<div class="out" id="gd-out"></div></div>
+
+<div class="play"><p class="t">ทาย ApiError</p>
+<div class="row" id="ae-btns"></div>
+<div class="out" id="ae-out">กดดูค่าแต่ละตัว</div></div>
+
+<div class="quiz" data-q='{"q":"if (total < 0) { return new Error(\"ติดลบ\"); } แล้วเรียกใน try/catch ด้วย total = -50 เกิดอะไร","opts":["catch ทำงาน","catch ไม่ทำงาน — return แค่คืน object","SyntaxError","finally ไม่ทำงาน"],"ans":1,"exp":"ไม่มีอะไรถูก throw ฟังก์ชันจบปกติ"}'></div>
+<div class="coder" data-id="c10"></div>
+<div class="mistakes"><p>พลาดกันบ่อย</p><ul><li><code>return new Error()</code> แทน <code>throw</code></li><li>ลืมส่ง message ให้ <code>super(message)</code> — ได้ .message ว่าง (ไม่เรียก super เลย = ReferenceError)</li><li>guard สลับลำดับ — throw ไม่มีวันถึง</li></ul></div>
+<div class="quiz" data-q='{"q":"ใน try เกิด error ที่บรรทัดที่ 2 จาก 4 บรรทัด อะไรเกิดขึ้น","opts":["บรรทัด 3-4 ยังทำงานต่อ","กระโดดเข้า catch ทันที บรรทัด 3-4 ถูกข้าม แล้วไป finally","finally ไม่ทำงาน","ทั้งไฟล์หยุด"],"ans":1,"exp":"error กระโดดเข้า catch ทันที ที่เหลือใน try ถูกข้าม finally ทำงานเสมอ"}'></div>
+<div class="quiz" data-q='{"q":"class ApiError extends Error { constructor(m) { super(); this.name = \"ApiError\"; } } — new ApiError(\"ไม่พบ\").message ได้อะไร","opts":["\"\" (ว่าง)","\"ไม่พบ\"","undefined","ReferenceError"],"ans":0,"exp":"เรียก super() แต่ไม่ส่ง message ต่อ → .message ว่าง (ถ้าไม่เรียก super เลยจะเป็น ReferenceError ทันทีตอนแตะ this)"}'></div>
+</section>
+
+<!-- ============ 11 ============ -->
+<section class="ch" id="ch11">
+<h3>11 อ่าน error ให้เป็น</h3>
+<p class="lead">ข้อความสีแดงบอกพิกัดปัญหาตรง ๆ ถ้ารู้ว่าต้องอ่านตรงไหน</p>
+<div class="outcomes"><p>จบบทนี้ต้องทำได้</p><ul>
+<li>แปล error 5 แบบที่เจอบ่อย และรู้ว่าต้องดูบรรทัดไหน</li>
+<li>จำแนกที่มาของ <code>undefined</code> ได้ 3 ทาง</li>
+<li>รู้ว่า "ผ่านบางเทส" ไม่ได้แปลว่าใกล้ถูก</li>
+<li>เช็ค 3 จุดก่อนส่ง: มี return / ข้อความตรง spec / สะกดชื่อตรง</li>
+<li>ใช้ <code>console.log</code> แทรกทีละจุด และ comment ครึ่งไฟล์</li></ul></div>
+
+<table><tr><th>error</th><th>แปลว่า</th><th>ไปดู</th></tr>
+<tr><td><code>X is not defined</code></td><td>เรียกตัวแปรที่ไม่เคยประกาศ</td><td>บรรทัดที่ชี้ — เช็คสะกด/scope</td></tr>
+<tr><td><code>Cannot read properties of undefined (reading 'y')</code></td><td>ตัวหน้า .y เป็น undefined</td><td>บรรทัดก่อนหน้า — ตัวที่ควรมีค่าแต่ไม่มี</td></tr>
+<tr><td><code>X is not a function</code></td><td>X ไม่ใช่ฟังก์ชัน</td><td>จุดที่เรียก X() — สะกด method</td></tr>
+<tr><td><code>Unexpected token</code></td><td>syntax ผิด</td><td>มักอยู่ก่อนบรรทัดที่รายงาน — วงเล็บ/ปีกกา</td></tr>
+<tr><td><code>Assignment to constant variable</code></td><td>reassign const</td><td>บรรทัดที่ = ใหม่ — เปลี่ยนเป็น let</td></tr></table>
+
+<div class="play"><p class="t">จับผิด — error บอกให้แก้บรรทัดไหน</p>
+<div id="dbg-wrap"></div>
+<div class="row"><button onclick="dbgNav(-1)">← เคสก่อน</button><button class="primary" onclick="dbgNav(1)">เคสถัดไป →</button><span id="dbg-score" class="pill"></span></div>
+<div class="out" id="dbg-out"></div></div>
+
+<div class="play"><p class="t">undefined ตัวนี้มาจากทางไหน</p>
+<div class="row"><button class="chip" onclick="und(0,this)">เคส 1</button><button class="chip" onclick="und(1,this)">เคส 2</button><button class="chip" onclick="und(2,this)">เคส 3</button></div>
+<pre id="und-code" style="margin:6px 0">กดเลือกเคส</pre>
+<div class="row" id="und-ans"></div>
+<div class="out" id="und-out"></div></div>
+
+<div class="play"><p class="t">ผ่าน 2/3 เทส = ใกล้ถูกไหม — ดูว่าเคสที่ไม่ผ่านต่างตรงไหน</p>
+<pre style="margin:0 0 8px">function avgPrice(items) {
+  let sum = 0;
+  for (const i of items) sum += i.price;
+  return sum / items.length;
+}</pre>
+<div class="row"><button class="primary" onclick="tests()">รันเทส 3 เคส</button></div>
+<div class="out" id="tests-out"></div></div>
+
+<div class="play"><p class="t">เช็ค 3 จุดก่อนส่ง — จุดไหนพัง</p>
+<pre style="margin:0 0 8px" id="ck-code"></pre>
+<div class="row"><button class="chip" onclick="ckCase(0,this)">โค้ด A</button><button class="chip" onclick="ckCase(1,this)">โค้ด B</button><button class="chip" onclick="ckCase(2,this)">โค้ด C</button></div>
+<div class="row" id="ck-ans"></div>
+<div class="out" id="ck-out">เลือกโค้ดแล้วตอบว่าพังที่จุดไหน</div></div>
+
+<div class="coder" data-id="c11"></div>
+<div class="mistakes"><p>พลาดกันบ่อย</p><ul><li>อ่าน error จากบรรทัดกลาง ๆ — อ่านบรรทัดบนสุดก่อน</li><li>เห็นผ่านบางเทสแล้วคิดว่าใกล้เสร็จ</li><li>ไม่เทียบ spec ทีละช่องว่าง</li></ul></div>
+<div class="quiz" data-q='{"q":"error ขึ้น Unexpected token ที่บรรทัด 12 ควรดูตรงไหน","opts":["บรรทัด 12 เท่านั้น","บรรทัดก่อนหน้าด้วย — วงเล็บ/ปีกกาอาจไม่ครบตั้งแต่ข้างบน","บรรทัดหลัง","ไฟล์อื่น"],"ans":1,"exp":"parser เพิ่งรู้ตัวว่าผิดตอนเจอ token ถัดไป ต้นเหตุมักอยู่ก่อนหน้า"}'></div>
+<div class="quiz" data-q='{"q":"error: Cannot read properties of undefined (reading \"role\") ที่บรรทัด return user.profile.role; ควรดูอะไรก่อน","opts":["สะกด role ถูกไหม","user.profile มีค่าจริงไหม","user มีค่าไหม","เพิ่ม try/catch"],"ans":1,"exp":"สิ่งที่เป็น undefined คือตัวหน้า .role ซึ่งคือ user.profile"}'></div>
+<div class="quiz" data-q='{"q":"ผ่าน 2 จาก 3 เทส แปลว่าอะไร","opts":["โค้ดถูก 66%","ใกล้เสร็จแล้ว","เคสที่ไม่ผ่านคือเบาะแสว่า edge case ไหนยังไม่ครอบคลุม","เทสผิด"],"ans":2,"exp":"เทสแต่ละเคสตรวจคนละมุม เคสเดียวที่ไม่ผ่านอาจสำคัญที่สุด"}'></div>
+</section>
+
+<!-- ============ 12 ============ -->
+<section class="ch" id="ch12">
+<h3>12 ชุดฝึกรวบยอด</h3>
+<p class="lead">Perfect Match 24 ข้อ ครบทุกบท ตัวเลือกสลับตำแหน่งทุกครั้งที่เปิด — ติ๊กครบทุกข้อที่ถูก และห้ามติ๊กข้อที่ผิดแม้แต่ข้อเดียว ไม่มีคะแนนบางส่วน</p>
+<div class="outcomes"><p>จบบทนี้ต้องทำได้</p><ul>
+<li>อธิบายกติกา Perfect Match และรู้ว่าทำไม "ติ๊กเผื่อ" เสียคะแนน</li>
+<li>ตัดสินตัวเลือกทีละตัว แทนหา "ข้อที่ถูกที่สุด"</li>
+<li>จับคำเสี่ยง "เสมอ / ทุกกรณี / เท่านั้น"</li>
+<li>รู้จุดอ่อนของตัวเองแล้วย้อนไปทวนบทที่เกี่ยวข้อง</li></ul></div>
+
+<div class="note">วิธีทำ: ปิดตัวเลือกอื่นในใจ แล้วถามทีละข้อว่า "ประโยคนี้จริงไหม" — เจอคำว่า เสมอ/ทุกกรณี/เท่านั้น ให้หาข้อยกเว้นก่อนติ๊ก</div>
+
+<div class="coder" data-id="c12"></div>
+<div id="pm-wrap"></div>
+<div class="row"><button onclick="pmNav(-1)">← ข้อก่อน</button><button class="primary" onclick="pmNav(1)">ข้อถัดไป →</button><span id="pm-score" class="pill"></span></div>
+</section>
+
+</main>
+</div>
+
+<script>
+/* ---------- shared data ---------- */
+const cartItems = [
+  { name: 'เสื้อยืด', price: 250, qty: 2 },
+  { name: 'หมวก',     price: 180, qty: 1 },
+  { name: 'กางเกง',   price: 490, qty: 1 },
+];
+const J = v => v === undefined ? 'undefined' : (typeof v === 'string' ? JSON.stringify(v) : JSON.stringify(v));
+const $ = id => document.getElementById(id);
+function setOut(id, text, cls){ const el = $(id); el.textContent = text; el.className = 'out' + (cls ? ' ' + cls : ''); }
+function chipOn(btn){ [...btn.parentElement.querySelectorAll('.chip')].forEach(b => { b.classList.remove('on'); b.setAttribute('aria-pressed','false'); }); btn.classList.add('on'); btn.setAttribute('aria-pressed','true'); }
+function safeEval(code){ try { return { ok:true, v: Function('cartItems', '"use strict"; return (' + code + ')')(cartItems) }; } catch(e){ return { ok:false, e }; } }
+
+/* ---------- TOC + active ---------- */
+const chs = [...document.querySelectorAll('section.ch')];
+$('toc').innerHTML = chs.map(s => `<li><a href="#${s.id}" data-id="${s.id}"><span>${s.id.slice(2)}</span>${s.querySelector('h3').textContent.replace(/^\d+\s/, '')}</a></li>`).join('');
+const obs = new IntersectionObserver(es => { es.forEach(e => { if (e.isIntersecting) { document.querySelectorAll('#toc a').forEach(a => a.classList.toggle('active', a.dataset.id === e.target.id)); } }); }, { rootMargin: '-40% 0px -55% 0px' });
+chs.forEach(s => obs.observe(s));
+
+/* ---------- quiz engine ---------- */
+let score = 0, total = 0;
+const STORE = 'js-review-v1';
+let saved = {}; try { saved = JSON.parse(localStorage.getItem(STORE) || '{}'); } catch(e){ saved = {}; }
+function persist(){ try { localStorage.setItem(STORE, JSON.stringify(saved)); } catch(e){} }
+document.querySelectorAll('.quiz[data-q]').forEach((box, i) => {
+  const q = JSON.parse(box.dataset.q); total++;
+  box.innerHTML = `<p class="q">${q.q}</p>` + q.opts.map((o, j) => `<label><input type="radio" name="q${i}" value="${j}">${o}</label>`).join('') + `<div class="exp"></div>`;
+  let done = false;
+  const answer = (pick, fromStore) => {
+    if (done) return; done = true;
+    const labels = box.querySelectorAll('label'), exp = box.querySelector('.exp');
+    labels[q.ans].classList.add('right');
+    if (pick === q.ans) { score++; exp.className = 'exp show ok'; exp.textContent = 'ถูก — ' + q.exp; }
+    else { labels[pick].classList.add('wrong'); exp.className = 'exp show bad'; exp.textContent = 'ยังไม่ใช่ — ' + q.exp; }
+    box.querySelectorAll('input').forEach(x => x.disabled = true); box.querySelectorAll('input')[pick].checked = true;
+    $('score').textContent = score;
+    if (!fromStore) { saved['q' + i] = pick; persist(); }
+    if (typeof updateWeak === 'function') updateWeak();
+  };
+  box.querySelectorAll('input').forEach(inp => inp.addEventListener('change', () => answer(+inp.value, false)));
+  if (saved['q' + i] !== undefined) answer(saved['q' + i], true);
+});
+$('score-total').textContent = total;
+$('score-total').insertAdjacentHTML('afterend', ' <button class="chip" style="font-size:12px;padding:2px 8px;margin-left:6px" onclick="resetProgress()">ล้าง</button>');
+function resetProgress(){ if (confirm('ล้างคำตอบทั้งหมด?')) { localStorage.removeItem(STORE); location.reload(); } }
+
+/* ---------- 01 ---------- */
+const tfVals = [['false', false], ['0', 0], ['""', ''], ['null', null], ['undefined', undefined], ['NaN', NaN], ['"0"', '0'], ['[]', []], ['{}', {}], ['"false"', 'false'], ['1', 1], ['-1', -1]];
+$('tf-btns').innerHTML = tfVals.map((v, i) => `<button class="chip" onclick="tf(${i},this)">${v[0].replace(/</g,'&lt;')}</button>`).join('');
+function tf(i, btn){ chipOn(btn); const [label, v] = tfVals[i]; const t = !!v;
+  const why = { 'false':'boolean false ตรง ๆ', '0':'ตัวเลขศูนย์', '""':'สตริงว่าง ไม่มีตัวอักษรเลย', 'null':'ไม่มีค่า', 'undefined':'ยังไม่กำหนดค่า', 'NaN':'ไม่ใช่ตัวเลข', '"0"':'สตริงที่มีตัวอักษร 1 ตัว ไม่ใช่สตริงว่าง', '[]':'array เป็น object — ภาษาไม่เช็คว่าข้างในมีอะไร', '{}':'object ว่างก็ยังเป็น object', '"false"':'สตริงที่มี 5 ตัวอักษร', '1':'ตัวเลขที่ไม่ใช่ 0', '-1':'ตัวเลขที่ไม่ใช่ 0 ติดลบก็ truthy' }[label];
+  setOut('tf-out', `if (${label}) { ... }\n${t ? '✓ เข้า if — truthy' : '✗ ไม่เข้า if — falsy'}\n${why}`, t ? 'ok' : 'bad'); }
+const tyVals = [['42', 42], ['"สวัสดี"', 'สวัสดี'], ['true', true], ['undefined', undefined], ['null', null], ['{}', {}], ['[]', []], ['function(){}', function(){}], ['NaN', NaN]];
+$('ty-btns').innerHTML = tyVals.map((v, i) => `<button class="chip" onclick="ty(${i},this)">${v[0]}</button>`).join('');
+function ty(i, btn){ chipOn(btn); const [l, v] = tyVals[i]; const t = typeof v;
+  const note = { 'null': '   ← กับดัก! ไม่ใช่ "null" — เช็ค null ต้องใช้ === null', '[]': '   ← ไม่ใช่ "array" — ใช้ Array.isArray() แยก', 'NaN': '   ← NaN เป็น number (ที่ไม่ใช่ตัวเลข) เช็คด้วย Number.isNaN()' }[l] || '';
+  setOut('ty-out', `typeof ${l} → "${t}"${note}`, note ? 'bad' : 'ok'); }
+function cmpEq(){ const a = safeEval($('eq-a').value), b = safeEval($('eq-b').value);
+  if (!a.ok || !b.ok) return setOut('eq-out', 'พิมพ์ค่าไม่ถูก syntax JS', 'bad');
+  const loose = a.v == b.v, strict = a.v === b.v;
+  let note = ''; if (loose && !strict) note = '\n== แปลงชนิดให้ก่อนเทียบ ส่วน === ไม่แปลง — ต่างกันตรงนี้';
+  if (Number.isNaN(a.v) && Number.isNaN(b.v)) note = '\nNaN ไม่เท่ากับตัวเองแม้ === — เช็คด้วย Number.isNaN()';
+  if (typeof a.v === 'object' && a.v !== null && typeof b.v === 'object' && b.v !== null) note = '\nobject/array เทียบ reference — คนละก้อนได้ false แม้ค่าเหมือนกัน';
+  setOut('eq-out', `${$('eq-a').value} == ${$('eq-b').value}   → ${loose}\n${$('eq-a').value} === ${$('eq-b').value}  → ${strict}${note}`, loose !== strict ? 'info' : ''); }
+function checkTL(){ const expr = $('tl-in').value.trim(); const p = { name: 'เสื้อยืด', price: 250 }, qty = 3;
+  try { const v = Function('p', 'qty', 'return (' + expr + ')')(p, qty); const s = `${p.name} x${qty} = ${v} บาท`;
+    if (s === 'เสื้อยืด x3 = 750 บาท') setOut('tl-out', `ได้: ${s}\n✓ ตรง spec`, 'ok'); else setOut('tl-out', `ได้: ${s}\n✗ ต้องเป็น "เสื้อยืด x3 = 750 บาท" — ค่าที่ต้องการคือ p.price * qty`, 'bad'); }
+  catch(e){ setOut('tl-out', 'expression ผิด: ' + e.message, 'bad'); } }
+
+/* ---------- 02 ---------- */
+const tierLines = ["if (totalSpent >= 10000) return 'Gold';", "if (totalSpent >= 5000)  return 'Silver';", "if (totalSpent >= 1000)  return 'Bronze';", "return 'Regular';"];
+function tier(){ const v = +$('tier-r').value; $('tier-v').textContent = v.toLocaleString();
+  let hit = v >= 10000 ? 0 : v >= 5000 ? 1 : v >= 1000 ? 2 : 3;
+  $('tier-code').innerHTML = tierLines.map((l, i) => `<div class="step-line ${i === hit ? 'hl' : ''}">${l}${i < hit ? '   // false ผ่านไป' : i === hit ? '   // ← หยุดตรงนี้' : ''}</div>`).join('');
+  setOut('tier-out', `เช็ค ${hit + 1} บรรทัด แล้วหยุด → ${['Gold','Silver','Bronze','Regular'][hit]}`, 'ok'); }
+tier();
+function rng(){ const x = +$('rng-x').value; const step1 = 0 <= x; const wrong = step1 <= 100; const right = x >= 0 && x <= 100;
+  setOut('rng-out', `0 <= ${x} <= 100\n  ขั้น 1: 0 <= ${x}  → ${step1}\n  ขั้น 2: ${step1} <= 100 → ${Number(step1)} <= 100 → ${wrong}   ← ผิดความหมาย\n\n${x} >= 0 && ${x} <= 100 → ${right}   ← ที่ถูก`, right === wrong ? '' : 'bad'); }
+rng();
+
+/* ---------- 03 ---------- */
+let li = -1;
+function loopRender(){ const lines = ['let total = 0;', 'for (let i = 0; i < cartItems.length; i++) {', '  total += cartItems[i].price * cartItems[i].qty;', '}'];
+  let t = 0; for (let k = 0; k <= li && k < 3; k++) t += cartItems[k].price * cartItems[k].qty;
+  $('loop-code').innerHTML = lines.map((l, i) => `<div class="step-line ${(li < 0 && i === 0) || (li >= 0 && li < 3 && i === 2) || (li === 3 && i === 3) ? 'hl' : ''}">${l}</div>`).join('');
+  if (li < 0) setOut('loop-out', 'ตั้ง total = 0 ก่อนเข้าลูป (นอกลูป)');
+  else if (li < 3) { const it = cartItems[li]; setOut('loop-out', `รอบ i=${li}: cartItems[${li}] = ${it.name} → ${it.price} × ${it.qty} = ${it.price * it.qty}\ntotal = ${t}`, 'info'); }
+  else setOut('loop-out', `i=3 → 3 < 3 เป็น false → ออกจากลูป\ntotal สุดท้าย = ${t}`, 'ok'); }
+function loopStep(d){ li = Math.max(-1, Math.min(3, li + d)); loopRender(); } function loopReset(){ li = -1; loopRender(); } loopRender();
+function wh(k, btn){ chipOn(btn);
+  if (k === 'ok') { $('wh-code').textContent = 'let stock = 5;\nwhile (stock > 0) {\n  console.log(stock);\n  stock--;   // อัปเดตตัวแปรที่ใช้เช็ค\n}'; let s = '', st = 5; while (st > 0) { s += st + ' '; st--; } setOut('wh-out', `พิมพ์: ${s}\nstock = 0 → 0 > 0 เป็น false → จบ`, 'ok'); }
+  else { $('wh-code').textContent = 'let stock = 5;\nwhile (stock > 0) {\n  console.log(stock);\n  // ลืม stock--\n}'; setOut('wh-out', 'พิมพ์: 5 5 5 5 5 5 5 5 5 5 ... ไม่มีวันจบ\n⚠ infinite loop — เงื่อนไขไม่มีทางเป็น false หน้าเว็บค้าง (ตรงนี้ไม่ได้รันจริง)', 'bad'); } }
+wh('ok', document.querySelector('#wh-code').previousElementSibling.querySelector('.chip.on'));
+const orders = [{ id: 1, total: 300, cancelled: false }, { id: 2, total: 900, cancelled: true }, { id: 3, total: 1500, cancelled: false }, { id: 4, total: 200, cancelled: false }];
+function bc(k, btn){ chipOn(btn); let log = '';
+  if (k === 'break') { $('bc-code').textContent = 'for (const o of orders) {\n  if (o.total > 1000) { found = o; break; }  // รู้คำตอบแล้ว ออกเลย\n  console.log("ดู", o.id);\n}'; let found; for (const o of orders) { if (o.total > 1000) { found = o; log += `เจอ #${o.id} (${o.total}) → break ออกจากลูป\n`; break; } log += `ดู #${o.id}\n`; } log += `#4 ไม่ถูกดูเลย`; setOut('bc-out', log, 'info'); }
+  else { $('bc-code').textContent = 'for (const o of orders) {\n  if (o.cancelled) continue;   // ข้ามแค่ตัวนี้ วนต่อ\n  sum += o.total;\n}'; let sum = 0; for (const o of orders) { if (o.cancelled) { log += `#${o.id} ยกเลิก → continue ข้าม\n`; continue; } sum += o.total; log += `#${o.id} +${o.total} → ${sum}\n`; } setOut('bc-out', log + `ยังวนครบทุกตัว sum = ${sum}`, 'info'); } }
+bc('break', document.querySelector('#bc-code').previousElementSibling.querySelector('.chip.on'));
+function loopKind(k, btn){ chipOn(btn); let s = '';
+  if (k === 'of') { s = 'for (const item of cartItems) console.log(item.name)\n'; for (const item of cartItems) s += `  → ${item.name}   (object ทั้งก้อน)\n`; }
+  if (k === 'in') { s = 'for (const key in cartItems) console.log(key, typeof key)\n'; for (const key in cartItems) s += `  → "${key}"  typeof = ${typeof key}   (ไม่ใช่ตัวเลข! "${key}" + 1 = "${key + 1}")\n`; }
+  if (k === 'each') { s = 'cartItems.forEach((item, i) => console.log(item.name, i))\n'; cartItems.forEach((item, i) => s += `  → ${item.name}, ${i}   (object + number)\n`); s += 'ใช้ break/continue ข้างในไม่ได้'; }
+  setOut('lk-out', s.trim()); }
+loopKind('of', document.querySelector('#ch03 .chip.on'));
+
+/* ---------- 04 ---------- */
+const dpVals = [["'มด'", 'มด'], ['(ไม่ส่ง)', Symbol.for('none')], ['undefined', undefined], ['null', null], ['""', ''], ['0', 0]];
+$('dp-btns').innerHTML = dpVals.map((v, i) => `<button class="chip" onclick="dp(${i},this)">${v[0]}</button>`).join('');
+function dp(i, btn){ chipOn(btn); const [label, v] = dpVals[i]; const greet = (name = 'ลูกค้า') => `สวัสดีคุณ ${name}`;
+  const r = v === Symbol.for('none') ? greet() : greet(v); const used = r === 'สวัสดีคุณ ลูกค้า';
+  setOut('dp-out', `greet(${label === '(ไม่ส่ง)' ? '' : label})\n→ "${r}"\n${used ? '✓ default ทำงาน — เพราะได้ undefined' : '✗ default ไม่ทำงาน — มีของส่งมาแล้ว (ต่อให้ดูว่างก็ตาม)'}`, used ? 'ok' : 'bad'); }
+function hoist(k, btn){ chipOn(btn);
+  if (k === 'decl') { $('hoist-code').textContent = "console.log(getTotal([]));\nfunction getTotal(items) { return items.length; }"; setOut('hoist-out', '→ 0\n✓ function declaration ถูก hoist ทั้งตัว (ชื่อ + เนื้อใน) เรียกก่อนบรรทัดประกาศได้', 'ok'); }
+  else { $('hoist-code').textContent = "console.log(getTotal([]));\nconst getTotal = (items) => items.length;"; setOut('hoist-out', "✗ ReferenceError: Cannot access 'getTotal' before initialization\nconst ถูก hoist แค่ชื่อ ค่ายังไม่ผูก — อยู่ใน temporal dead zone", 'bad'); } }
+hoist('decl', document.querySelector('#ch04 .chip.on'));
+function cb(k, btn){ chipOn(btn); const items = [{ name:'เสื้อยืด', qty:2 }, { name:'หมวก', qty:0 }, { name:'กางเกง', qty:1 }];
+  const hasStock = item => item.qty > 0;
+  if (k === 'a') setOut('cb-out', `items.filter(hasStock)\n→ ${J(items.filter(hasStock).map(i => i.name))}\n✓ ยื่นตัวฟังก์ชันให้ filter เรียกเองทีละตัว`, 'ok');
+  if (k === 'b') { try { items.filter(hasStock()); } catch(e){ setOut('cb-out', `items.filter(hasStock())\n✗ ${e.name}: ${e.message}\nวงเล็บ = เรียก hasStock ทันทีโดยไม่มี item → undefined.qty พัง`, 'bad'); } }
+  if (k === 'c') setOut('cb-out', `items.filter(i => i.qty > 0)\n→ ${J(items.filter(i => i.qty > 0).map(i => i.name))}\n✓ arrow function เป็น callback ตรง ๆ (implicit return)`, 'ok'); }
+cb('a', document.querySelector('#cb-row .chip.on'));
+
+/* ---------- 05 ---------- */
+const arrOps = [['push("ปากกา")', a => { const r = a.push('ปากกา'); return [r, a]; }, true], ['pop()', a => [a.pop(), a], true], ['sort()', a => [a.sort(), a], true], ['reverse()', a => [a.reverse(), a], true],
+  ['slice(0,2)', a => [a.slice(0, 2), a], false], ['filter(x => x.length >= 4)', a => [a.filter(x => x.length >= 4), a], false], ['map(x => x + "!")', a => [a.map(x => x + '!'), a], false], ['[...arr]', a => [[...a], a], false]];
+$('arr-btns').innerHTML = arrOps.map((o, i) => `<button class="chip" onclick="arr(${i},this)">${o[0].replace(/</g,'&lt;').replace(/>/g,'&gt;')}</button>`).join('');
+function arr(i, btn){ chipOn(btn); const a = ['เสื้อยืด', 'หมวก', 'กางเกง']; const [name, fn, mut] = arrOps[i]; const [ret, after] = fn(a);
+  setOut('arr-out', `const arr = ["เสื้อยืด","หมวก","กางเกง"];\nconst r = ${name.startsWith('[') ? name : 'arr.' + name};\n\nคืนค่า r   = ${J(ret)}\nต้นฉบับ arr = ${J(after)}\n${mut ? '⚠ แก้ต้นฉบับ (mutating) — เรียกลอย ๆ ก็มีผล' : '✓ ไม่แตะต้นฉบับ (non-mutating) — ต้องเก็บ r ไว้ ไม่งั้นหาย'}`, mut ? 'bad' : 'ok'); }
+let ri = -1;
+function redRender(){ let acc = 0; let s = 'cartItems.reduce((acc, item) => acc + item.price * item.qty, 0)\n\n';
+  if (ri < 0) { s += 'ตั้งถัง: acc = 0 (initial value)'; } else { for (let k = 0; k <= Math.min(ri, 2); k++) { const it = cartItems[k]; const add = it.price * it.qty; s += `รอบ ${k + 1}: acc(${acc}) + ${it.name} ${it.price}×${it.qty}=${add} → acc = ${acc + add}\n`; acc += add; } if (ri >= 3) s += `\nวนครบ → คืนถัง = ${acc}`; }
+  setOut('red-out', s, ri >= 3 ? 'ok' : ri < 0 ? '' : 'info'); }
+function redStep(d){ ri = Math.max(-1, Math.min(3, ri + d)); redRender(); } function redReset(){ ri = -1; redRender(); } redRender();
+function doSort(cmp){ const nums = $('sort-in').value.split(',').map(s => Number(s.trim())).filter(n => !Number.isNaN(n));
+  const r = cmp ? [...nums].sort((a, b) => a - b) : [...nums].sort();
+  setOut('sort-out', `${J(nums)}.sort(${cmp ? '(a,b) => a-b' : ''})\n→ ${J(r)}\n${cmp ? '✓ เรียงเป็นตัวเลขจริง' : '⚠ แปลงเป็น string ก่อนเทียบ — "100" < "40" เพราะ "1" < "4"'}`, cmp ? 'ok' : 'bad'); }
+doSort(false);
+
+/* ---------- 06 ---------- */
+let refM = 'same', userA, userB;
+function refInit(){ userA = { name: 'มด', points: 120 }; userB = refM === 'same' ? userA : { ...userA }; refShow(); setOut('ref-out', refM === 'same' ? 'userB = userA → ป้ายสองใบ กล่องใบเดียว (userA === userB → true)' : 'userB = { ...userA } → สร้างกล่องใหม่ (userA === userB → false)'); }
+function refShow(){ $('ref-a').textContent = J(userA); $('ref-b').textContent = J(userB); }
+function refMode(m, btn){ chipOn(btn); refM = m; refInit(); }
+function refApply(){ userB.points = +$('ref-in').value; refShow(); const changed = userA.points === userB.points;
+  setOut('ref-out', `userB.points = ${userB.points}\nuserA.points → ${userA.points}\n${changed ? '⚠ userA เปลี่ยนตาม — ชี้ก้อนเดียวกัน' : '✓ userA ไม่เปลี่ยน — คนละก้อน'}`, changed ? 'bad' : 'ok'); }
+refInit();
+const inQ = [["'phone' in u", true, 'มี key แม้ค่าเป็น undefined'], ["'email' in u", false, 'ไม่มี key นี้'], ['u.phone === undefined', true, 'จริง แต่แยกไม่ออกว่า "ไม่มี key" หรือ "มีแต่ค่า undefined"'], ['u.address?.city', undefined, '?. คืน undefined เงียบ ๆ เพราะ u.address ไม่มี'], ['u.address.city', 'TypeError', 'ไม่มี ?. → อ่าน .city จาก undefined พัง']];
+$('in-btns').innerHTML = inQ.map((q, i) => `<button class="chip" onclick="inQ_(${i},this)">${q[0].replace(/</g,'&lt;')}</button>`).join('');
+function inQ_(i, btn){ chipOn(btn); const [k, v, n] = inQ[i]; setOut('in-out', `${k} → ${v === 'TypeError' ? "TypeError: Cannot read properties of undefined (reading 'city')" : J(v)}\n${n}`, v === 'TypeError' ? 'bad' : 'info'); }
+function ol(k, btn){ chipOn(btn); const u = { name: 'มด', role: 'สมาชิก', points: 120 }; let out = '';
+  if (k === 'in') { $('ol-code').textContent = 'for (const key in u) {\n  console.log(key, ":", u[key]);   // ต้องใช้ bracket ดึงค่า\n}'; for (const key in u) out += `${key} : ${u[key]}\n`; }
+  if (k === 'keys') { $('ol-code').textContent = 'Object.keys(u).forEach(key => {\n  console.log(key, ":", u[key]);\n});'; Object.keys(u).forEach(key => out += `${key} : ${u[key]}\n`); }
+  if (k === 'entries') { $('ol-code').textContent = 'for (const [key, value] of Object.entries(u)) {\n  console.log(key, ":", value);   // ได้คู่มาเลย\n}'; for (const [key, value] of Object.entries(u)) out += `${key} : ${value}\n`; }
+  setOut('ol-out', out.trim() + '\n\nผลเหมือนกันทั้ง 3 วิธี'); }
+ol('in', document.querySelector('#ol-code').previousElementSibling.querySelector('.chip.on'));
+function accSet(v){ $('acc-in').value = v; accRun(); }
+function accRun(){ const code = $('acc-in').value; try { const v = Function("const u = { name:'มด', points:120 }; const key = 'points'; return (" + code + ')')();
+  let why = ''; if (code.trim() === 'u.key') why = '\nu.key = หา property ชื่อ "key" ตรงตัว ไม่ได้ใช้ตัวแปร key'; if (code.trim() === 'u[key]') why = '\nu[key] = เอาค่าของตัวแปร key ("points") มาเป็นชื่อ property';
+  setOut('acc-out', `${code} → ${J(v)}${why}`, v === undefined ? 'bad' : 'ok'); } catch(e){ setOut('acc-out', `${e.name}: ${e.message}${/is not defined/.test(e.message) ? '\nไม่มี quote → JS หาตัวแปรชื่อนั้น ซึ่งไม่มี' : ''}`, 'bad'); } }
+accRun();
+
+/* ---------- 07 ---------- */
+function spr(k, btn){ chipOn(btn); const defaults = { theme: 'light', discount: 0 }, override = { discount: 0.1 };
+  const r = k === 'a' ? { ...defaults, ...override } : { ...override, ...defaults };
+  setOut('spr-out', `→ ${J(r)}\ndiscount = ${r.discount} — มาจาก ${k === 'a' ? 'override' : 'defaults'} เพราะวางอยู่หลังสุด`, 'info'); }
+spr('a', document.querySelector('#ch07 .chip.on'));
+let shM = 'spread', shO, shC;
+function shInit(){ shO = { name: 'มานี', address: { city: 'กรุงเทพ' } }; shC = shM === 'spread' ? { ...shO } : structuredClone(shO); shShow(); setOut('sh-out', `original.address === copy.address → ${shO.address === shC.address}${shM === 'spread' ? '   (ของซ้อนยังก้อนเดียวกัน)' : '   (คัดลอกลึกทุกชั้น)'}`); }
+function shShow(){ $('sh-o').textContent = J(shO); $('sh-c').textContent = J(shC); }
+function shallow(m, btn){ chipOn(btn); shM = m; shInit(); }
+function shallowEdit(){ shC.address.city = 'เชียงใหม่'; shShow(); const hit = shO.address.city === 'เชียงใหม่';
+  setOut('sh-out', `copy.address.city = 'เชียงใหม่'\noriginal.address.city → ${shO.address.city}\n${hit ? '⚠ ต้นฉบับเปลี่ยนตาม — spread คัดลอกแค่ชั้นบน address เป็น reference เดิม' : '✓ ต้นฉบับไม่เปลี่ยน — structuredClone คัดลอกลึก'}`, hit ? 'bad' : 'ok'); }
+shInit();
+function dsCheck(){ const pat = $('ds-in').value; const user = { name: 'อารีย์', email: 'aree@example.com', phone: undefined };
+  try { const r = Function('user', `const {${pat}} = user; return { fullName, email, contactPhone };`)(user);
+    const ok = r.fullName === 'อารีย์' && r.email === 'aree@example.com' && r.contactPhone === 'ไม่ระบุ';
+    setOut('ds-out', `ได้: ${J(r)}\n${ok ? '✓ ครบทั้ง rename และ default' : '✗ ต้องได้ fullName="อารีย์", email, contactPhone="ไม่ระบุ" — เฉลย: name: fullName, email, phone: contactPhone = \'ไม่ระบุ\''}`, ok ? 'ok' : 'bad'); }
+  catch(e){ setOut('ds-out', `${e.name}: ${e.message}`, 'bad'); } }
+
+/* ---------- 08 ---------- */
+function dateDiff(){ const a = new Date($('d1').value), b = new Date($('d2').value); const ms = b - a; const D = 1000 * 60 * 60 * 24;
+  if (ms < 0) return setOut('date-out', `later - earlier = ${ms.toLocaleString()} ms\n⚠ ติดลบ — เอาวันที่หลังตั้งเป็นตัวตั้ง (ใหม่ลบเก่า) ถึงจะได้ค่าบวก`, 'bad');
+  setOut('date-out', `later - earlier = ${ms.toLocaleString()} ms\n\nไม่มีวงเล็บ: ms / 1000 * 60 * 60 * 24 = ${(ms / 1000 * 60 * 60 * 24).toLocaleString()}   ← พองมหาศาล\nมีวงเล็บ:   ms / (1000 * 60 * 60 * 24) = ${(ms / D)}\nMath.floor(...) = ${Math.floor(ms / D)} วัน`, ms < 0 ? 'bad' : 'ok'); }
+dateDiff();
+function dateParts(){ const d = new Date($('d3').value + 'T00:00:00'); const days = ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัส','ศุกร์','เสาร์'];
+  setOut('dp2-out', `getFullYear() → ${d.getFullYear()}\ngetMonth()    → ${d.getMonth()}   (0–11 → เดือนที่ ${d.getMonth() + 1})\ngetDate()     → ${d.getDate()}   (วันที่ในเดือน)\ngetDay()      → ${d.getDay()}   (0=อาทิตย์ → ${days[d.getDay()]})\ngetTime()     → ${d.getTime()}`); }
+dateParts();
+const tlOpts = [['weekday', 'long'], ['year', 'numeric'], ['month', 'long'], ['day', 'numeric'], ['weekDay', 'long']];
+let tlOn = new Set();
+$('tl-opts').innerHTML = tlOpts.map((o, i) => `<button class="chip" onclick="tlToggle(${i},this)">${o[0]}: '${o[1]}'</button>`).join('');
+function tlToggle(i, btn){ btn.classList.toggle('on'); btn.setAttribute('aria-pressed', btn.classList.contains('on')); if (tlOn.has(i)) tlOn.delete(i); else tlOn.add(i); tlRender(); }
+function tlRender(){ const opts = {}; tlOn.forEach(i => opts[tlOpts[i][0]] = tlOpts[i][1]); const d = new Date(2026, 7, 23); const r = d.toLocaleDateString('th-TH', opts);
+  const target = 'วันอาทิตย์ที่ 23 สิงหาคม 2569'; const ok = r === target; const trap = tlOn.has(4);
+  setOut('tld-out', `options = ${J(opts)}\n→ "${r}"\n${ok ? '✓ ตรงเป้า' : trap ? '⚠ weekDay (D ใหญ่) สะกดผิด — JS ไม่ error แค่เมิน key ที่ไม่รู้จัก' + (tlOn.has(0) ? ' (ชื่อวันที่เห็นมาจาก weekday ตัวที่ถูก)' : ' ชื่อวันเลยไม่โผล่') : 'เป้าหมาย: "' + target + '"'}`, ok ? 'ok' : trap ? 'bad' : ''); }
+tlRender();
+function promoCheck(){ const expr = $('promo-in').value.trim(); if (!expr) return setOut('promo-out', 'เติมเงื่อนไขก่อน', 'bad');
+  const cases = [['อยู่ในช่วง', new Date('2026-08-05T09:00Z'), new Date('2026-08-01'), new Date('2026-08-10'), true], ['หมดแล้ว', new Date('2026-08-05T09:00Z'), new Date('2026-07-01'), new Date('2026-07-31'), false], ['ยังไม่เริ่ม', new Date('2026-08-05T09:00Z'), new Date('2026-09-01'), new Date('2026-09-30'), false]];
+  try { const f = Function('now', 'startDate', 'endDate', 'return (' + expr + ')'); let s = '', pass = 0;
+    for (const [n, now, sd, ed, exp] of cases) { const r = f(now, sd, ed); const ok = r === exp; if (ok) pass++; s += `${ok ? '✓' : '✗'} ${n}: ได้ ${r} (ควรได้ ${exp})\n`; }
+    if (pass === 3) s += '\nผ่านทุกเคส'; else if (/<=.*<=|>=.*>=/.test(expr) && !expr.includes('&&')) s += '\nเขียนแบบ a <= x <= b ไม่ทำงาน — แยกสองเงื่อนไขเชื่อมด้วย &&';
+    setOut('promo-out', s.trim(), pass === 3 ? 'ok' : 'bad'); } catch(e){ setOut('promo-out', `${e.name}: ${e.message}`, 'bad'); } }
+
+/* ---------- 09 ---------- */
+const emails = [['kanya@myshop.co.th', true], ['somchai.p@notify.myshop.co.th', true], ['plainaddress', false], ['user@@shop.com', false], ['user@shop', false], ['user name@shop.com', false]];
+function reSet(p){ $('re-in').value = p; reRun(); }
+function reRun(){ let re; try { re = new RegExp($('re-in').value); } catch(e){ return setOut('re-out', 'pattern ผิด: ' + e.message, 'bad'); }
+  let s = '', n = 0; for (const [em, exp] of emails) { const r = re.test(em); const ok = r === exp; if (ok) n++; s += `${ok ? '✓' : '✗'} ${em.padEnd(32)} ${r ? 'ผ่าน' : 'ไม่ผ่าน'}${ok ? '' : ' (ควร' + (exp ? 'ผ่าน' : 'ไม่ผ่าน') + ')'}\n`; }
+  setOut('re-out', s + `\nตรงกับที่ควรเป็น ${n}/6`, n === 6 ? 'ok' : n >= 4 ? 'info' : 'bad'); }
+reRun();
+const cgQ = [['/[abc]/.test("cat")', /[abc]/.test('cat'), '[abc] = ตัวเดียวจากชุด a,b,c — เจอ c'], ['/(abc)+/.test("abcabc")', /(abc)+/.test('abcabc'), '(abc)+ = กลุ่ม "abc" ซ้ำ 1+ ครั้ง'], ['/(cat|dog)/.test("I have a dog")', /(cat|dog)/.test('I have a dog'), '| ในกลุ่ม = หรือ'], ['/[cat|dog]/.test("x|y")', /[cat|dog]/.test('x|y'), '[cat|dog] คือชุดตัวอักษร c,a,t,|,d,o,g — | กลายเป็นตัวอักษรธรรมดา จับ | ได้'], ['"a-a-a".replace(/a/, "b")', 'a-a-a'.replace(/a/, 'b'), 'ไม่มี g → แทนแค่จุดแรก'], ['"a-a-a".replace(/a/g, "b")', 'a-a-a'.replace(/a/g, 'b'), 'มี g → ทุกจุด'], ['/shirt/i.test("SHIRT")', /shirt/i.test('SHIRT'), 'i = ไม่สนตัวพิมพ์']];
+$('cg-btns').innerHTML = cgQ.map((q, i) => `<button class="chip" onclick="cg(${i},this)">${q[0].replace(/</g,'&lt;')}</button>`).join('');
+function cg(i, btn){ chipOn(btn); const [k, v, n] = cgQ[i]; setOut('cg-out', `${k} → ${J(v)}\n${n}`, 'info'); }
+function gflag(){ const re = /\d/g; let s = 'const re = /\\d/g;\n'; for (let i = 1; i <= 4; i++) { s += `re.test("a1")  → ${re.test('a1')}   lastIndex = ${re.lastIndex}\n`; } s += '\n⚠ regex ที่มี g จำตำแหน่งล่าสุดไว้ใน lastIndex แล้วค้นต่อจากตรงนั้น — ผลเลยสลับ\nถ้าใช้ .test() เฉย ๆ อย่าใส่ g หรือสร้าง regex ใหม่ทุกรอบ'; setOut('g-out', s, 'bad'); }
+function tmRun(){ const s = $('tm-s').value, p = $('tm-p').value, f = $('tm-f').value; let re; try { re = new RegExp(p, f); } catch(e){ return setOut('tm-out', e.message, 'bad'); }
+  const m = s.match(re); setOut('tm-out', `re.test(s)          → ${new RegExp(p, f).test(s)}   (boolean)\ns.match(re)         → ${J(m)}   (${m === null ? 'null' : 'array'} ไม่ใช่ boolean)\ns.replace(re, "#")  → ${J(s.replace(re, '#'))}   (string ใหม่${f.includes('g') ? ' ทุกจุด' : ' แค่จุดแรก — ใส่ g ถ้าอยากทุกจุด'})`); }
+tmRun();
+
+/* ---------- 10 ---------- */
+function tcSet(k){ $('tc-in').value = k === 'good' ? '{"id": 1, "total": 590}' : '{"id": 1, "total": 590'; }
+function tcRun(){ const text = $('tc-in').value; let log = 'let loading = true;\ntry {\n'; let cls = 'ok';
+  try { const order = JSON.parse(text); log += `  const order = JSON.parse(text);   ✓ ได้ ${J(order)}\n  console.log(order);\n} catch (error) {   ← ข้าม ไม่มี error\n`; }
+  catch(error){ cls = 'bad'; log += `  const order = JSON.parse(text);   ✗ พังตรงนี้ กระโดดเข้า catch\n  console.log(order);               ← ไม่ทำงาน\n} catch (error) {\n  console.error(error.message);     → "${error.message}"\n`; }
+  log += '} finally {\n  loading = false;                  ← ทำงานเสมอ\n}'; setOut('tc-out', log, cls); }
+tcRun();
+function tr(k, btn){ chipOn(btn);
+  if (k === 'throw') setOut('tr-out', "function check(total) {\n  if (total < 0) throw new Error('ยอดติดลบ');\n}\ntry { check(-50) } catch (e) { console.log('จับได้:', e.message) }\n\n→ จับได้: ยอดติดลบ\n✓ throw ขว้างจริง โค้ดหยุดตรงนั้น catch รับไป", 'ok');
+  else setOut('tr-out', "function check(total) {\n  if (total < 0) return new Error('ยอดติดลบ');\n}\ntry { check(-50) } catch (e) { console.log('จับได้:', e.message) }\n\n→ (ไม่มีอะไรพิมพ์เลย)\n✗ return แค่คืน object กลับไปเฉย ๆ ไม่มีอะไรถูกขว้าง catch ไม่ทำงาน", 'bad'); }
+tr('throw', document.querySelector('#ch10 .chip.on'));
+let gdM = 'wrong';
+function gd(m, btn){ if (btn) { chipOn(btn); gdM = m; } const t = +$('gd-in').value;
+  if (gdM === 'wrong') { $('gd-code').textContent = 'function calcDiscount(total) {\n  if (total < 1000) return 0;              // ครอบคลุมค่าติดลบไปด้วย\n  if (total < 0) throw new Error("ยอดติดลบ"); // ไม่มีวันมาถึง\n  return total * 0.1;\n}';
+    let r; try { r = t < 1000 ? 0 : t * 0.1; } catch(e){} setOut('gd-out', `calcDiscount(${t}) → ${r}${t < 0 ? '\n⚠ ยอดติดลบแต่ได้ส่วนลด 0 เงียบ ๆ — throw ไม่เคยทำงาน' : ''}`, t < 0 ? 'bad' : 'ok'); }
+  else { $('gd-code').textContent = 'function calcDiscount(total) {\n  if (total < 0) throw new Error("ยอดติดลบ"); // เคสแคบก่อน\n  if (total < 1000) return 0;\n  return total * 0.1;\n}';
+    try { if (t < 0) throw new Error('ยอดติดลบ'); setOut('gd-out', `calcDiscount(${t}) → ${t < 1000 ? 0 : t * 0.1}`, 'ok'); } catch(e){ setOut('gd-out', `calcDiscount(${t}) → throw Error: ${e.message}\n✓ จับยอดติดลบได้`, 'ok'); } } }
+gd('wrong', document.querySelector('#gd-code').previousElementSibling.querySelector('.chip.on'));
+class ApiError extends Error { constructor(m, s){ super(m); this.name = 'ApiError'; this.status = s; } }
+const aeErr = new ApiError('ไม่พบสินค้าในระบบ', 404);
+const aeQ = [['err.name', aeErr.name], ['err.message', aeErr.message], ['err.status', aeErr.status], ['err instanceof ApiError', aeErr instanceof ApiError], ['err instanceof Error', aeErr instanceof Error], ['`${err}`', `${aeErr}`]];
+$('ae-btns').innerHTML = aeQ.map((q, i) => `<button class="chip" onclick="ae(${i},this)">${q[0].replace(/</g,'&lt;')}</button>`).join('');
+function ae(i, btn){ chipOn(btn); const [k, v] = aeQ[i]; const note = { 'err instanceof Error': ' — สืบทอดมาจาก Error จึงเป็นทั้งสองอย่าง', '`${err}`': ' — ติด "ApiError:" นำหน้า ใช้ .message ถ้าอยากได้ข้อความล้วน', 'err.status': ' — property เสริมที่ Error ธรรมดาไม่มี' }[k] || '';
+  setOut('ae-out', `${k} → ${J(v)}${note}`, 'info'); }
+
+/* ---------- 11 ---------- */
+const dbgCases = [
+  { code: ['function greetUser(profile) {', '  const { name } = profile;', '  return `สวัสดี ${nam}`;', '}'], err: 'ReferenceError: nam is not defined', ans: 2, why: 'error ชี้บรรทัดที่ใช้ nam ตรง ๆ — สะกดผิดจาก name' },
+  { code: ['const users = { list: null };', 'const first = users.list;', 'console.log(first.name);', ''], err: "TypeError: Cannot read properties of null (reading 'name')", ans: 1, why: 'บรรทัด 3 แค่แสดงอาการ ต้นเหตุคือ first ได้ null มาจากบรรทัด 2 (users.list)' },
+  { code: ['const items = [];', 'items.pust(5);', 'console.log(items);', ''], err: 'TypeError: items.pust is not a function', ans: 1, why: 'สะกด push ผิดเป็น pust — ดูจุดที่เรียก method' },
+  { code: ['const total = 0;', 'for (const i of [1,2]) {', '  total = total + i;', '}'], err: 'TypeError: Assignment to constant variable.', ans: 0, why: 'error ชี้บรรทัด 3 แต่ที่ต้องแก้คือบรรทัด 1 — ประกาศเป็น let' },
+];
+let di = 0, dbgDone = saved.dbg || {};
+function dbgRender(){ const c = dbgCases[di];
+  $('dbg-wrap').innerHTML = `<pre style="margin:0 0 8px">${c.code.map((l, i) => `${i + 1}  ${l.replace(/</g,'&lt;')}`).join('\n')}</pre><div class="warn mono" style="margin:6px 0">${c.err}</div><div class="row">ต้องแก้บรรทัดไหน: ${c.code.map((l, i) => l ? `<button class="chip" onclick="dbgPick(${i})">บรรทัด ${i + 1}</button>` : '').join('')}</div>`;
+  setOut('dbg-out', dbgDone[di] ? (dbgDone[di].ok ? '✓ ' : '✗ ') + c.why : `เคส ${di + 1} / ${dbgCases.length}`, dbgDone[di] ? (dbgDone[di].ok ? 'ok' : 'bad') : '');
+  $('dbg-score').textContent = `ตอบถูก ${Object.values(dbgDone).filter(x => x.ok).length} / ${dbgCases.length}`; }
+function dbgPick(i){ if (dbgDone[di]) return; dbgDone[di] = { ok: i === dbgCases[di].ans }; saved.dbg = dbgDone; persist(); dbgRender(); }
+function dbgNav(d){ di = (di + d + dbgCases.length) % dbgCases.length; dbgRender(); } dbgRender();
+const undCases = [['let discountCode;\nconsole.log(discountCode); // undefined', 0], ['function calc(items) {\n  const t = items.length * 10;\n  console.log(t);\n}\nconst r = calc([1,2]);\nconsole.log(r); // undefined', 1], ['const u = { name: "มด" };\nconsole.log(u.nmae); // undefined', 2]];
+const undLabels = ['ตัวแปรไม่มีค่า', 'ฟังก์ชันไม่ return', 'เข้าถึง property ที่ไม่มี'];
+let ui = -1;
+function und(i, btn){ chipOn(btn); ui = i; $('und-code').textContent = undCases[i][0]; $('und-ans').innerHTML = undLabels.map((l, j) => `<button class="chip" onclick="undPick(${j})">${l}</button>`).join(''); setOut('und-out', 'undefined ตัวนี้มาจากทางไหน'); }
+function undPick(j){ const ok = j === undCases[ui][1]; const fix = ['แก้ที่จุดประกาศ — assign ค่าเริ่มต้นให้', 'ใส่ return t; ใน calc', 'สะกด key ให้ตรง: u.name'][undCases[ui][1]];
+  setOut('und-out', `${ok ? '✓ ถูก' : '✗ ยังไม่ใช่'} — ${undLabels[undCases[ui][1]]}\nวิธีแก้: ${fix}`, ok ? 'ok' : 'bad'); }
+
+function tests(){ const avgPrice = items => { let sum = 0; for (const i of items) sum += i.price; return sum / items.length; };
+  const cases = [['ปกติ 3 ชิ้น', [{ price: 100 }, { price: 200 }, { price: 300 }], 200], ['ชิ้นเดียว', [{ price: 50 }], 50], ['ตะกร้าว่าง', [], 0]];
+  let s = '', pass = 0; for (const [n, inp, exp] of cases) { const r = avgPrice(inp); const ok = r === exp; if (ok) pass++; s += `${ok ? '✓' : '✗'} ${n}: ได้ ${r} ควรได้ ${exp}\n`; }
+  s += `\nผ่าน ${pass}/3 — ไม่ได้แปลว่าถูก ${Math.round(pass / 3 * 100)}%\nเคสที่ไม่ผ่านคือ array ว่าง: 0 / 0 = NaN → โค้ดไม่ได้จัดการ edge case นี้เลย\nนี่คือเบาะแส ไม่ใช่ตัวชี้วัดว่าใกล้เสร็จ`; setOut('tests-out', s, 'bad'); }
+const ckCases = [
+  { code: 'function cartSummary(items) {\n  let total = 0;\n  for (const item of items) total += item.price * item.qty;\n  return `ยอดรวม  ${total} บาท`;\n}\n// spec: "ยอดรวม 540 บาท"', ans: 1, why: 'มีช่องว่าง 2 ตัวหลัง "ยอดรวม" — ระบบตรวจเทียบทีละตัวอักษร' },
+  { code: 'function cartSummary(items) {\n  let total = 0;\n  for (const item of items) total += item.price * item.qty;\n  console.log(`ยอดรวม ${total} บาท`);\n}', ans: 0, why: 'ไม่มี return — คนเรียกได้ undefined ต่อให้ข้อความถูกเป๊ะ' },
+  { code: 'function cartSummary(items) {\n  let total = 0;\n  for (const item of items) total += item.price * item.qyt;\n  return `ยอดรวม ${total} บาท`;\n}', ans: 2, why: 'qyt สะกดผิด → undefined → NaN เงียบ ๆ' }];
+let cki = -1;
+function ckCase(i, btn){ chipOn(btn); cki = i; $('ck-code').textContent = ckCases[i].code; $('ck-ans').innerHTML = ['① มี return หรือยัง', '② ข้อความตรง spec ทุกช่องว่างไหม', '③ สะกดชื่อ property ตรงไหม'].map((l, j) => `<button class="chip" onclick="ckPick(${j})">${l}</button>`).join(''); setOut('ck-out', 'จุดไหนพัง'); }
+function ckPick(j){ const ok = j === ckCases[cki].ans; setOut('ck-out', `${ok ? '✓ ถูก' : '✗ ยังไม่ใช่'} — ${ckCases[cki].why}`, ok ? 'ok' : 'bad'); }
+
+
+/* ---------- code runner (แบบระบบตรวจ) ---------- */
+const PRODUCTS = [
+  { id: 'A1', name: 'เสื้อยืด', price: 250, qty: 2, category: 'เสื้อ',   inStock: true },
+  { id: 'B2', name: 'หมวก',    price: 180, qty: 0, category: 'หมวก',   inStock: false },
+  { id: 'C3', name: 'กางเกง',  price: 490, qty: 1, category: 'กางเกง', inStock: true },
+  { id: 'D4', name: 'ถุงเท้า', price: 90,  qty: 5, category: 'เสื้อ',   inStock: true },
+];
+const CODERS = {
+  c01: { fn: 'formatSummary', title: 'formatSummary(product, qty)', spec: 'คืน string ตาม spec เป๊ะ: `เสื้อยืด x3 = 750 บาท` (product = { name, price })',
+    stub: 'function formatSummary(product, qty) {\n  \n}',
+    tests: [{ args: [{ name: 'เสื้อยืด', price: 250 }, 3], expect: 'เสื้อยืด x3 = 750 บาท' }, { args: [{ name: 'หมวก', price: 180 }, 1], expect: 'หมวก x1 = 180 บาท' }, { args: [{ name: 'ถุงเท้า', price: 90 }, 0], expect: 'ถุงเท้า x0 = 0 บาท' }] },
+  c02: { fn: 'getDiscountRate', title: 'getDiscountRate(amount)', spec: "ติดลบ → 'invalid' · ≥1000 → 0.1 · ≥500 → 0.05 · นอกนั้น → 0 (ระวังลำดับ guard)",
+    stub: 'function getDiscountRate(amount) {\n  \n}',
+    tests: [{ args: [1500], expect: 0.1 }, { args: [700], expect: 0.05 }, { args: [100], expect: 0 }, { args: [-50], expect: 'invalid' }, { args: [0], expect: 0 }, { args: [1000], expect: 0.1 }] },
+  c03: { fn: 'calculateTotal', title: 'calculateTotal(items)', spec: 'คืนผลรวม price × qty ทุกชิ้น ใช้ for...of (ตัวแปรสะสมอยู่นอกลูป)',
+    stub: 'function calculateTotal(items) {\n  \n}',
+    tests: [{ args: [PRODUCTS], expect: 1440 }, { args: [[{ price: 100, qty: 3 }]], expect: 300 }, { args: [[]], expect: 0 }] },
+  c04: { fn: 'formatOrderLabel', title: 'formatOrderLabel(customerName, note)', spec: "arrow function · note ไม่ส่งมา → 'ไม่มีหมายเหตุ' · คืน `${customerName}: ${note}`",
+    stub: "const formatOrderLabel = (customerName, note) => {\n  \n};",
+    tests: [{ args: ['มด'], expect: 'มด: ไม่มีหมายเหตุ' }, { args: ['มด', 'ส่งด่วน'], expect: 'มด: ส่งด่วน' }, { args: ['มด', undefined], expect: 'มด: ไม่มีหมายเหตุ' }, { args: ['มด', ''], expect: 'มด: ' }, { args: ['มด', null], expect: 'มด: null' }] },
+  c05: { fn: 'groupByCategory', title: 'groupByCategory(products)', spec: "ใช้ reduce จัดกลุ่มชื่อสินค้าตาม category → { 'เสื้อ': ['เสื้อยืด','ถุงเท้า'], ... } (ระวัง groups[key] || [])",
+    stub: 'function groupByCategory(products) {\n  return products.reduce((groups, p) => {\n    \n    return groups;\n  }, {});\n}',
+    tests: [{ args: [PRODUCTS], expect: { 'เสื้อ': ['เสื้อยืด', 'ถุงเท้า'], 'หมวก': ['หมวก'], 'กางเกง': ['กางเกง'] } }, { args: [[]], expect: {} }, { args: [[{ name: 'x', category: 'a' }, { name: 'y', category: 'a' }]], expect: { a: ['x', 'y'] } }] },
+  c06: { fn: 'getCity', title: 'getCity(user)', spec: "คืน user.address.city · ถ้าไม่มี address หรือ city ให้คืน 'ไม่ระบุ' (ห้ามพัง)",
+    stub: 'function getCity(user) {\n  \n}',
+    tests: [{ args: [{ name: 'มด', address: { city: 'กรุงเทพ' } }], expect: 'กรุงเทพ' }, { args: [{ name: 'มด' }], expect: 'ไม่ระบุ' }, { args: [{ name: 'มด', address: {} }], expect: 'ไม่ระบุ' }, { args: [{ name: 'มด', address: null }], expect: 'ไม่ระบุ' }] },
+  c07: { fn: 'formatProductLabel', title: 'formatProductLabel({ name, price })', spec: 'destructure ตรงพารามิเตอร์ · คืน `${name} — ${price} บาท` · ถ้าไม่มี price ให้ default 0',
+    stub: 'const formatProductLabel = ({ name, price }) => {\n  \n};',
+    tests: [{ args: [{ name: 'เสื้อยืด', price: 250 }], expect: 'เสื้อยืด — 250 บาท' }, { args: [{ name: 'ฟรี' }], expect: 'ฟรี — 0 บาท' }, { args: [{ name: 'หมวก', price: 180, qty: 9 }], expect: 'หมวก — 180 บาท' }] },
+  c08: { fn: 'daysBetween', title: 'daysBetween(earlier, later)', spec: 'คืนจำนวนวันเต็ม (Math.floor) ระหว่างสอง Date · ใหม่ลบเก่า · ระวังวงเล็บครอบตัวหาร',
+    stub: 'function daysBetween(earlier, later) {\n  \n}',
+    tests: [{ args: [new Date(2026, 7, 10), new Date(2026, 7, 23)], expect: 13 }, { args: [new Date(2026, 0, 1), new Date(2026, 0, 1)], expect: 0 }, { args: [new Date(2026, 7, 23, 8), new Date(2026, 7, 24, 7)], expect: 0 }, { args: [new Date('2025-12-25'), new Date('2026-01-01')], expect: 7 }] },
+  c09: { fn: 'isValidEmail', title: 'isValidEmail(text)', spec: 'ใช้ regex · ต้องมี @ หนึ่งตัว · โดเมนมีจุดอย่างน้อย 1 · รองรับ .co.th · ไม่มีช่องว่าง · เช็คทั้งสตริง (anchor)',
+    stub: 'function isValidEmail(text) {\n  const re = /.+@.+/;\n  return re.test(text);\n}',
+    tests: [{ args: ['kanya@myshop.co.th'], expect: true }, { args: ['somchai.p@notify.myshop.co.th'], expect: true }, { args: ['plainaddress'], expect: false }, { args: ['user@@shop.com'], expect: false }, { args: ['user@shop'], expect: false }, { args: ['user name@shop.com'], expect: false }, { args: ['ส่งมาที่ a@b.com นะ'], expect: false }] },
+  c10: { fn: 'parseOrder', title: 'parseOrder(text)', spec: "JSON.parse ใน try/catch · parse ได้คืน object · พังคืน null · ห้ามให้ error หลุด",
+    stub: 'function parseOrder(text) {\n  \n}',
+    tests: [{ args: ['{"id":1,"total":590}'], expect: { id: 1, total: 590 } }, { args: ['{"id":1,'], expect: null }, { args: [''], expect: null }, { args: ['[1,2]'], expect: [1, 2] }] },
+  c11: { fn: 'cartSummary', title: 'cartSummary(items)', spec: 'คืน `ยอดรวม 540 บาท` ตรง spec ทุกช่องว่าง (ผลรวม price × qty)',
+    stub: 'function cartSummary(items) {\n  let total = 0;\n  for (const item of items) {\n    total += item.price * item.qyt;\n  }\n  console.log(`ยอดรวม  ${total} บาท`);\n}\n// โค้ดนี้มีบั๊ก 3 จุด — แก้ให้ผ่านทุกเทส',
+    tests: [{ args: [[{ price: 250, qty: 2 }, { price: 40, qty: 1 }]], expect: 'ยอดรวม 540 บาท' }, { args: [[]], expect: 'ยอดรวม 0 บาท' }, { args: [[{ price: 90, qty: 5 }]], expect: 'ยอดรวม 450 บาท' }] },
+  c12: { fn: 'getCartSummary', title: 'getCartSummary(items, shippingFee = 50)', spec: 'ตัด qty === 0 ออก · total = ผลรวม price×qty · itemCount = ผลรวม qty · shipping = 0 ถ้า total ≥ 500 ไม่งั้น shippingFee · return { total, itemCount, shipping, grandTotal, isEmpty }',
+    stub: 'const getCartSummary = (items, shippingFee = 50) => {\n  \n};',
+    tests: [{ args: [PRODUCTS], expect: { total: 1440, itemCount: 8, shipping: 0, grandTotal: 1440, isEmpty: false } }, { args: [[{ price: 90, qty: 2 }]], expect: { total: 180, itemCount: 2, shipping: 50, grandTotal: 230, isEmpty: false } }, { args: [[{ price: 90, qty: 2 }], 30], expect: { total: 180, itemCount: 2, shipping: 30, grandTotal: 210, isEmpty: false } }, { args: [[]], expect: { total: 0, itemCount: 0, shipping: 50, grandTotal: 50, isEmpty: true } }, { args: [[{ price: 500, qty: 0 }]], expect: { total: 0, itemCount: 0, shipping: 50, grandTotal: 50, isEmpty: true } }] },
+};
+const showArg = a => a instanceof Date ? `Date(${a.toISOString().slice(0, 10)})` : J(a);
+const eq = (a, b) => { if (Number.isNaN(a) && Number.isNaN(b)) return true; if (typeof a !== typeof b) return false; if (a && typeof a === 'object' && b && typeof b === 'object') { const ka = Object.keys(a).sort(), kb = Object.keys(b).sort(); return J(ka) === J(kb) && ka.every(k => eq(a[k], b[k])); } return a === b; };
+const vis = s => String(s).replace(/ /g, '<span class="ws">·</span>');
+saved.code = saved.code || {};
+document.querySelectorAll('.coder').forEach(box => {
+  const id = box.dataset.id, c = CODERS[id];
+  box.innerHTML = `<p class="t">เขียนโค้ด: <span class="mono">${c.title}</span></p><p class="spec">${c.spec}</p><textarea id="ta-${id}" spellcheck="false">${(saved.code[id] || c.stub).replace(/</g, '&lt;')}</textarea><div class="row"><button class="primary" onclick="runCoder('${id}')">รัน test</button><button class="chip" onclick="resetCoder('${id}')">คืนโค้ดเริ่มต้น</button><span class="pill" id="cs-${id}"></span></div><div class="tests" id="tests-${id}"></div>`;
+  box.querySelector('textarea').addEventListener('keydown', e => { if (e.key === 'Tab') { e.preventDefault(); const t = e.target, st = t.selectionStart; t.value = t.value.slice(0, st) + '  ' + t.value.slice(t.selectionEnd); t.selectionStart = t.selectionEnd = st + 2; } });
+});
+function resetCoder(id){ $('ta-' + id).value = CODERS[id].stub; delete saved.code[id]; persist(); $('tests-' + id).innerHTML = ''; $('cs-' + id).textContent = ''; }
+function runCoder(id){ const c = CODERS[id], code = $('ta-' + id).value; saved.code[id] = code; persist(); const out = $('tests-' + id); let fn;
+  try { fn = new Function(code + `\n;return typeof ${c.fn} === 'function' ? ${c.fn} : undefined;`)(); } catch(e){ out.innerHTML = `<div class="tc bad">✗ ${e.name}: ${e.message}\nโค้ด parse ไม่ผ่าน — ยังไม่ได้รันเทสเลย เช็ควงเล็บ/ปีกกาก่อน (บท 11: Unexpected token มักอยู่บรรทัดก่อนหน้า)</div>`; $('cs-' + id).textContent = ''; return; }
+  if (!fn) { out.innerHTML = `<div class="tc bad">✗ ไม่พบฟังก์ชันชื่อ ${c.fn} — ระบบตรวจเรียกชื่อนี้ตรง ๆ สะกดให้ตรง</div>`; return; }
+  let pass = 0; const logs = [];
+  const origLog = console.log; console.log = (...a) => logs.push(a.map(x => typeof x === 'string' ? x : J(x)).join(' '));
+  const rows = c.tests.map((t, i) => { let got, err; try { got = fn(...t.args.map(a => a instanceof Date ? new Date(a) : structuredClone(a))); } catch(e){ err = e; }
+    const ok = !err && eq(got, t.expect); if (ok) pass++;
+    let line = `${ok ? '✓' : '✗'} ${c.fn}(${t.args.map(showArg).join(', ')})\n`;
+    if (err) line += `  โยน ${err.name}: ${err.message}`;
+    else if (ok) line += `  → ${J(got)}`;
+    else { line += `  ได้:   ${typeof got === 'string' ? vis(J(got)) : J(got)}\n  ควรได้: ${typeof t.expect === 'string' ? vis(J(t.expect)) : J(t.expect)}`; if (got === undefined) line += '\n  undefined = ไม่มี return หรือ return ไม่ครบทุกเส้นทาง'; else if (typeof got === 'string' && typeof t.expect === 'string' && got.replace(/\s/g, '') === t.expect.replace(/\s/g, '')) line += '\n  ต่างกันแค่ช่องว่าง (· คือช่องว่าง) — ระบบตรวจถือว่าคนละ string'; else if ((typeof got === 'number' && Number.isNaN(got)) || (typeof got === 'string' && /NaN|undefined/.test(got))) line += '\n  มี NaN/undefined ปนมา — ตัวแปรหรือ property ไหนสักตัวเป็น undefined เช็คสะกดชื่อ (บท 11: undefined มาจาก 3 ทาง)'; }
+    return `<div class="tc ${ok ? 'ok' : 'bad'}">${line}</div>`; });
+  console.log = origLog;
+  out.innerHTML = rows.join('') + (logs.length ? `<div class="tc">console.log ที่พิมพ์ระหว่างรัน (ระบบตรวจไม่ดูตรงนี้):\n${logs.slice(0, 5).join('\n')}</div>` : '');
+  $('cs-' + id).textContent = `ผ่าน ${pass} / ${c.tests.length}${pass === c.tests.length ? ' — ครบ' : ''}`; }
+
+/* ---------- weak spots ---------- */
+function updateWeak(){ const wrong = {}; document.querySelectorAll('.quiz[data-q]').forEach((b, i) => { if (saved['q' + i] !== undefined && b.querySelector('label.wrong')) { const ch = b.closest('section').id; wrong[ch] = (wrong[ch] || 0) + 1; } });
+  Object.entries(pmDone).forEach(([i, d]) => { if (!d.ok) wrong.ch12 = (wrong.ch12 || 0) + 1; });
+  const list = Object.entries(wrong).sort((a, b) => b[1] - a[1]).slice(0, 3);
+  $('weak').innerHTML = list.length ? 'ควรทวน: ' + list.map(([ch, n]) => `<a href="#${ch}"><b>${ch.slice(2)}</b> (ผิด ${n})</a>`).join(' · ') : 'ยังไม่มีข้อที่ตอบผิด'; }
+function adRun(){ const src = $('ad-in').value; try { new Function('return (' + src + ')'); setOut('ad-out', `parse ผ่าน ✓\n${src}`, 'ok'); } catch(e){ setOut('ad-out', `✗ ${e.name}: ${e.message}\nJS แยกไม่ออกว่า { } ตัวแรกคือ destructuring หรือ block — ต้องครอบพารามิเตอร์ด้วย ( )`, 'bad'); } }
+adRun();
+
+/* ---------- 12 Perfect Match ---------- */
+const pm = [
+  { q: 'ข้อใดให้ผลเป็น true', opts: ['0 == ""', 'null == undefined', 'null === undefined', 'NaN === NaN'], ans: [0, 1], exp: ['== แปลง "" เป็น 0', '== ถือว่าใกล้กัน', '=== เทียบชนิดด้วย คนละชนิด', 'NaN ไม่เท่าตัวเอง'] },
+  { q: 'method ใดของ Array แก้ต้นฉบับ', opts: ['push', 'sort', 'map', 'slice', 'splice'], ans: [0, 1, 4], exp: ['เพิ่มท้ายในต้นฉบับ', 'เรียงในต้นฉบับ', 'คืน array ใหม่', 'คืน array ใหม่', 'ลบ/แทรกในต้นฉบับ'] },
+  { q: 'เกี่ยวกับ Date ข้อใดถูก', opts: ['Date.now() คืนตัวเลข ms ไม่ใช่ Date object', "new Date('2026-08-20') ต้องใส่ quote", 'getDay() คืน 0 แทนวันจันทร์', 'getMonth() คืน 0–11'], ans: [0, 1, 3], exp: ['ถูก — เป็น number', 'ถูก — ไม่งั้นเป็นการลบเลข', '0 คือวันอาทิตย์', 'ถูก'] },
+  { q: 'เกี่ยวกับ arrow function ข้อใดถูก', opts: ['ไม่มี this ของตัวเอง', 'ใช้ new ได้เหมือน function ปกติ', 'บรรทัดเดียวไม่มี {} จะ return ให้เอง', 'เรียกก่อนบรรทัด const ที่ประกาศได้เสมอ'], ans: [0, 2], exp: ['ถูก — ยืมจาก scope นอก', 'ไม่ได้ — TypeError', 'ถูก — implicit return', 'ไม่ได้ — TDZ ("เสมอ" คือคำเสี่ยง)'] },
+  { q: 'เกี่ยวกับ for...in / for...of ข้อใดถูก', opts: ['for...in กับ array ให้ key เป็น string', 'for...of ให้สมาชิกแต่ละตัวตรง ๆ', 'for...in ใช้กับ array เหมือน for...of ทุกกรณี', 'forEach ใช้ break ได้'], ans: [0, 1], exp: ['ถูก', 'ถูก', '"ทุกกรณี" — ผิด ได้ของคนละแบบ', 'ไม่ได้ — เป็น callback ไม่ใช่ลูป'] },
+  { q: 'เกี่ยวกับ default parameter ข้อใดถูก', opts: ['ทำงานเมื่อได้ undefined', 'ทำงานเมื่อได้ null', 'ทำงานเมื่อไม่ส่ง argument', 'ทำงานเมื่อได้ ""'], ans: [0, 2], exp: ['ถูก', 'null = มีของส่งมาแล้ว', 'ถูก — ไม่ส่ง = undefined', '"" = มีของส่งมาแล้ว'] },
+  { q: 'เกี่ยวกับ spread ข้อใดถูก', opts: ['{...a, ...b} ถ้า key ชน b ชนะ', 'spread คัดลอกลึกทุกชั้น', '[...arr] ได้ array ใหม่', '...rest ต้องอยู่ท้ายสุด'], ans: [0, 2, 3], exp: ['ถูก — ตัวหลังทับ', 'ผิด — shallow แค่ชั้นบน', 'ถูก', 'ถูก — ไม่งั้น SyntaxError'] },
+  { q: 'เกี่ยวกับ try/catch ข้อใดถูก', opts: ['finally ทำงานเสมอ', 'return new Error() ทำให้ catch ทำงาน', 'error.message ให้ข้อความล้วนไม่ติด "Error:"', 'try โดยไม่มี catch และ finally เขียนได้'], ans: [0, 2], exp: ['ถูก', 'ผิด — ต้อง throw', 'ถูก', 'ผิด — ต้องมีอย่างน้อยหนึ่งอย่าง'] },
+];
+pm.push(
+  { q: 'เกี่ยวกับ const ข้อใดถูก', opts: ['const obj = {}; obj.x = 1 ทำได้', 'const obj = {}; obj = {} ทำได้', 'const ต้องกำหนดค่าตอนประกาศ', 'const ป้องกันการแก้ property ทุกกรณี'], ans: [0, 2], exp: ['ถูก — แก้ของข้างในได้', 'ผิด — เปลี่ยนป้ายไม่ได้', 'ถูก', '"ทุกกรณี" — ผิด ล็อกแค่ป้าย'] },
+  { q: 'ค่าใดเป็น falsy', opts: ['"0"', '0', '[]', 'NaN', 'undefined'], ans: [1, 3, 4], exp: ['สตริงมีตัวอักษร = truthy', 'falsy', 'array = truthy', 'falsy', 'falsy'] },
+  { q: 'เกี่ยวกับ ternary ข้อใดถูก', opts: ['เป็น expression คืนค่าได้', 'เขียนลอย ๆ ไม่เก็บผลก็มีผล', 'ซ้อนกันหลายชั้นอ่านง่ายกว่า if/else', 'ใช้ใน template literal ได้'], ans: [0, 3], exp: ['ถูก', 'ผิด — คำนวณแล้วทิ้ง', 'ผิด — อ่านยากกว่า', 'ถูก'] },
+  { q: 'เกี่ยวกับ break / continue ข้อใดถูก', opts: ['break ออกจากลูปทันที', 'continue ข้ามแค่รอบนี้', 'ใช้ทั้งคู่ใน forEach ได้', 'continue ออกจากลูป'], ans: [0, 1], exp: ['ถูก', 'ถูก', 'ผิด — forEach ไม่ใช่ลูป', 'ผิด — แค่ข้ามรอบ'] },
+  { q: 'เรียก applyDiscount(250) กับ function applyDiscount(price, rate) { return price * rate } ได้อะไร', opts: ['error เพราะส่งไม่ครบ', 'NaN', 'rate เป็น undefined', '250'], ans: [1, 2], exp: ['ผิด — ไม่ error', 'ถูก — 250 * undefined', 'ถูก', 'ผิด'] },
+  { q: 'เกี่ยวกับ callback ข้อใดถูก', opts: ['filter(fn) ยื่นฟังก์ชันให้ filter เรียกเอง', 'filter(fn()) เรียก fn ทันที', 'ระบบตรวจเป็นคนเรียกฟังก์ชันที่เราเขียน', 'ต้องเรียกฟังก์ชันตัวเองก่อนส่งงานเสมอ'], ans: [0, 1, 2], exp: ['ถูก', 'ถูก — นี่คือกับดัก', 'ถูก', '"เสมอ" — ผิด ไม่จำเป็น'] },
+  { q: 'map / filter / find คืนอะไร', opts: ['map คืน array ยาวเท่าเดิม', 'filter ไม่เจอเลยคืน undefined', 'find ไม่เจอคืน undefined', 'find คืน array ที่มีตัวเดียว'], ans: [0, 2], exp: ['ถูก', 'ผิด — คืน []', 'ถูก', 'ผิด — คืนตัวสมาชิกตรง ๆ'] },
+  { q: 'เกี่ยวกับ sort ข้อใดถูก', opts: ['[40,5,100].sort() ได้ [5,40,100]', 'sort() แก้ต้นฉบับ', 'ใส่ (a,b) => a - b เรียงตัวเลขจากน้อยไปมาก', 'sort() คืน array ใหม่ไม่แตะต้นฉบับ'], ans: [1, 2], exp: ['ผิด — เรียงแบบ string ได้ [100,40,5]', 'ถูก', 'ถูก', 'ผิด'] },
+  { q: 'เกี่ยวกับการเข้าถึง property ข้อใดถูก', opts: ['u.key หา property ชื่อ "key" ตรงตัว', 'u[key] ใช้ค่าของตัวแปร key', "u['name'] กับ u.name ได้ผลเหมือนกัน", 'u[name] ไม่มี quote เหมือน u.name'], ans: [0, 1, 2], exp: ['ถูก', 'ถูก', 'ถูก', 'ผิด — ไปหาตัวแปร name'] },
+  { q: 'สะกด key ผิดตอนแก้ค่า (u.pionts = 200) จะเกิดอะไร', opts: ['error', 'สร้าง key ใหม่ชื่อ pionts', 'u.points ยังเป็นค่าเดิม', 'u.points กลายเป็น 200'], ans: [1, 2], exp: ['ผิด — ไม่มี error', 'ถูก', 'ถูก', 'ผิด'] },
+  { q: 'เกี่ยวกับ destructuring ข้อใดถูก', opts: ['{ name: fullName } คือ rename', '{ phone = "x" } default ทำงานเมื่อ phone เป็น null', 'array destructuring อ้างด้วยตำแหน่ง', '[a, b] = [b, a] สลับค่าได้'], ans: [0, 2, 3], exp: ['ถูก', 'ผิด — เฉพาะ undefined', 'ถูก', 'ถูก'] },
+  { q: 'เกี่ยวกับ getDay / getDate / getMonth ข้อใดถูก', opts: ['getDate() คืนวันที่ในเดือน', 'getDay() คืนวันที่ในเดือน', 'getDay() 0 คืออาทิตย์', 'getMonth() สิงหาคมคือ 8'], ans: [0, 2], exp: ['ถูก', 'ผิด — วันในสัปดาห์', 'ถูก', 'ผิด — คือ 7'] },
+  { q: 'Date สองตัวเวลาเดียวกันเป๊ะ เทียบยังไงถึงได้ true', opts: ['a === b', 'a == b', 'a.getTime() === b.getTime()', 'a - b === 0'], ans: [2, 3], exp: ['ผิด — object คนละก้อน', 'ผิด — เช่นกัน', 'ถูก', 'ถูก — ลบแล้วเป็นตัวเลข'] },
+  { q: 'เกี่ยวกับ regex ข้อใดถูก', opts: ['test คืน boolean', 'match คืน boolean', '. จับตัวอักษรอะไรก็ได้ 1 ตัว', 'ไม่มี ^ $ ก็ยังเช็คทั้งสตริงได้'], ans: [0, 2], exp: ['ถูก', 'ผิด — array หรือ null', 'ถูก', 'ผิด — เจอบางส่วนก็ผ่าน'] },
+  { q: 'เกี่ยวกับ throw ข้อใดถูก', opts: ['throw หยุดฟังก์ชันทันที', 'return throw new Error() เขียนได้', 'throw "ข้อความ" เขียนได้แต่ไม่แนะนำ', 'catch จับได้เฉพาะ error ที่เรา throw เอง'], ans: [0, 2], exp: ['ถูก', 'ผิด — SyntaxError', 'ถูก — เสีย .message/stack', 'ผิด — จับ bug ของเราด้วย'] },
+  { q: 'undefined มาจากทางไหนได้บ้าง', opts: ['ตัวแปรประกาศแต่ไม่ assign', 'ฟังก์ชันไม่ return', 'อ่าน property ที่ไม่มี', 'เรียกตัวแปรที่ไม่เคยประกาศ'], ans: [0, 1, 2], exp: ['ถูก', 'ถูก', 'ถูก', 'ผิด — อันนี้ ReferenceError'] },
+);
+let pi = 0, pmDone = saved.pm || {};
+const pmOrder = pm.map(q => { const idx = q.opts.map((_, i) => i); for (let i = idx.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [idx[i], idx[j]] = [idx[j], idx[i]]; } return idx; });
+function pmRender(){ const q = pm[pi]; const d = pmDone[pi];
+  $('pm-wrap').innerHTML = `<div class="quiz"><p class="q">ข้อ ${pi + 1} / ${pm.length} — ${q.q} (เลือกได้มากกว่า 1)</p>${pmOrder[pi].map(i => { const o = q.opts[i]; return `<label class="${d ? (q.ans.includes(i) ? 'right' : (d.pick.includes(i) ? 'wrong' : '')) : ''}"><input type="checkbox" value="${i}" ${d ? 'disabled' : ''} ${d && d.pick.includes(i) ? 'checked' : ''}>${o}${d ? ` <span class="pill">${q.exp[i]}</span>` : ''}</label>`; }).join('')}<div class="row"><button class="primary" onclick="pmCheck()" ${d ? 'disabled' : ''}>ตรวจข้อนี้</button></div><div class="exp ${d ? 'show ' + (d.ok ? 'ok' : 'bad') : ''}">${d ? (d.ok ? '✓ ตรงทั้งชุด — ได้คะแนนเต็มข้อ' : '✗ ไม่ตรงทั้งชุด — Perfect Match ไม่มีคะแนนบางส่วน ต้องติ๊กครบและไม่ติ๊กเกิน') : ''}</div></div>`;
+  $('pm-score').textContent = `เต็มข้อ ${Object.values(pmDone).filter(x => x.ok).length} / ${pm.length}`; }
+function pmCheck(){ const pick = [...$('pm-wrap').querySelectorAll('input:checked')].map(x => +x.value); const ans = pm[pi].ans; const ok = pick.length === ans.length && pick.every(p => ans.includes(p)); pmDone[pi] = { pick, ok }; saved.pm = pmDone; persist(); pmRender(); updateWeak(); }
+function pmNav(d){ pi = (pi + d + pm.length) % pm.length; pmRender(); } pmRender(); updateWeak();
+</script>
+</body>
+</html>
