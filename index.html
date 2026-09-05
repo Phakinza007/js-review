@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ทบทวน JavaScript — 12 บท</title>
+<title>ทบทวน JavaScript + DOM — 15 บท</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
@@ -97,7 +97,8 @@
   .quiz .exp.ok{background:var(--ok-bg);color:var(--ok)}
   .quiz .exp.bad{background:var(--bad-bg);color:var(--bad)}
   .cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .box{padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--paper);font-size:14px}
+  .box{padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--paper);font-size:14px;min-width:0}
+  .cols > *{min-width:0}
   .box b{display:block;margin-bottom:4px}
   .step-line{padding:4px 8px;border-radius:4px;font-family:"IBM Plex Mono",monospace;font-size:13.5px}
   .step-line.hl{background:var(--mark)}
@@ -135,6 +136,23 @@
   .tw table{margin:0;min-width:420px}
   pre{max-width:100%}
   @media print{ .tw{overflow:visible} .tw table{min-width:0} }
+  .tree{background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px;max-height:340px;overflow:auto;margin:10px 0}
+  .nodechip{display:block;font-family:"IBM Plex Mono",monospace;font-size:12.5px;padding:3px 8px;margin:1px 0;border:1px solid var(--line);border-radius:5px;background:#fff;cursor:pointer;text-align:left;white-space:nowrap}
+  .nodechip:hover{background:var(--paper);color:var(--ink)}
+  .nodechip.el{border-left:3px solid var(--info)}
+  .nodechip.tx{border-left:3px solid #B9A44A;color:var(--ink-2)}
+  .nodechip.ot{border-left:3px solid var(--ink-2)}
+  .nodechip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .nodechip .nt{display:inline-block;margin-left:8px;padding:0 5px;border-radius:99px;font-size:10.5px;background:var(--paper);color:var(--ink-2);border:1px solid var(--line)}
+  .nodechip.on .nt{background:#fff;color:var(--ink)}
+  .pill.exam{background:var(--mark);border-color:#D9C33E;color:#5B4700;font-weight:600}
+  #exam-btn{width:100%;margin:0 0 8px;font-size:12.5px;text-align:left}
+  #exam-btn.on{background:var(--mark);border-color:#D9C33E;color:#5B4700}
+  #exam-note{font-size:12px;color:var(--ink-2);margin:0 0 12px;padding:8px 10px;border-radius:6px;background:var(--paper);line-height:1.5}
+  @media print{ #exam-btn,#exam-note{display:none} }
+  /* โค้ดยาว ๆ ในข้อความต้องตัดบรรทัดได้ ไม่งั้นดันหน้าจอบนมือถือ */
+  .quiz .q,.quiz label{overflow-wrap:anywhere}
+  section.ch > p,.checkpoint li,.mistakes li,.outcomes li,.concept span,.pinned,.trap span,.box{overflow-wrap:break-word}
   .toc-toggle{display:none}
   @media (max-width:860px){
     .layout{grid-template-columns:1fr}
@@ -153,15 +171,17 @@
 <nav class="toc" aria-label="สารบัญ">
   <h1>ทบทวน JavaScript</h1>
   <div class="score">คะแนน quiz: <b id="score">0</b> / <b id="score-total">0</b></div>
-  <div class="score" id="ch-progress">บทที่ทวนครบ: <b>0</b> / 12</div>
+  <div class="score" id="ch-progress">บทที่ทวนครบ: <b>0</b> / 15</div>
   <div class="weak" id="weak">ยังไม่มีข้อที่ตอบผิด</div>
+  <button class="chip" id="exam-btn" onclick="examToggle()">○ แสดงทุกบท (15 บท)</button>
+  <div id="exam-note" hidden>กำลังแสดงเฉพาะขอบเขต <b>สอบครั้งที่ 1</b><br>เงื่อนไข · วนซ้ำ · Array · Object · Exception · DOM</div>
   <ol id="toc"></ol>
   <button class="chip" style="margin-top:14px;font-size:12px" onclick="window.print()">พิมพ์เป็น cheat sheet</button>
 </nav>
 
 <main>
 <header class="hero">
-  <h2>สิ่งที่ต้องแม่น <mark>ก่อนเขียนเว็บ</mark> — 12 บท มีของให้กดเล่นทุกบท</h2>
+  <h2>สิ่งที่ต้องแม่น <mark>ก่อนเขียนเว็บ</mark> — 15 บท มีของให้กดเล่นทุกบท</h2>
   <p>แต่ละบทมีสรุปสิ่งที่ต้องทำได้ ตัวอย่างโค้ด กล่องทดลองที่ลองพิมพ์ได้จริง และ quiz ปิดท้าย ตอบผิดจะบอกเหตุผลให้ทันที</p>
 </header>
 
@@ -227,10 +247,10 @@ console.log(c1.total);  <span class="c">// 500 — ก้อนเดียว�
 </section>
 
 <!-- ============ 02 ============ -->
-<section class="ch" id="ch02">
+<section class="ch" id="ch02" data-exam="1">
 <h3>02 เงื่อนไข</h3>
 <p class="lead">โปรแกรมเช็คจากบนลงล่าง เจอทางแรกที่จริงก็เข้าทันที — เรียงผิด เคสพิเศษหลุด</p>
-<div class="chmeta"><span class="pill">บทที่ 02</span><span class="pill">~18 นาที</span><span class="pill lv1">เริ่มต้น</span></div>
+<div class="chmeta"><span class="pill">บทที่ 02</span><span class="pill">~18 นาที</span><span class="pill lv1">เริ่มต้น</span><span class="pill exam">ออกสอบ</span></div>
 <div class="outcomes"><p>จบบทนี้ต้องทำได้</p><ul>
 <li>อธิบายลำดับ if / else if / else ว่าเช็คทีละบรรทัดจากบนลงล่าง</li>
 <li>ใช้ ternary แทน if/else สั้น ๆ และรู้ว่าต้องเก็บผลไว้</li>
@@ -276,10 +296,10 @@ total &gt;= <span class="n">500</span> ? <span class="s">'ส่งฟรี'</s
 </section>
 
 <!-- ============ 03 ============ -->
-<section class="ch" id="ch03">
+<section class="ch" id="ch03" data-exam="1">
 <h3>03 วนซ้ำ</h3>
 <p class="lead">กับดักหลักไม่ใช่เลือกลูปผิด แต่คือสับสน "ตัวที่วนอยู่" กับ "array ทั้งก้อน"</p>
-<div class="chmeta"><span class="pill">บทที่ 03</span><span class="pill">~20 นาที</span><span class="pill lv1">เริ่มต้น</span></div>
+<div class="chmeta"><span class="pill">บทที่ 03</span><span class="pill">~20 นาที</span><span class="pill lv1">เริ่มต้น</span><span class="pill exam">ออกสอบ</span></div>
 <div class="outcomes"><p>จบบทนี้ต้องทำได้</p><ul>
 <li>เลือก <code>for</code>, <code>for...of</code>, <code>for...in</code>, <code>while</code> ได้ถูกสถานการณ์</li>
 <li>อธิบายว่าทำไม <code>for...in</code> กับ array ได้ key เป็นสตริง</li>
@@ -384,10 +404,10 @@ total &gt;= <span class="n">500</span> ? <span class="s">'ส่งฟรี'</s
 </section>
 
 <!-- ============ 05 ============ -->
-<section class="ch" id="ch05">
+<section class="ch" id="ch05" data-exam="1">
 <h3>05 Array</h3>
 <p class="lead">ก่อนเรียก method ไหน ถามก่อนเสมอ: มันแก้ของเดิม หรือคืนของใหม่</p>
-<div class="chmeta"><span class="pill">บทที่ 05</span><span class="pill">~25 นาที</span><span class="pill lv2">ปานกลาง</span></div>
+<div class="chmeta"><span class="pill">บทที่ 05</span><span class="pill">~25 นาที</span><span class="pill lv2">ปานกลาง</span><span class="pill exam">ออกสอบ</span></div>
 <div class="outcomes"><p>จบบทนี้ต้องทำได้</p><ul>
 <li>บอกได้ว่า method ไหนแก้ต้นฉบับ (mutate) ไหนคืนของใหม่</li>
 <li>แยก <code>map</code> / <code>filter</code> / <code>find</code> ว่าคืนอะไร</li>
@@ -440,10 +460,10 @@ total &gt;= <span class="n">500</span> ? <span class="s">'ส่งฟรี'</s
 </section>
 
 <!-- ============ 06 ============ -->
-<section class="ch" id="ch06">
+<section class="ch" id="ch06" data-exam="1">
 <h3>06 Object</h3>
 <p class="lead">ตัวแปรที่เก็บ object แค่ "ชี้" ไปหาก้อนข้อมูล ไม่ได้ "ถือ" ไว้</p>
-<div class="chmeta"><span class="pill">บทที่ 06</span><span class="pill">~22 นาที</span><span class="pill lv2">ปานกลาง</span></div>
+<div class="chmeta"><span class="pill">บทที่ 06</span><span class="pill">~22 นาที</span><span class="pill lv2">ปานกลาง</span><span class="pill exam">ออกสอบ</span></div>
 <div class="outcomes"><p>จบบทนี้ต้องทำได้</p><ul>
 <li>เข้าถึง property ได้ทั้ง dot และ bracket และรู้ว่าใช้แบบไหนตอนไหน</li>
 <li>เพิ่ม แก้ ลบ property และเช็คว่ามี key อยู่จริงไหม</li>
@@ -660,10 +680,10 @@ s.replace(re, x) <span class="c">// สตริงใหม่</span></pre>
 </section>
 
 <!-- ============ 10 ============ -->
-<section class="ch" id="ch10">
+<section class="ch" id="ch10" data-exam="1">
 <h3>10 Exception</h3>
 <p class="lead">try/catch คือด่านสุดท้ายกันไม่ให้ error เล็ก ๆ ลากทั้งไฟล์ล้ม</p>
-<div class="chmeta"><span class="pill">บทที่ 10</span><span class="pill">~22 นาที</span><span class="pill lv3">ท้าทาย</span></div>
+<div class="chmeta"><span class="pill">บทที่ 10</span><span class="pill">~22 นาที</span><span class="pill lv3">ท้าทาย</span><span class="pill exam">ออกสอบ</span></div>
 <div class="outcomes"><p>จบบทนี้ต้องทำได้</p><ul>
 <li>เขียนโครง try/catch/finally และอธิบายลำดับเมื่อเกิด error</li>
 <li>แยก <code>throw</code> จาก <code>return</code> — throw เป็นคำสั่ง ไม่ใช่ค่า</li>
@@ -802,7 +822,461 @@ s.replace(re, x) <span class="c">// สตริงใหม่</span></pre>
 <div class="row"><button onclick="pmNav(-1)">← ข้อก่อน</button><button class="primary" onclick="pmNav(1)">ข้อถัดไป →</button><span id="pm-score" class="pill"></span></div>
 
 <div class="checkpoint"><p>Checkpoint — สรุปสั้น ๆ</p><ul><li>Perfect Match ต้องติ๊กครบทุกข้อที่ถูกและไม่ติ๊กข้อที่ผิด ไม่มีคะแนนบางส่วน</li><li>ตัดสินทีละตัวเลือกอย่างเป็นอิสระ อย่าหาข้อที่ "ถูกที่สุด"</li><li>คำว่า "เสมอ/ทุกกรณี/เท่านั้น" มักซ่อนข้อยกเว้นไว้ — อ่านช้าลงตรงจุดนี้</li><li>ข้อที่พลาดบ่อยในชุดฝึกคือสัญญาณว่าควรย้อนไปทวนบทนั้นอีกรอบ</li></ul><div class="selfcheck"><p>✓ Self-Check</p><label><input type="checkbox" data-sc="ch12-0"> อธิบายกติกา Perfect Match ได้ และรู้ว่าทำไมติ๊กเผื่อถึงเสียคะแนน</label><label><input type="checkbox" data-sc="ch12-1"> ตัดสินตัวเลือกทีละตัวได้ ไม่หาแค่ "ข้อที่ถูกที่สุด"</label><label><input type="checkbox" data-sc="ch12-2"> จับสัญญาณคำเสี่ยงอย่าง "เสมอ/ทุกกรณี/เท่านั้น" ในตัวเลือกได้</label><label><input type="checkbox" data-sc="ch12-3"> ทำครบทั้ง 24 ข้อในชุดฝึก และรู้แล้วว่าจุดไหนของตัวเองยังอ่อนอยู่</label></div></div>
-<div class="chnav"><a href="#ch11">← อ่าน error ให้เป็น</a><a class="sp">.</a></div>
+<div class="chnav"><a href="#ch11">← อ่าน error ให้เป็น</a><a href="#ch13">DOM: เอกสารที่กลายเป็นต้นไม้ →</a></div>
+</section>
+
+<!-- ============ 13 ============ -->
+<section class="ch" id="ch13" data-exam="1">
+<h3>13 DOM: เอกสารที่กลายเป็นต้นไม้</h3>
+<p class="lead">HTML เป็นข้อความที่มีลำดับชั้น พอวาดเป็นแผนภาพจะได้ต้นไม้ 1 ต้น — ต้นไม้ต้นนั้นแหละคือ DOM</p>
+<div class="chmeta"><span class="pill">บทที่ 13</span><span class="pill">~22 นาที</span><span class="pill lv2">ปานกลาง</span><span class="pill exam">ออกสอบ</span></div>
+<div class="outcomes"><p>จบบทนี้ต้องทำได้</p><ul>
+<li>อธิบายได้ว่า DOM คืออะไร และทำไมมันไม่ใช่ทั้งภาษาโปรแกรมและไม่ใช่ของ JavaScript</li>
+<li>แยก <code>root node</code> กับ <code>root element</code> ได้ และบอกได้ว่าทำไมต้องมีทั้งสองอย่าง</li>
+<li>บอก <code>nodeType</code> ของ node หลัก ๆ ได้ และอ่านค่า <code>nodeName</code> / <code>nodeValue</code> ได้ถูก</li>
+<li>แยก <code>childNodes</code> กับ <code>children</code> ได้ และรู้ว่าทำไมจำนวนลูกถึงไม่ตรงกับที่ตาเห็น</li>
+<li>บอกได้ว่าทำไมต้องวาง <code>&lt;script&gt;</code> ก่อนปิด <code>&lt;/body&gt;</code></li></ul></div>
+
+<p>HTML ที่เราเขียนเป็นเอกสาร <b>text-based ที่มีลำดับชั้น</b> เมื่อ browser โหลดมันเข้ามา จะไม่ได้เก็บไว้เป็นข้อความเฉย ๆ แต่แปลงเป็นโครงสร้างต้นไม้ในหน่วยความจำ แล้วเปิดทางให้โปรแกรมเข้าไปเปลี่ยน <b>structure, style และ content</b> ของหน้าได้ — นั่นคือ DOM (Document Object Model)</p>
+
+<p>สองอย่างที่ต้องแยกให้ออกตั้งแต่ต้น: <b>DOM ไม่ใช่ภาษาโปรแกรม</b> และ <b>DOM ไม่ใช่ของ JavaScript</b> ทุกภาษามี library จัดการ DOM ของตัวเอง และ DOM ไม่ได้ใช้กับแค่ HTML — เอกสารใด ๆ ที่มีลำดับชั้นอย่าง XML ก็จำลองด้วยแนวคิดเดียวกันได้ แต่ถ้าไม่มี DOM ภาษา JavaScript ก็จะไม่มีความเข้าใจใด ๆ เกี่ยวกับหน้าเว็บเลย</p>
+
+<p>ทำไมต้องจำลองเป็นต้นไม้ในหน่วยความจำ — ให้คิดถึง <b>แผนที่</b> ถ้าไม่รู้ว่า node ไหนอยู่จุดไหน เราก็อ้างถึงจุดที่จะเพิ่ม ลบ หรือแก้ไขไม่ได้ สิ่งที่ต้องเรียนจึงมี 2 อย่างคู่กันเสมอ: <b>แนวคิดของการจำลองต้นไม้</b> และ <b>คำสั่ง JavaScript ที่ใช้จัดการต้นไม้นั้น</b></p>
+
+<div class="concept"><b>DOM (DOCUMENT OBJECT MODEL)</b><span>การจำลองเอกสารเป็นต้นไม้ของ node เพื่อให้โปรแกรมเข้าไปแก้ไขได้ — เป็น cross-platform และ language-independent
+HTML ที่โหลดมาครั้งแรก <b>อาจไม่ใช่ HTML สุดท้าย</b> เมื่อผู้ใช้มีปฏิสัมพันธ์ node ต่าง ๆ จะเปลี่ยนตามไป นั่นคือ dynamic page ที่เกิดจาก DOM + Event</span></div>
+
+<h4>วาง &lt;script&gt; ตรงไหน และทำไม</h4>
+<p>วางใน <code>&lt;head&gt;</code> แปลว่าโค้ด JavaScript ทั้งหมดต้องถูก download, parse และ interpret ให้เสร็จก่อนหน้าเว็บถึงจะเริ่ม render — ระหว่างนั้น browser จะว่างเปล่าทั้งหน้า</p>
+<p>แต่เหตุผลที่สำคัญกว่าเรื่องความเร็วคือ <b>คำสั่ง DOM ต้องไปเลือก node ในเอกสาร</b> ถ้า script ถูกโหลดและรันก่อนที่เอกสารจะโหลดเสร็จ มันจะหา node ไม่เจอและเกิด error ทันที ด้วยเหตุนี้จึงต้องวาง <code>&lt;script&gt;</code> ไว้ <b>ก่อนปิด <code>&lt;/body&gt;</code> เสมอ</b></p>
+
+<div class="cols">
+<div class="box"><b>❌ ใน &lt;head&gt;</b><span class="mono" style="font-size:12.5px">&lt;head&gt;<br>&nbsp;&nbsp;&lt;script src="main.js"&gt;&lt;/script&gt;<br>&lt;/head&gt;</span><br><span style="font-size:13px;color:var(--bad)">หา node ไม่เจอ — เอกสารยังโหลดไม่เสร็จ</span></div>
+<div class="box"><b>✓ ก่อนปิด &lt;/body&gt;</b><span class="mono" style="font-size:12.5px">&nbsp;&nbsp;&lt;!-- content --&gt;<br>&nbsp;&nbsp;&lt;script src="main.js"&gt;&lt;/script&gt;<br>&lt;/body&gt;</span><br><span style="font-size:13px;color:var(--ok)">เอกสารพร้อมแล้ว เลือก node ได้ทุกตัว</span></div>
+</div>
+
+<h4>Root Node กับ Root Element — อย่าเรียกสลับกัน</h4>
+<p>ลองดูเอกสารจริงที่มี <code>&lt;!DOCTYPE html&gt;</code> — <code>&lt;!DOCTYPE html&gt;</code> เป็น node ประเภทหนึ่งชื่อ <code>DOCUMENT_TYPE_NODE</code> (<code>nodeType</code> = 10) และมันอยู่ <b>ระดับเดียวกัน</b> กับ <code>&lt;html&gt;</code> แต่โครงสร้างต้นไม้มี root ได้แค่ 1 root เท่านั้น เมื่อเอกสารนี้มี 2 node อยู่ระดับบนสุด จึงต้องมี node อีกตัวมาครอบทั้งสองไว้</p>
+
+<div class="tw"><table><tr><th>คำศัพท์</th><th>หมายถึง</th><th>อธิบาย</th></tr>
+<tr><td><b>Root Node</b></td><td><code>document</code><br><code>#document</code> · nodeType 9</td><td>เป็น <b>logical node</b> ที่ไม่มีอยู่จริงในเอกสาร แต่ต้องมีเพื่อรวม <code>&lt;!DOCTYPE&gt;</code> กับ <code>&lt;html&gt;</code> ให้เป็นต้นไม้ต้นเดียว</td></tr>
+<tr><td><b>Root Element</b><br>(Document Element)</td><td><code>&lt;html&gt;</code><br>nodeType 1</td><td>คือ <b>element node ตัวแรก</b> ของเอกสาร เรียกผ่าน <code>document.documentElement</code></td></tr></table></div>
+
+<pre><span class="k">const</span> rootNode = window.document              <span class="c">// Root Node — #document</span>
+<span class="k">const</span> htmlRootElement = document.documentElement  <span class="c">// Root Element — &lt;html&gt;</span></pre>
+
+<div class="pinned"><b>จดไว้ตรงนี้</b>อาจารย์บอกว่าหัวข้อนี้เป็น "ไคลแมกซ์" ของเรื่อง DOM และย้ำว่า <b>ห้ามเรียกสลับกัน</b> — root node คือ node ที่ครอบเอกสารทั้งหมด ส่วน tag แรกของเอกสารคือ root element ซึ่งในเอกสาร HTML จะเป็น <code>&lt;html&gt;</code> เสมอ · และ <code>document.body</code> <b>ไม่ใช่ child ของ root node</b> มันเป็น descendant</div>
+
+<p><code>head</code>, <code>body</code> และ <code>documentElement</code> เป็น <b>property พิเศษ</b> ที่ <code>document</code> ทำมาให้เรียกตรง ๆ ได้เลยเพราะเรียกใช้บ่อย ไม่ต้องไล่ตามความสัมพันธ์ทีละชั้น · ส่วน <code>window.document</code> กับ <code>document</code> เฉย ๆ ค่าเท่ากัน เพราะ <code>window</code> เป็น default object อยู่แล้ว</p>
+
+<div class="play"><p class="t">ต้นไม้ DOM จริง — กด node แล้วดู nodeName / nodeType / nodeValue</p>
+<div class="row"><span class="pill">เอกสารตัวอย่าง: SIT@KMUTT Restaurant</span>
+<button class="chip" id="d13-ws-btn" onclick="d13ToggleWs()">ซ่อน whitespace text node</button></div>
+<div class="tree" id="d13-tree"></div>
+<div class="out" id="d13-out">กด node สักตัวในต้นไม้ด้านบน</div></div>
+
+<h4>Node Types — ตัวเลขที่ต้องจำได้</h4>
+<p>Node type ถูกแทนด้วย numeric constant ทั้งหมด 12 ค่า แต่ในเอกสาร HTML จริงจะเจอประมาณ 6–7 ประเภท ที่เหลืออยู่กับเอกสาร XML — <b>ประเภทหลักที่ต้องรู้คือ Element, Attribute, Text, Comment, Document, DocumentType</b></p>
+
+<div class="tw"><table><tr><th>ชื่อ constant</th><th>ค่า</th><th>เจอตอนไหน</th></tr>
+<tr><td><code>ELEMENT_NODE</code></td><td><b>1</b></td><td>ทุก tag เช่น <code>&lt;div&gt;</code> <code>&lt;li&gt;</code></td></tr>
+<tr><td><code>ATTRIBUTE_NODE</code></td><td><b>2</b></td><td><code>key="value"</code> บน start tag</td></tr>
+<tr><td><code>TEXT_NODE</code></td><td><b>3</b></td><td>ข้อความ <b>รวม whitespace ระหว่าง tag</b></td></tr>
+<tr><td><code>COMMENT_NODE</code></td><td><b>8</b></td><td><code>&lt;!-- --&gt;</code></td></tr>
+<tr><td><code>DOCUMENT_NODE</code></td><td><b>9</b></td><td><code>document</code> — root node</td></tr>
+<tr><td><code>DOCUMENT_TYPE_NODE</code></td><td><b>10</b></td><td><code>&lt;!DOCTYPE html&gt;</code></td></tr>
+<tr><td><code>DOCUMENT_FRAGMENT_NODE</code></td><td><b>11</b></td><td><code>createDocumentFragment()</code></td></tr>
+<tr><td colspan="3" style="color:var(--ink-2)">4, 7 ใช้กับ XML · 5, 6, 12 ถูก deprecated แล้ว</td></tr></table></div>
+
+<p><b>ทุก node type สืบทอดมาจาก <code>Node</code></b> จึงมี property พื้นฐานร่วมกันทั้งหมด คือ <code>nodeName</code>, <code>nodeValue</code> และ <code>nodeType</code></p>
+
+<pre><span class="k">if</span> (someNode.nodeType === Node.ELEMENT_NODE) {
+   <span class="c">// เทียบด้วยชื่อ constant อ่านแล้วเข้าใจทันที</span>
+}
+<span class="k">if</span> (someNode.nodeType === <span class="n">1</span>) {
+   <span class="c">// เทียบด้วยตัวเลข — คนอ่านทีหลังจะงง</span>
+}</pre>
+
+<h4>nodeName กับ nodeValue คืนอะไร</h4>
+<div class="tw"><table><tr><th>Node</th><th><code>nodeName</code></th><th><code>nodeValue</code></th></tr>
+<tr><td>Element</td><td>ค่าของ <code>tagName</code> เช่น <code>"LI"</code></td><td><code>null</code></td></tr>
+<tr><td>Text</td><td><code>"#text"</code></td><td>เนื้อข้อความ</td></tr>
+<tr><td>Comment</td><td><code>"#comment"</code></td><td>เนื้อคอมเมนต์</td></tr>
+<tr><td>Document</td><td><code>"#document"</code></td><td><code>null</code></td></tr>
+<tr><td>DocumentType</td><td>ค่าของ <code>DocumentType.name</code> เช่น <code>"html"</code></td><td><code>null</code></td></tr>
+<tr><td>DocumentFragment</td><td><code>"#document-fragment"</code></td><td><code>null</code></td></tr></table></div>
+
+<div class="pinned"><b>จดไว้ตรงนี้</b>สังเกตแพตเทิร์น — node ที่ "มีเนื้อข้อความในตัวเอง" (Text, Comment) จะมี <code>nodeValue</code> ส่วน node ที่ "เป็นภาชนะ" (Element, Document, DocumentType) จะได้ <code>nodeValue</code> เป็น <code>null</code> เสมอ · อยากได้ข้อความใน element ต้องใช้ <code>textContent</code> ไม่ใช่ <code>nodeValue</code></div>
+
+<h4>childNodes กับ children — ทำไมจำนวนลูกไม่ตรงกับที่ตาเห็น</h4>
+<p>เมธอดและ property ของ node แบ่งเป็น <b>2 กลุ่มเสมอ</b> คือกลุ่มที่เอา <b>ทุก node type</b> กับกลุ่มที่เอา <b>เฉพาะ element node</b> — จำหลักนี้ไว้แล้วจะเดาชื่อ property ที่เหลือได้เกือบหมด</p>
+
+<div class="tw"><table><tr><th>Property</th><th>ได้อะไร</th><th>Return type</th><th>มี <code>forEach</code>?</th></tr>
+<tr><td><code>node.childNodes</code></td><td>ลูก <b>ทุก node type</b> (element + text + comment)</td><td><b>NodeList</b></td><td>มี</td></tr>
+<tr><td><code>node.children</code></td><td>ลูก <b>เฉพาะ element node</b></td><td><b>HTMLCollection</b></td><td>ไม่มี</td></tr></table></div>
+
+<p>ทั้งคู่เป็น <b>array-like collection</b> ไม่ใช่ Array จริง มี <code>length</code> และอ้าง index ได้ แต่ <b>ใช้ <code>filter</code>, <code>map</code>, <code>reduce</code> โดยตรงไม่ได้</b> — <code>NodeList</code> มี <code>forEach</code> มาให้ตัวเดียว ส่วน <code>HTMLCollection</code> ไม่มีเลย ถ้าจะวนต้องแปลงก่อนด้วย <code>Array.from()</code></p>
+
+<pre>Array.from(childrenRootNode).forEach((child) =&gt; console.log(child))</pre>
+
+<div class="trap"><b>พลาดกันบ่อย</b><span>ระวัง whitespace text node — ในโค้ดที่อาจารย์เดโมสด <code>&lt;body&gt;</code> มีลูก <b>6 ตัว</b> ทั้งที่ตาเปล่าเห็นแค่ 3 tag เพราะ <b>การกด Enter เว้นวรรค หรือ Tab ระหว่าง tag ถูกนับเป็น text node ทั้งหมด</b> พอลบ whitespace ออกจน tag ติดกันหมด <code>length</code> ก็ลดลงทันที — เวลาใช้ <code>childNodes</code> ต้องระวังจุดนี้เสมอ ถ้าต้องการเฉพาะ tag ให้ใช้ <code>children</code></span></div>
+
+<div class="play"><p class="t">childNodes vs children — นับลูกของ &lt;ul id="soup"&gt;</p>
+<div class="row">
+<button class="chip on" id="d13b-a" onclick="d13bMode('childNodes',this)">childNodes</button>
+<button class="chip" id="d13b-b" onclick="d13bMode('children',this)">children</button>
+<span class="pill">กดสลับดูจำนวนและชนิดของลูก</span></div>
+<div class="out" id="d13b-out"></div></div>
+
+<p>ค่าที่ได้จาก index คือ <b>reference</b> ของ object เดียวกัน ไม่ใช่การ copy — หลักการเดียวกับบท Object ที่ผ่านมา ถ้าแก้ property ผ่านตัวแปรใหม่ node ต้นทางก็เปลี่ยนตามด้วย</p>
+
+<pre><span class="k">const</span> htmlNode = rootNode.childNodes[<span class="n">1</span>];   <span class="c">// &lt;html&gt; — index 0 คือ DOCTYPE</span>
+console.log(htmlNode === rootNode.childNodes[<span class="n">1</span>]); <span class="c">// true — ก้อนเดียวกัน</span>
+
+<span class="k">const</span> [first, ...rest] = document.body.childNodes; <span class="c">// destructuring ใช้ได้</span></pre>
+
+<div class="quiz" data-q='{"q":"document กับ document.documentElement ต่างกันอย่างไร","opts":["เหมือนกัน เป็น node เดียวกัน","document คือ root node (#document, nodeType 9) ส่วน documentElement คือ root element &lt;html&gt; (nodeType 1)","document คือ &lt;html&gt; ส่วน documentElement คือ &lt;body&gt;","documentElement คือ root node ส่วน document คือ &lt;html&gt;"],"ans":1,"exp":"root node คือ #document ที่ครอบทั้งเอกสารไว้เพื่อรวม DOCTYPE กับ html ให้เป็นต้นไม้ต้นเดียว ส่วน root element คือ element node ตัวแรกคือ <html> เสมอ"}'></div>
+
+<div class="quiz" data-q='{"q":"nodeValue ของ element node คืนค่าอะไร","opts":["ข้อความที่อยู่ใน element นั้น","ชื่อ tag เช่น \"DIV\"","null","undefined"],"ans":2,"exp":"element เป็นภาชนะ ไม่ได้ถือข้อความไว้เอง nodeValue จึงเป็น null — ข้อความอยู่ใน text node ที่เป็นลูกของมัน ถ้าอยากได้ข้อความให้ใช้ textContent"}'></div>
+
+<div class="quiz" data-q='{"q":"&lt;ul&gt; มี &lt;li&gt; 3 ตัว เขียนแยกบรรทัดพร้อมย่อหน้า — ul.childNodes.length ได้เท่าไร","opts":["3","6","7","4"],"ans":2,"exp":"whitespace ระหว่าง tag นับเป็น text node ด้วย — ขึ้นบรรทัดใหม่ก่อน li ตัวแรก ระหว่าง li แต่ละคู่ 2 จุด และหลัง li ตัวสุดท้าย รวม 4 text node + 3 element = 7 ตัว ถ้าอยากได้แค่ 3 ต้องใช้ children"}'></div>
+
+<div class="mistakes"><p>พลาดกันบ่อย</p><ul>
+<li>เรียก <code>root node</code> กับ <code>root element</code> สลับกัน — คนละ node คนละ nodeType</li>
+<li>ใช้ <code>childNodes</code> แล้วงงว่าทำไมลูกเยอะกว่าที่เห็น — whitespace เป็น text node ทั้งหมด</li>
+<li>เรียก <code>.map()</code> / <code>.filter()</code> บน <code>HTMLCollection</code> ตรง ๆ — ต้อง <code>Array.from()</code> ก่อน</li>
+<li>วาง <code>&lt;script&gt;</code> ใน <code>&lt;head&gt;</code> แล้วเลือก node ไม่เจอ — ย้ายลงไปก่อนปิด <code>&lt;/body&gt;</code></li></ul></div>
+
+<div class="checkpoint"><p>Checkpoint — สรุปสั้น ๆ</p><ul>
+<li>DOM คือการจำลองเอกสารเป็นต้นไม้ของ node — ไม่ใช่ภาษาโปรแกรม และไม่ใช่ของ JavaScript</li>
+<li><code>document</code> = root node (nodeType 9) · <code>document.documentElement</code> = root element <code>&lt;html&gt;</code> (nodeType 1) — ห้ามเรียกสลับ</li>
+<li>ทุก property ของ node มี 2 กลุ่มเสมอ: กลุ่มทุก node type (<code>childNodes</code> → NodeList) กับกลุ่มเฉพาะ element (<code>children</code> → HTMLCollection)</li>
+<li>whitespace ระหว่าง tag เป็น text node — ทำให้ <code>childNodes.length</code> มากกว่าที่ตาเห็นเสมอ</li></ul>
+<div class="selfcheck"><p>✓ Self-Check</p>
+<label><input type="checkbox" data-sc="ch13-0"> อธิบายได้ว่า DOM คืออะไร และทำไมไม่ใช่ของ JavaScript</label>
+<label><input type="checkbox" data-sc="ch13-1"> แยก root node กับ root element ได้ พร้อมบอก nodeType ของทั้งคู่</label>
+<label><input type="checkbox" data-sc="ch13-2"> บอก nodeType ของ Element / Text / Comment / Document / DocumentType ได้</label>
+<label><input type="checkbox" data-sc="ch13-3"> แยก childNodes กับ children ได้ และรู้ว่าทำไมจำนวนลูกไม่ตรงกับที่ตาเห็น</label></div></div>
+<div class="chnav"><a href="#ch12">← ชุดฝึกรวบยอด</a><a href="#ch14">เลือกและเดินใน DOM →</a></div>
+</section>
+<!-- ============ 14 ============ -->
+<section class="ch" id="ch14" data-exam="1">
+<h3>14 เลือกและเดินใน DOM</h3>
+<p class="lead">หา node ให้เจอก่อน ถึงจะแก้อะไรได้ — และต้องรู้ด้วยว่าสิ่งที่ได้กลับมาเป็น live หรือ static</p>
+<div class="chmeta"><span class="pill">บทที่ 14</span><span class="pill">~22 นาที</span><span class="pill lv2">ปานกลาง</span><span class="pill exam">ออกสอบ</span></div>
+<div class="outcomes"><p>จบบทนี้ต้องทำได้</p><ul>
+<li>เลือก element ได้ครบทั้ง 6 เมธอด และบอกได้ว่าแต่ละตัวคืน HTMLCollection, NodeList หรือ element เดี่ยว</li>
+<li>อธิบายความต่างระหว่าง <b>live</b> collection กับ <b>static</b> collection พร้อมยกตัวอย่างที่ทำให้ผลต่างกัน</li>
+<li>เขียน CSS selector ใน <code>querySelectorAll</code> ได้ และแยก <code>&gt;</code> กับเว้นวรรคออก</li>
+<li>เดินในต้นไม้ด้วย relationship property ได้ทั้งชุดทุก node type และชุดเฉพาะ element</li>
+<li>ใช้ <code>closest()</code> หา ancestor ที่ใกล้ที่สุดได้</li></ul></div>
+
+<p>เมื่อเอกสารกลายเป็นต้นไม้แล้ว งานถัดไปคือ <b>ชี้ให้ถูก node</b> ซึ่งทำได้ 2 ทาง — <b>เลือกตรง ๆ</b> ด้วยเมธอดค้นหา หรือ <b>เดินไปหา</b> จาก node ที่ถืออยู่แล้วผ่านความสัมพันธ์พ่อ-ลูก-พี่น้อง</p>
+
+<h4>6 เมธอดสำหรับเลือก element</h4>
+<div class="tw"><table><tr><th>เมธอด</th><th>คืนค่า</th><th>live?</th></tr>
+<tr><td><code>getElementById(id)</code></td><td>element ตัวเดียว หรือ <code>null</code></td><td>—</td></tr>
+<tr><td><code>getElementsByTagName(tag)</code></td><td><b>HTMLCollection</b></td><td><b>live</b></td></tr>
+<tr><td><code>getElementsByClassName(cls)</code></td><td><b>HTMLCollection</b></td><td><b>live</b></td></tr>
+<tr><td><code>getElementsByName(name)</code></td><td><b>NodeList</b></td><td>—</td></tr>
+<tr><td><code>querySelector(css)</code></td><td>descendant element <b>ตัวแรก</b> ที่ตรง หรือ <code>null</code></td><td>—</td></tr>
+<tr><td><code>querySelectorAll(css)</code></td><td><b>NodeList</b></td><td><b>static</b></td></tr></table></div>
+
+<p>สังเกตชื่อเมธอด — ตัวที่มีคำว่า <code>Elements</code> (พหูพจน์) คืน collection ส่วน <code>getElementById</code> กับ <code>querySelector</code> คืนตัวเดียว และเมธอดตระกูล <code>getElementsBy...</code> ที่เป็น <b>live</b> มี 2 ตัวคือ ByTagName กับ ByClassName</p>
+
+<div class="play"><p class="t">สนามทดลอง selector — พิมพ์ CSS selector แล้วดูว่าจับอะไรได้บ้าง</p>
+<div class="row">
+<input type="text" id="d14-sel" value=".meat" style="width:220px" placeholder="เช่น #soup .vegan">
+<button class="primary" onclick="d14Run()">querySelectorAll</button></div>
+<div class="row">
+<button class="chip" onclick="d14Preset('.meat')">.meat</button>
+<button class="chip" onclick="d14Preset('#soup')">#soup</button>
+<button class="chip" onclick="d14Preset('#soup .vegan')">#soup .vegan</button>
+<button class="chip" onclick="d14Preset('div.menu &gt; ul')">div.menu &gt; ul</button>
+<button class="chip" onclick="d14Preset('div.menu li')">div.menu li</button>
+<button class="chip" onclick="d14Preset('li.meat, li.vegan')">li.meat, li.vegan</button></div>
+<div class="out" id="d14-out"></div></div>
+
+<h4>&gt; กับเว้นวรรค — ลูกโดยตรง vs ลูกหลานทุกระดับ</h4>
+<p>จุดนี้ถูกหยิบมาถามบ่อยเพราะหน้าตาต่างกันแค่เครื่องหมายเดียว</p>
+<pre>document.querySelectorAll(<span class="s">'div.tech &gt; p'</span>);
+<span class="c">// &lt;p&gt; ที่ parent โดยตรง คือ div.tech เท่านั้น</span>
+
+document.querySelectorAll(<span class="s">'div.tech p'</span>);
+<span class="c">// &lt;p&gt; ที่เป็น descendant ของ div.tech ทุกระดับความลึก</span></pre>
+<p>เขียน selector ให้เจาะจงขึ้นได้อีกด้วยการรวมเงื่อนไข — <code>div[id='product-list']</code> เท่ากับ <code>div#product-list</code> · ส่วนคอมมา <code>,</code> แปลว่า "หรือ" เช่น <code>p.warning, p.note</code> จับทั้งสองแบบ และ <code>querySelector('#main, #basic')</code> จะได้ element <b>ตัวแรกในเอกสาร</b> ที่ตรงเงื่อนไขใดเงื่อนไขหนึ่ง ไม่ใช่ตัวแรกตามลำดับที่เขียนใน selector</p>
+
+<h4>HTMLCollection (live) vs NodeList (static)</h4>
+<p>นี่คือกับดักที่สำคัญที่สุดของบทนี้ — สอง collection นี้หน้าตาเหมือนกันเวลา <code>console.log</code> แต่ทำงานคนละแบบเมื่อเอกสารเปลี่ยน</p>
+
+<div class="tw"><table><tr><th></th><th>HTMLCollection</th><th>NodeList</th></tr>
+<tr><td>มีอะไรอยู่ข้างใน</td><td><b>element node เท่านั้น</b></td><td>node <b>ทุกชนิด</b> (element, text, comment)</td></tr>
+<tr><td>เอกสารเปลี่ยนแล้ว?</td><td><b>live</b> — อัปเดตตามอัตโนมัติ</td><td>ส่วนใหญ่ <b>static</b> — ไม่เปลี่ยน</td></tr>
+<tr><td>เข้าถึงสมาชิกด้วย</td><td>index, <code>id</code>, <code>name</code></td><td><b>index เท่านั้น</b></td></tr>
+<tr><td><code>forEach</code></td><td><b>ไม่มี</b></td><td>มี</td></tr>
+<tr><td>ได้มาจาก</td><td><code>children</code>, <code>getElementsByTagName</code>, <code>getElementsByClassName</code></td><td><code>childNodes</code>, <code>querySelectorAll</code>, <code>getElementsByName</code></td></tr></table></div>
+
+<div class="concept"><b>LIVE VS STATIC</b><span><b>live</b> = collection ผูกกับเอกสาร เพิ่ม <code>&lt;li&gt;</code> เข้า DOM แล้ว <code>length</code> เพิ่มตามทันทีโดยไม่ต้องเรียกใหม่
+<b>static</b> = collection คือภาพนิ่ง ณ วินาทีที่เรียก เพิ่ม <code>&lt;li&gt;</code> ทีหลัง <code>length</code> ก็ยังเท่าเดิม ต้องเรียก <code>querySelectorAll</code> ซ้ำถึงจะเห็นของใหม่</span></div>
+
+<div class="play"><p class="t">live vs static — เก็บ collection ไว้ก่อน แล้วค่อยเพิ่ม &lt;li&gt;</p>
+<div class="row">
+<button class="primary" onclick="d14LiveGrab()">1. เก็บ collection ทั้งสองแบบไว้</button>
+<button onclick="d14LiveAdd()">2. เพิ่ม &lt;li class="meat"&gt;</button>
+<button onclick="d14LiveReset()">↺ รีเซ็ต</button></div>
+<div class="out" id="d14-live-out">กดปุ่ม 1 ก่อน</div></div>
+
+<div class="trap"><b>พลาดกันบ่อย</b><span>เก็บ <code>getElementsByClassName</code> ไว้ในตัวแปร แล้วเขียน <code>for (let i = 0; i &lt; items.length; i++)</code> พร้อมกับ <b>เพิ่ม element ที่มี class เดียวกันเข้าไปในลูป</b> — เพราะเป็น live collection <code>length</code> จะโตขึ้นทุกรอบ กลายเป็นลูปไม่รู้จบทันที · ถ้าต้องแก้ DOM ระหว่างวน ให้ใช้ <code>querySelectorAll</code> (static) หรือ <code>Array.from()</code> ก๊อปออกมาก่อน</span></div>
+
+<h4>เดินในต้นไม้ — สองชุดที่ต้องแยกให้ออก</h4>
+<p>หลักเดียวกับ <code>childNodes</code> / <code>children</code> ในบทที่แล้ว — ทุกความสัมพันธ์มี 2 เวอร์ชัน คือชุดที่นับ <b>ทุก node type</b> กับชุดที่นับ <b>เฉพาะ element</b></p>
+
+<div class="tw"><table><tr><th>ทุก node type</th><th>เฉพาะ element</th><th>ชี้ไปที่</th></tr>
+<tr><td><code>parentNode</code></td><td><code>parentElement</code></td><td>node แม่</td></tr>
+<tr><td><code>childNodes</code></td><td><code>children</code></td><td>ลูกทั้งหมด</td></tr>
+<tr><td><code>firstChild</code></td><td><code>firstElementChild</code></td><td>ลูกตัวแรก</td></tr>
+<tr><td><code>lastChild</code></td><td><code>lastElementChild</code></td><td>ลูกตัวสุดท้าย</td></tr>
+<tr><td><code>nextSibling</code></td><td><code>nextElementSibling</code></td><td>พี่น้องตัวถัดไป</td></tr>
+<tr><td><code>previousSibling</code></td><td><code>previousElementSibling</code></td><td>พี่น้องตัวก่อนหน้า</td></tr>
+<tr><td>—</td><td><code>childElementCount</code></td><td>จำนวนลูกที่เป็น element</td></tr></table></div>
+
+<p><code>someNode.firstChild</code> เท่ากับ <code>someNode.childNodes[0]</code> เสมอ และ <code>someNode.lastChild</code> เท่ากับ <code>someNode.childNodes[length-1]</code> เสมอ — ด้วยความสัมพันธ์ครบชุดแบบนี้ <code>childNodes</code> จึงเป็นแค่ <b>ความสะดวก ไม่ใช่สิ่งจำเป็น</b> เพราะเราไปถึง node ใดก็ได้ในต้นไม้ด้วย relationship pointer เพียงอย่างเดียว</p>
+
+<pre><span class="k">const</span> htmlElement = document.querySelector(<span class="s">'html'</span>);
+console.log(htmlElement.parentNode);    <span class="c">// #document — root node</span>
+console.log(htmlElement.parentElement); <span class="c">// null — เพราะ #document ไม่ใช่ element</span></pre>
+
+<div class="pinned"><b>จดไว้ตรงนี้</b>คู่ <code>parentNode</code> / <code>parentElement</code> ของ <code>&lt;html&gt;</code> เป็นตัวอย่างที่ชัดที่สุดของความต่าง — แม่ของ <code>&lt;html&gt;</code> คือ <code>#document</code> ซึ่งเป็น node แต่ไม่ใช่ element ดังนั้น <code>parentNode</code> ได้ค่า แต่ <code>parentElement</code> ได้ <code>null</code></div>
+
+<p>วนพี่น้องทั้งหมดด้วย <code>nextElementSibling</code> จนกว่าจะหมด — เงื่อนไขจบคือ <code>null</code> เหมือนที่เจอในบท while</p>
+<pre><span class="k">let</span> current = soupMenu.firstElementChild;
+<span class="k">while</span> (current !== <span class="k">null</span>) {
+   console.log(current);
+   current = current.nextElementSibling;
+}</pre>
+
+<div class="play"><p class="t">เดินในต้นไม้ — กด li สักตัว แล้วดูว่าเพื่อนบ้านมันคือใคร</p>
+<div class="row" id="d14-nav-btns"></div>
+<div class="out" id="d14-nav-out">กดเมนูสักรายการด้านบน</div></div>
+
+<h4>closest() — ค้นขึ้นไปข้างบน</h4>
+<p>เมธอดค้นหาส่วนใหญ่ค้น <b>ลงไปข้างล่าง</b> แต่ <code>element.closest(selector)</code> ค้น <b>ขึ้นไปข้างบน</b> จาก element ปัจจุบัน ไล่ผ่าน parent ไปเรื่อย ๆ จนถึง document แล้วคืน ancestor ที่ใกล้ที่สุดที่ตรง selector — <b>หรือตัวมันเอง</b> ถ้าตัวมันเองก็ตรงเงื่อนไข ถ้าไม่เจอเลยคืน <code>null</code></p>
+
+<pre><span class="k">const</span> el = document.getElementById(<span class="s">'div-03'</span>);
+el.closest(<span class="s">'#div-02'</span>);       <span class="c">// &lt;div id="div-02"&gt; — ancestor</span>
+el.closest(<span class="s">'div div'</span>);       <span class="c">// &lt;div id="div-03"&gt; — ตัวมันเองก็ตรง</span>
+el.closest(<span class="s">'article &gt; div'</span>); <span class="c">// &lt;div id="div-01"&gt;</span></pre>
+
+<div class="quiz" data-q='{"q":"เก็บ const items = document.getElementsByClassName(\"meat\") ไว้ แล้วเพิ่ม &lt;li class=\"meat\"&gt; เข้า DOM ทีหลัง items.length จะเป็นอย่างไร","opts":["เท่าเดิม เพราะเก็บไว้ตั้งแต่ก่อนเพิ่ม","เพิ่มขึ้น เพราะ HTMLCollection เป็น live","เท่าเดิม ต้องเรียกเมธอดใหม่ถึงจะเห็น","เกิด error เพราะ collection ถูก freeze แล้ว"],"ans":1,"exp":"getElementsByClassName คืน HTMLCollection ซึ่งเป็น live collection ผูกกับเอกสาร เพิ่ม element ที่ตรงเงื่อนไขเข้า DOM เมื่อไหร่ length ก็เพิ่มตามทันทีโดยไม่ต้องเรียกใหม่ ต่างจาก querySelectorAll ที่เป็น static"}'></div>
+
+<div class="quiz" data-q='{"q":"document.querySelectorAll(\"div.menu &gt; li\") กับ document.querySelectorAll(\"div.menu li\") ต่างกันอย่างไร","opts":["เหมือนกันทุกประการ","แบบแรกได้ li ที่เป็นลูกโดยตรงของ div.menu · แบบสองได้ li ที่เป็นลูกหลานทุกระดับ","แบบแรกได้ตัวเดียว แบบสองได้ทุกตัว","แบบแรกเป็น live แบบสองเป็น static"],"ans":1,"exp":"เครื่องหมาย > หมายถึง immediate parent คือลูกโดยตรงเท่านั้น ส่วนเว้นวรรคหมายถึง descendant คือลูกหลานทุกระดับความลึก ทั้งคู่คืน NodeList แบบ static เหมือนกัน"}'></div>
+
+<div class="quiz" data-q='{"q":"document.querySelector(\"html\").parentElement คืนค่าอะไร","opts":["#document","null","&lt;body&gt;","undefined"],"ans":1,"exp":"แม่ของ <html> คือ #document ซึ่งเป็น node แต่ไม่ใช่ element node — parentNode จึงได้ #document แต่ parentElement ได้ null เพราะไม่มี ancestor ที่เป็น element"}'></div>
+
+<div class="mistakes"><p>พลาดกันบ่อย</p><ul>
+<li>วน live collection พร้อมเพิ่ม element ที่ตรงเงื่อนไขเข้าไป — <code>length</code> โตทุกรอบ กลายเป็นลูปไม่รู้จบ</li>
+<li>เรียก <code>.forEach()</code> บนผลจาก <code>getElementsByClassName</code> — HTMLCollection ไม่มี <code>forEach</code> ต้อง <code>Array.from()</code> ก่อน</li>
+<li>ลืมว่า <code>querySelector</code> คืนแค่ <b>ตัวแรก</b> แล้วเอาไปคาดหวังว่าจะได้ทุกตัว</li>
+<li>สับสน <code>&gt;</code> กับเว้นวรรคใน selector ทำให้เลือกได้กว้างหรือแคบเกินไป</li></ul></div>
+
+<div class="checkpoint"><p>Checkpoint — สรุปสั้น ๆ</p><ul>
+<li><code>getElementsByTagName</code> และ <code>getElementsByClassName</code> คืน <b>HTMLCollection ที่เป็น live</b> · <code>querySelectorAll</code> คืน <b>NodeList ที่เป็น static</b></li>
+<li>HTMLCollection ไม่มี <code>forEach</code> · NodeList มี — ทั้งคู่ไม่ใช่ Array จริง ต้อง <code>Array.from()</code> ถึงจะใช้ <code>map</code>/<code>filter</code> ได้</li>
+<li><code>&gt;</code> = ลูกโดยตรง · เว้นวรรค = ลูกหลานทุกระดับ</li>
+<li>ทุก relationship มี 2 เวอร์ชัน — ชุดทุก node type กับชุด <code>...Element...</code> เฉพาะ element · <code>closest()</code> ค้นขึ้นข้างบน</li></ul>
+<div class="selfcheck"><p>✓ Self-Check</p>
+<label><input type="checkbox" data-sc="ch14-0"> บอกได้ว่าเมธอดเลือก element ทั้ง 6 ตัวคืนอะไร และตัวไหนเป็น live</label>
+<label><input type="checkbox" data-sc="ch14-1"> อธิบาย live vs static ได้ พร้อมยกตัวอย่างที่ทำให้ผลต่างกัน</label>
+<label><input type="checkbox" data-sc="ch14-2"> เขียน CSS selector ได้ และแยก <code>&gt;</code> กับเว้นวรรคออก</label>
+<label><input type="checkbox" data-sc="ch14-3"> เดินในต้นไม้ได้ทั้งชุดทุก node type และชุดเฉพาะ element และใช้ <code>closest()</code> เป็น</label></div></div>
+<div class="chnav"><a href="#ch13">← DOM: เอกสารที่กลายเป็นต้นไม้</a><a href="#ch15">แก้ไข DOM →</a></div>
+</section>
+<!-- ============ 15 ============ -->
+<section class="ch" id="ch15" data-exam="1">
+<h3>15 แก้ไข DOM</h3>
+<p class="lead">สร้าง node เสร็จแล้วมันยัง "ลอย" อยู่ ยังไม่อยู่ในหน้าเว็บ จนกว่าจะผูกกลับเข้าต้นไม้ — ขั้นที่คนลืมบ่อยที่สุด</p>
+<div class="chmeta"><span class="pill">บทที่ 15</span><span class="pill">~25 นาที</span><span class="pill lv3">ท้าทาย</span><span class="pill exam">ออกสอบ</span></div>
+<div class="outcomes"><p>จบบทนี้ต้องทำได้</p><ul>
+<li>แยก <code>innerHTML</code> / <code>innerText</code> / <code>textContent</code> ได้ และรู้ว่าตัวไหนเสี่ยง XSS</li>
+<li>สร้าง node ใหม่ครบ 6 ขั้นตอน และรู้ว่าขั้นไหนที่ลืมแล้ว node จะไม่ขึ้นหน้าเว็บ</li>
+<li>ใช้ <code>appendChild</code>, <code>insertBefore</code>, <code>replaceChild</code>, <code>removeChild</code> ได้ถูกลำดับ argument</li>
+<li>จัดการ class ด้วย <code>classList</code> และอ่าน/เขียน custom data ด้วย <code>dataset</code></li>
+<li>อธิบายได้ว่า <code>DocumentFragment</code> ช่วยเรื่องอะไร และใช้ตอนไหน</li></ul></div>
+
+<h4>innerHTML · innerText · textContent — สามตัวที่คืนไม่เหมือนกัน</h4>
+<p>สามตัวนี้ดูเผิน ๆ เหมือนทำเรื่องเดียวกัน แต่ผลต่างกันชัดเจนเมื่อ element มีทั้ง tag ซ้อนและข้อความที่ถูกซ่อนด้วย CSS</p>
+
+<div class="tw"><table><tr><th>Property</th><th>คืนค่าอะไร</th><th>สนใจ CSS?</th><th>ข้อควรระวัง</th></tr>
+<tr><td><code>innerHTML</code></td><td>HTML ทั้งหมดข้างใน — parse และ render จริง</td><td>—</td><td><b>เสี่ยง XSS</b> ถ้ารับค่าจากผู้ใช้</td></tr>
+<tr><td><code>innerText</code></td><td>ข้อความที่ <b>มองเห็นจริง</b> บนหน้าเว็บ</td><td><b>ประมวลผล CSS</b></td><td>ช้ากว่า เพราะต้องคำนวณ layout</td></tr>
+<tr><td><code>textContent</code></td><td>ข้อความ <b>ทั้งหมด</b> รวมที่ซ่อนด้วย <code>display:none</code></td><td>ไม่สนใจ</td><td>ไม่ parse HTML — ปลอดภัยกว่า</td></tr></table></div>
+
+<div class="play"><p class="t">สาม property กับ element เดียวกัน — ผลต่างกันตรงไหน</p>
+<div class="out mono" id="d15a-src" style="white-space:pre-wrap"></div>
+<div class="row">
+<button class="chip on" id="d15a-1" onclick="d15aPick('innerHTML',this)">innerHTML</button>
+<button class="chip" id="d15a-2" onclick="d15aPick('innerText',this)">innerText</button>
+<button class="chip" id="d15a-3" onclick="d15aPick('textContent',this)">textContent</button></div>
+<div class="out" id="d15a-out"></div></div>
+
+<div class="trap"><b>พลาดกันบ่อย</b><span>เอาค่าที่ผู้ใช้พิมพ์มายัดใส่ <code>innerHTML</code> ตรง ๆ — ถ้าผู้ใช้พิมพ์ tag <code>&lt;script&gt;</code> หรือ <code>&lt;img onerror=...&gt;</code> เข้ามา browser จะ parse และรันมันจริง นั่นคือช่องโหว่ <b>XSS (Cross-Site Scripting)</b> · ถ้าต้องการแค่แสดงข้อความ ให้ใช้ <code>textContent</code> ซึ่งไม่ parse HTML เลย</span></div>
+
+<h4>สร้าง node ใหม่ — 6 ขั้นตอนเต็ม</h4>
+<p>โจทย์ที่อาจารย์ยกในคาบ: HTML โหลดมาแค่ <code>chapter</code> 1–3 ต้องการเพิ่ม <code>&lt;chapter class="chapter"&gt;lesson 4&lt;/chapter&gt;</code> ทีหลังด้วย DOM — นี่คือ 6 ขั้นตอนแบบครบทุกชนิด node</p>
+
+<div class="tw"><table><tr><th>ขั้น</th><th>ทำอะไร</th><th>คำสั่ง</th></tr>
+<tr><td>1</td><td>สร้าง element node</td><td><code>document.createElement('chapter')</code></td></tr>
+<tr><td>2</td><td>สร้าง attribute node</td><td><code>document.createAttribute('class')</code> แล้วกำหนด <code>.value</code></td></tr>
+<tr><td>3</td><td>ผูก attribute เข้ากับ element</td><td><code>element.setAttributeNode(attrNode)</code></td></tr>
+<tr><td>4</td><td>สร้าง text node</td><td><code>document.createTextNode('lesson 4')</code></td></tr>
+<tr><td>5</td><td>ผูก text node เป็นลูกของ element</td><td><code>element.appendChild(textNode)</code></td></tr>
+<tr><td><b>6</b></td><td><b>ผูกทั้งก้อนกลับเข้า tree</b></td><td><code>mainElement.appendChild(newChapter)</code></td></tr></table></div>
+
+<div class="pinned"><b>จดไว้ตรงนี้</b>อาจารย์ย้ำว่า <b>อย่าลืมขั้นที่ 6</b> — สร้าง node เสร็จแล้ว node ยัง "ลอย" อยู่ในหน่วยความจำ ยังไม่อยู่ใน DOM tree จนกว่าจะเอาไปผูกเป็นลูกของ parent จริง · อาการคือโค้ดรันผ่านไม่มี error แต่หน้าเว็บไม่เปลี่ยนอะไรเลย</div>
+
+<div class="play"><p class="t">เดิน 6 ขั้นตอนทีละก้าว — ดู node ค่อย ๆ ก่อร่างขึ้นมา</p>
+<div class="row"><button onclick="d15bStep(-1)">← ย้อน</button><button class="primary" onclick="d15bStep(1)">ขั้นถัดไป →</button><button onclick="d15bStep(0)">↺ เริ่มใหม่</button><span class="pill" id="d15b-n"></span></div>
+<div class="out mono" id="d15b-code" style="white-space:pre-wrap"></div>
+<div class="out" id="d15b-state"></div>
+<div class="out" id="d15b-dom"></div></div>
+
+<p>เขียนแบบย่อก็ได้ผลเหมือนกันเป๊ะ ต่างกันแค่ <b>แบบเต็มได้ตัวแปรอ้างอิง attribute node และ text node ไว้ใช้ต่อ</b></p>
+<div class="cols">
+<div class="box"><b>แบบย่อ</b><pre style="margin:6px 0"><span class="k">const</span> c = document.createElement(<span class="s">'chapter'</span>);
+c.setAttribute(<span class="s">'class'</span>, <span class="s">'chapter'</span>);
+c.textContent = <span class="s">'lesson 4'</span>;
+main.appendChild(c);</pre></div>
+<div class="box"><b>แบบเต็ม</b><pre style="margin:6px 0"><span class="k">const</span> a = document.createAttribute(<span class="s">'class'</span>);
+a.value = <span class="s">'chapter'</span>;
+c.setAttributeNode(a);
+<span class="k">const</span> t = document.createTextNode(<span class="s">'lesson 4'</span>);
+c.appendChild(t);</pre></div>
+</div>
+
+<div class="concept"><b>ATTR NODE ไม่อยู่ใน DOCUMENT TREE</b><span><code>Attr</code> สืบทอดจาก <code>Node</code> แต่ <b>ไม่ถือว่าเป็นส่วนหนึ่งของ document tree</b> — <code>parentNode</code>, <code>previousSibling</code>, <code>nextSibling</code> ของมันจึงเป็น <code>null</code> ทั้งหมด
+หา element เจ้าของได้ด้วย <code>attrNode.ownerElement</code> เท่านั้น · <code>element.attributes</code> คืน <b>NamedNodeMap</b> ซึ่ง array-like อ้าง index ได้ วน <code>for...of</code> ได้ และดึง key/value ด้วย <code>.name</code> / <code>.value</code></span></div>
+
+<h4>4 เมธอดจัดการ node</h4>
+<div class="tw"><table><tr><th>เมธอด</th><th>หน้าที่</th><th>คืนอะไร</th></tr>
+<tr><td><code>appendChild(node)</code></td><td>เพิ่มไว้ <b>ท้ายสุด</b> ของ <code>childNodes</code></td><td>node ที่เพิ่ม</td></tr>
+<tr><td><code>insertBefore(newNode, refNode)</code></td><td>แทรกให้ newNode เป็น <b>previous sibling</b> ของ refNode</td><td>node ที่แทรก</td></tr>
+<tr><td><code>replaceChild(newChild, oldChild)</code></td><td>แทนที่ลูกเดิมด้วยลูกใหม่</td><td>node ที่ <b>ถูกแทนที่</b></td></tr>
+<tr><td><code>removeChild(child)</code></td><td>ลบลูกออกจาก DOM</td><td>node ที่ <b>ถูกลบ</b></td></tr></table></div>
+
+<p>ลำดับ argument เป็นจุดที่สลับกันบ่อย — จำว่า <b>ตัวใหม่มาก่อนเสมอ</b> ทั้ง <code>insertBefore(ใหม่, อ้างอิง)</code> และ <code>replaceChild(ใหม่, เก่า)</code> · และถ้าใส่ <code>null</code> เป็น reference node ให้ <code>insertBefore</code> มันจะกลายเป็นการต่อท้ายเหมือน <code>appendChild</code></p>
+
+<pre>langElement.insertBefore(newNode, <span class="k">null</span>); <span class="c">// = appendChild</span></pre>
+
+<div class="play"><p class="t">สนามทดลอง — กดแล้วดู DOM เปลี่ยนจริง</p>
+<div class="row">
+<button onclick="d15cOp('append')">appendChild</button>
+<button onclick="d15cOp('insert')">insertBefore(ตัวแรก)</button>
+<button onclick="d15cOp('replace')">replaceChild</button>
+<button onclick="d15cOp('remove')">removeChild(ตัวแรก)</button>
+<button class="chip" onclick="d15cOp('reset')">↺ รีเซ็ต</button></div>
+<div class="out" id="d15c-dom"></div>
+<div class="out" id="d15c-log">ผลของคำสั่งจะขึ้นตรงนี้</div></div>
+
+<h4>classList — จัดการ class โดยไม่ต้องแก้ string เอง</h4>
+<p><code>classList</code> เป็น <b>read-only property</b> ที่คืน <b>DOMTokenList</b> ทำให้เพิ่ม ลบ สลับ class ได้โดยไม่ต้องไปต่อ string ใน <code>className</code> เอง</p>
+
+<div class="tw"><table><tr><th>เมธอด</th><th>หน้าที่</th></tr>
+<tr><td><code>add(a, b, ...)</code></td><td>เพิ่ม class — ถ้ามีอยู่แล้วจะไม่เพิ่มซ้ำ</td></tr>
+<tr><td><code>remove(a, b, ...)</code></td><td>ลบ class ออก</td></tr>
+<tr><td><code>toggle(cls, force)</code></td><td>มีอยู่แล้วลบ / ไม่มีก็เพิ่ม — ใส่ <code>force</code> เพื่อบังคับเพิ่ม (<code>true</code>) หรือลบ (<code>false</code>)</td></tr>
+<tr><td><code>contains(cls)</code></td><td>คืน <code>true</code>/<code>false</code></td></tr>
+<tr><td><code>replace(old, new)</code></td><td>แทนที่ class เดิมด้วยตัวใหม่</td></tr>
+<tr><td><code>length</code></td><td>จำนวน class ใน list</td></tr></table></div>
+
+<div class="play"><p class="t">classList — กดแล้วดู attribute class เปลี่ยน</p>
+<div class="row">
+<button onclick="d15dOp('add')">add('p-5')</button>
+<button onclick="d15dOp('remove')">remove('text-xl')</button>
+<button onclick="d15dOp('toggle')">toggle('active')</button>
+<button onclick="d15dOp('replace')">replace('p-5','p-2')</button>
+<button onclick="d15dOp('contains')">contains('p-2')</button>
+<button class="chip" onclick="d15dOp('reset')">↺ รีเซ็ต</button></div>
+<div class="out" id="d15d-out"></div></div>
+
+<h4>dataset — เก็บข้อมูลไว้กับ element</h4>
+<p><code>dataset</code> ให้เข้าถึง <b>custom data attribute</b> (attribute ที่ขึ้นต้นด้วย <code>data-</code>) เป็น map ของ string ที่เรียกว่า <b>DOMStringMap</b> — จุดที่ต้องจำคือชื่อจะถูกแปลงจาก <b>kebab-case</b> ใน HTML เป็น <b>camelCase</b> ใน JavaScript โดยอัตโนมัติ</p>
+
+<pre><span class="c">// &lt;button id="b" data-modal-id="modal1" data-user-status="active"&gt;</span>
+<span class="k">const</span> b = document.getElementById(<span class="s">'b'</span>);
+
+b.dataset.modalId;      <span class="c">// 'modal1'  — data-modal-id  → modalId</span>
+b.dataset.userStatus;   <span class="c">// 'active'  — data-user-status → userStatus</span>
+
+b.dataset.color = <span class="s">'green'</span>;          <span class="c">// เพิ่ม data-color="green"</span>
+b.removeAttribute(<span class="s">'data-modal-id'</span>); <span class="c">// ลบ</span>
+b.dataset.modalId;      <span class="c">// undefined</span></pre>
+
+<p><code>b.dataset.modalId</code> ให้ผลเดียวกับ <code>b.getAttribute('data-modal-id')</code> แต่อ่านง่ายกว่า และวนดูทั้งหมดได้ด้วย <code>for...in</code> เหมือน object ทั่วไป</p>
+
+<h4>DocumentFragment — แตะ DOM จริงให้น้อยที่สุด</h4>
+<p>ทุกครั้งที่เพิ่ม element เข้า DOM จริง browser ต้องคำนวณ layout ใหม่ (<b>reflow</b>) และวาดใหม่ (<b>repaint</b>) — วนลูปเพิ่ม 1,000 ตัวก็เกิด 1,000 ครั้ง</p>
+<p><code>DocumentFragment</code> คือ <b>พื้นที่พักชั่วคราวในหน่วยความจำ</b> ที่ไม่ได้เป็นส่วนหนึ่งของหน้าเว็บจริง สร้างทุกอย่างลงใน fragment ก่อน แล้วค่อย <code>appendChild</code> เข้า DOM จริง <b>ครั้งเดียว</b> — ผลลัพธ์เหมือนกันเป๊ะ แต่ reflow/repaint เกิดครั้งเดียว</p>
+
+<pre><span class="k">const</span> fragment = document.createDocumentFragment();
+<span class="k">const</span> list = document.getElementById(<span class="s">'list'</span>);
+
+<span class="k">for</span> (<span class="k">let</span> i = <span class="n">0</span>; i &lt; <span class="n">1000</span>; i++) {
+    <span class="k">const</span> li = document.createElement(<span class="s">'li'</span>);
+    li.textContent = <span class="s">'Item '</span> + i;
+    fragment.appendChild(li);   <span class="c">// ยังไม่แตะ DOM จริง</span>
+}
+list.appendChild(fragment);     <span class="c">// แตะ DOM จริงครั้งเดียว</span></pre>
+
+<h4>เอามารวมกัน — โจทย์การบ้าน W4</h4>
+<p>โจทย์คือสร้าง <code>&lt;chapter class="chapter"&gt;lesson N&lt;/chapter&gt;</code> ตั้งแต่ 4 ถึง 100 โดยอัตโนมัติ ห้ามเขียนโค้ดซ้ำเกือบร้อยบรรทัด — ให้ย้ายโค้ดตัวอย่างไปเป็น function แล้ววนสร้าง นี่คือจุดที่บทฟังก์ชัน บทวนซ้ำ และบท DOM มาเจอกันพอดี</p>
+
+<pre><span class="k">function</span> createChapter(n) {
+  <span class="k">const</span> el = document.createElement(<span class="s">'chapter'</span>);
+  el.setAttribute(<span class="s">'class'</span>, <span class="s">'chapter'</span>);
+  el.textContent = <span class="s">`lesson ${n}`</span>;
+  <span class="k">return</span> el;                 <span class="c">// คืน node ออกไป — ยังไม่ผูกเข้า tree</span>
+}
+
+<span class="k">const</span> main = document.querySelector(<span class="s">'#main-1'</span>);
+<span class="k">const</span> frag = document.createDocumentFragment();
+<span class="k">for</span> (<span class="k">let</span> i = <span class="n">4</span>; i &lt;= <span class="n">100</span>; i++) {
+  frag.appendChild(createChapter(i));
+}
+main.appendChild(frag);       <span class="c">// ขั้นที่ 6 — แตะ DOM จริงครั้งเดียว</span></pre>
+
+<div class="play"><p class="t">รันโจทย์การบ้านจริง — สร้าง chapter 4 ถึง N</p>
+<div class="row">
+<span>สร้างถึง lesson</span><input type="number" id="d15e-n" value="10" min="4" max="100" style="width:80px">
+<button class="primary" onclick="d15eRun(false)">วนสร้างทีละตัว</button>
+<button onclick="d15eRun(true)">ใช้ DocumentFragment</button>
+<button class="chip" onclick="d15eReset()">↺ ล้าง</button></div>
+<div class="out" id="d15e-log"></div>
+<div class="out" id="d15e-dom" style="max-height:200px;overflow:auto"></div></div>
+
+<div class="quiz" data-q='{"q":"สร้าง element ด้วย createElement แล้วกำหนด textContent เรียบร้อย แต่หน้าเว็บไม่เปลี่ยนอะไรเลย ไม่มี error ด้วย — เพราะอะไร","opts":["ต้องเรียก document.refresh() ก่อน","ลืมขั้นที่ 6 คือยังไม่ได้ appendChild ผูก node เข้า tree","createElement ใช้กับ tag ที่ไม่มีใน HTML ไม่ได้","ต้องกำหนด id ให้ element ก่อนเสมอ"],"ans":1,"exp":"createElement สร้าง node ไว้ในหน่วยความจำเท่านั้น node ยังลอยอยู่ ไม่ได้อยู่ใน DOM tree จนกว่าจะผูกเป็นลูกของ parent จริงด้วย appendChild หรือ insertBefore — เป็นขั้นที่ลืมกันบ่อยที่สุด"}'></div>
+
+<div class="quiz" data-q='{"q":"element มี &lt;b&gt;Hello&lt;/b&gt; &lt;span style=\"display:none\"&gt;hidden&lt;/span&gt; world — textContent คืนอะไร","opts":["\"Hello world\" ไม่มีคำว่า hidden","\"Hello hidden world\" มีคำว่า hidden ด้วย","\"&lt;b&gt;Hello&lt;/b&gt; world\"","\"Hello\" อย่างเดียว"],"ans":1,"exp":"textContent คืนข้อความทั้งหมดโดยไม่สนใจ CSS จึงรวมข้อความที่ซ่อนด้วย display:none มาด้วย ส่วน innerText ที่ประมวลผล CSS ต่างหากที่จะไม่มีคำว่า hidden"}'></div>
+
+<div class="quiz" data-q='{"q":"parent.insertBefore(newNode, null) ทำอะไร","opts":["เกิด error เพราะ reference node เป็น null ไม่ได้","แทรกไว้หน้าสุดของ childNodes","ต่อท้ายเหมือน appendChild","ไม่ทำอะไรเลย"],"ans":2,"exp":"ถ้า reference node เป็น null จะไม่มีตัวไหนให้แทรกข้างหน้า พฤติกรรมจึงกลายเป็นการต่อท้าย ให้ผลเหมือน appendChild ทุกประการ"}'></div>
+
+<div class="mistakes"><p>พลาดกันบ่อย</p><ul>
+<li>สร้าง node เสร็จแล้วลืม <code>appendChild</code> — ไม่มี error แต่หน้าเว็บไม่เปลี่ยน</li>
+<li>สลับลำดับ argument — จำว่า <b>ตัวใหม่มาก่อนเสมอ</b>: <code>insertBefore(ใหม่, อ้างอิง)</code> · <code>replaceChild(ใหม่, เก่า)</code></li>
+<li>ยัดค่าที่ผู้ใช้พิมพ์ลง <code>innerHTML</code> — เปิดช่องโหว่ XSS ให้ใช้ <code>textContent</code> แทน</li>
+<li>เขียน <code>element.dataset.userStatus</code> เป็น <code>dataset['user-status']</code> — ต้องเป็น camelCase</li>
+<li>วนเพิ่ม element เข้า DOM จริงทีละตัวหลายพันครั้ง — ใช้ <code>DocumentFragment</code> ลด reflow</li></ul></div>
+
+<div class="checkpoint"><p>Checkpoint — สรุปสั้น ๆ</p><ul>
+<li><code>innerHTML</code> parse HTML จริง (เสี่ยง XSS) · <code>innerText</code> เห็นตามที่ CSS แสดง · <code>textContent</code> ได้ทุกข้อความรวมที่ซ่อนไว้</li>
+<li>สร้าง node ครบ 6 ขั้น และ <b>ขั้นที่ 6 คือ <code>appendChild</code> ผูกเข้า tree</b> — ลืมแล้ว node จะลอยอยู่เฉย ๆ</li>
+<li>ตัวใหม่มาก่อนเสมอ: <code>insertBefore(ใหม่, อ้างอิง)</code> · <code>replaceChild(ใหม่, เก่า)</code> · <code>insertBefore(n, null)</code> = <code>appendChild</code></li>
+<li><code>classList</code> จัดการ class · <code>dataset</code> อ่าน <code>data-*</code> แบบ camelCase · <code>DocumentFragment</code> ลด reflow เหลือครั้งเดียว</li></ul>
+<div class="selfcheck"><p>✓ Self-Check</p>
+<label><input type="checkbox" data-sc="ch15-0"> แยก innerHTML / innerText / textContent ได้ และรู้ว่าตัวไหนเสี่ยง XSS</label>
+<label><input type="checkbox" data-sc="ch15-1"> เขียน 6 ขั้นตอนสร้าง node ได้ และรู้ว่าขั้นไหนที่ลืมแล้ว node ไม่ขึ้นหน้าเว็บ</label>
+<label><input type="checkbox" data-sc="ch15-2"> ใช้ appendChild / insertBefore / replaceChild / removeChild ได้ถูกลำดับ argument</label>
+<label><input type="checkbox" data-sc="ch15-3"> ใช้ classList และ dataset เป็น และอธิบายได้ว่า DocumentFragment ช่วยเรื่องอะไร</label></div></div>
+<div class="chnav"><a href="#ch14">← เลือกและเดินใน DOM</a><a class="sp">.</a></div>
 </section>
 
 </main>
@@ -832,6 +1306,7 @@ let score = 0, total = 0;
 const STORE = 'js-review-v1';
 let saved = {}; try { saved = JSON.parse(localStorage.getItem(STORE) || '{}'); } catch(e){ saved = {}; }
 function persist(){ try { localStorage.setItem(STORE, JSON.stringify(saved)); } catch(e){} }
+let pmDone = saved.pm || {};   /* ประกาศไว้ก่อน เพราะ updateWeak() ถูกเรียกตอนกู้คำตอบ */
 document.querySelectorAll('.quiz[data-q]').forEach((box, i) => {
   const q = JSON.parse(box.dataset.q); total++;
   box.innerHTML = `<p class="q">${q.q}</p>` + q.opts.map((o, j) => `<label><input type="radio" name="q${i}" value="${j}">${o}</label>`).join('') + `<div class="exp"></div>`;
@@ -1192,7 +1667,7 @@ pm.push(
   { q: 'เกี่ยวกับ throw ข้อใดถูก', opts: ['throw หยุดฟังก์ชันทันที', 'return throw new Error() เขียนได้', 'throw "ข้อความ" เขียนได้แต่ไม่แนะนำ', 'catch จับได้เฉพาะ error ที่เรา throw เอง'], ans: [0, 2], exp: ['ถูก', 'ผิด — SyntaxError', 'ถูก — เสีย .message/stack', 'ผิด — จับ bug ของเราด้วย'] },
   { q: 'undefined มาจากทางไหนได้บ้าง', opts: ['ตัวแปรประกาศแต่ไม่ assign', 'ฟังก์ชันไม่ return', 'อ่าน property ที่ไม่มี', 'เรียกตัวแปรที่ไม่เคยประกาศ'], ans: [0, 1, 2], exp: ['ถูก', 'ถูก', 'ถูก', 'ผิด — อันนี้ ReferenceError'] },
 );
-let pi = 0, pmDone = saved.pm || {};
+let pi = 0;
 const pmOrder = pm.map(q => { const idx = q.opts.map((_, i) => i); for (let i = idx.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [idx[i], idx[j]] = [idx[j], idx[i]]; } return idx; });
 function pmRender(){ const q = pm[pi]; const d = pmDone[pi];
   $('pm-wrap').innerHTML = `<div class="quiz"><p class="q">ข้อ ${pi + 1} / ${pm.length} — ${q.q} (เลือกได้มากกว่า 1)</p>${pmOrder[pi].map(i => { const o = q.opts[i]; return `<label class="${d ? (q.ans.includes(i) ? 'right' : (d.pick.includes(i) ? 'wrong' : '')) : ''}"><input type="checkbox" value="${i}" ${d ? 'disabled' : ''} ${d && d.pick.includes(i) ? 'checked' : ''}>${o}${d ? ` <span class="pill">${q.exp[i]}</span>` : ''}</label>`; }).join('')}<div class="row"><button class="primary" onclick="pmCheck()" ${d ? 'disabled' : ''}>ตรวจข้อนี้</button></div><div class="exp ${d ? 'show ' + (d.ok ? 'ok' : 'bad') : ''}">${d ? (d.ok ? '✓ ตรงทั้งชุด — ได้คะแนนเต็มข้อ' : '✗ ไม่ตรงทั้งชุด — Perfect Match ไม่มีคะแนนบางส่วน ต้องติ๊กครบและไม่ติ๊กเกิน') : ''}</div></div>`;
@@ -1218,9 +1693,342 @@ function updateChapterProgress(){
         return boxes.length && boxes.every(b => b.checked);
       }).length : 0;
   const el = document.getElementById('ch-progress');
-  if (el) el.innerHTML = 'บทที่ทวนครบ: <b>' + done + '</b> / 12';
+  if (el) el.innerHTML = 'บทที่ทวนครบ: <b>' + done + '</b> / 15';
 }
 updateChapterProgress();
+
+/* ================= 13-15 DOM demos ================= */
+/* เอกสารตัวอย่างเดียวกับแล็บ week5 — SIT@KMUTT Restaurant */
+const DOM_SRC = `<!doctype html>
+<html lang="en">
+  <head>
+    <title>Manipulating Elements</title>
+  </head>
+  <body>
+    <h3>SIT@KMUTT Restaurant</h3>
+    <div class="menu">
+      <ul id="appetizer">
+        <li class="vegan" name="veganRolls">Vegetable Rolls</li>
+        <li class="meat">Chicken Wings</li>
+        <li class="meat">Tuna Sandwich</li>
+      </ul>
+      <ul id="soup">
+        <li class="meat" name="baconCornSoup">Spicy Bacon-Corn Soup</li>
+        <li class="vegan">Vegetable Soup</li>
+        <li class="meat">Beef Soup</li>
+        <li class="vegan">Coconut Soup</li>
+      </ul>
+    </div>
+    <p>***Enjoy Your Meal, Thank you***</p>
+  </body>
+</html>`;
+
+function domParse(src){ return new DOMParser().parseFromString(src || DOM_SRC, 'text/html'); }
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const NODE_TYPE_NAME = {1:'ELEMENT_NODE',2:'ATTRIBUTE_NODE',3:'TEXT_NODE',8:'COMMENT_NODE',9:'DOCUMENT_NODE',10:'DOCUMENT_TYPE_NODE',11:'DOCUMENT_FRAGMENT_NODE'};
+function nodeLabel(n){
+  if (n.nodeType === 1) {
+    let s = n.tagName.toLowerCase();
+    if (n.id) s += '#' + n.id;
+    if (n.className) s += '.' + String(n.className).trim().split(/\s+/).join('.');
+    return '<' + s + '>';
+  }
+  if (n.nodeType === 3) {
+    const t = n.nodeValue;
+    return t.trim() === '' ? '#text (whitespace)' : '#text "' + (t.trim().length > 22 ? t.trim().slice(0,22) + '…' : t.trim()) + '"';
+  }
+  if (n.nodeType === 8) return '#comment';
+  if (n.nodeType === 10) return '<!DOCTYPE ' + n.name + '>';
+  if (n.nodeType === 9) return '#document';
+  return n.nodeName;
+}
+
+/* ---------- 13.1 tree explorer ---------- */
+let d13Doc = domParse(), d13ShowWs = true, d13Nodes = [];
+function d13Render(){
+  d13Nodes = [];
+  const rows = [];
+  (function walk(node, depth){
+    if (!d13ShowWs && node.nodeType === 3 && node.nodeValue.trim() === '') return;
+    const i = d13Nodes.push(node) - 1;
+    const cls = node.nodeType === 1 ? 'el' : node.nodeType === 3 ? 'tx' : 'ot';
+    rows.push('<button class="nodechip ' + cls + '" style="margin-left:' + (depth * 16) + 'px" onclick="d13Pick(' + i + ',this)">' + esc(nodeLabel(node)) + '<span class="nt">' + node.nodeType + '</span></button>');
+    node.childNodes.forEach(c => walk(c, depth + 1));
+  })(d13Doc, 0);
+  $('d13-tree').innerHTML = rows.join('');
+  $('d13-ws-btn').textContent = d13ShowWs ? 'ซ่อน whitespace text node' : 'แสดง whitespace text node';
+  const total = d13Nodes.length;
+  const ws = d13ShowWs ? d13Nodes.filter(n => n.nodeType === 3 && n.nodeValue.trim() === '').length : 0;
+  setOut('d13-out', 'node ที่แสดงอยู่: ' + total + (d13ShowWs ? ' ตัว (เป็น whitespace text node ' + ws + ' ตัว)' : ' ตัว — ซ่อน whitespace แล้ว') + '\nกด node สักตัวเพื่อดูรายละเอียด', 'info');
+}
+function d13Pick(i, btn){
+  [...$('d13-tree').querySelectorAll('.nodechip')].forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  const n = d13Nodes[i];
+  const v = n.nodeValue;
+  setOut('d13-out',
+    'nodeName  : ' + n.nodeName +
+    '\nnodeType  : ' + n.nodeType + '  (' + (NODE_TYPE_NAME[n.nodeType] || '?') + ')' +
+    '\nnodeValue : ' + (v === null ? 'null' : JSON.stringify(v)) +
+    (n.nodeType === 1 ? '\ntextContent: ' + JSON.stringify(n.textContent.trim().slice(0,40)) : '') +
+    (n.nodeType === 1 ? '\nchildNodes: ' + n.childNodes.length + '  ·  children: ' + n.children.length : ''),
+    n.nodeType === 1 ? 'ok' : n.nodeType === 3 ? '' : 'info');
+}
+function d13ToggleWs(){ d13ShowWs = !d13ShowWs; d13Render(); }
+
+/* ---------- 13.2 childNodes vs children ---------- */
+function d13bMode(mode, btn){
+  chipOn(btn);
+  const soup = d13Doc.getElementById('soup');
+  const list = mode === 'childNodes' ? soup.childNodes : soup.children;
+  const items = [...list].map((n, i) => '  [' + i + '] ' + nodeLabel(n) + '  → nodeType ' + n.nodeType).join('\n');
+  const note = mode === 'childNodes'
+    ? 'NodeList — มี forEach · นับ whitespace ระหว่าง tag เป็น text node ด้วย'
+    : 'HTMLCollection — ไม่มี forEach ต้อง Array.from() ก่อน · เอาเฉพาะ element';
+  setOut('d13b-out', 'soup.' + mode + '.length = ' + list.length + '\n\n' + items + '\n\n' + note,
+    mode === 'children' ? 'ok' : 'info');
+}
+
+/* ---------- 14.1 selector playground ---------- */
+function d14Preset(sel){ $('d14-sel').value = sel; d14Run(); }
+function d14Run(){
+  const sel = $('d14-sel').value.trim();
+  if (!sel) { setOut('d14-out', 'พิมพ์ selector ก่อน', 'bad'); return; }
+  let found;
+  try { found = d13Doc.querySelectorAll(sel); }
+  catch (e) { setOut('d14-out', '✗ ' + e.name + ': selector ไม่ถูกไวยากรณ์\n' + sel, 'bad'); return; }
+  if (!found.length) { setOut('d14-out', 'querySelectorAll("' + sel + '")\n→ NodeList(0) — ไม่เจอ element ไหนเลย', 'bad'); return; }
+  const lines = [...found].map((el, i) => '  [' + i + '] ' + nodeLabel(el) + '  "' + el.textContent.trim().slice(0, 28) + '"').join('\n');
+  const one = d13Doc.querySelector(sel);
+  setOut('d14-out',
+    'querySelectorAll("' + sel + '")\n→ NodeList(' + found.length + ')  [static]\n' + lines +
+    '\n\nquerySelector("' + sel + '") → ' + nodeLabel(one) + '  (ตัวแรกเท่านั้น)', 'ok');
+}
+
+/* ---------- 14.2 live vs static ---------- */
+let d14LiveDoc = null, d14Html = null, d14Nodes2 = null, d14Added = 0;
+function d14LiveGrab(){
+  d14LiveDoc = domParse();
+  d14Html = d14LiveDoc.getElementsByClassName('meat');   // live HTMLCollection
+  d14Nodes2 = d14LiveDoc.querySelectorAll('.meat');      // static NodeList
+  d14Added = 0;
+  setOut('d14-live-out',
+    'const live   = doc.getElementsByClassName("meat")  → HTMLCollection\n' +
+    'const static = doc.querySelectorAll(".meat")       → NodeList\n\n' +
+    'ตอนนี้  live.length = ' + d14Html.length + '   ·   static.length = ' + d14Nodes2.length +
+    '\n\nกดปุ่ม 2 เพื่อเพิ่ม <li class="meat"> เข้า DOM แล้วดูอีกที', 'info');
+}
+function d14LiveAdd(){
+  if (!d14LiveDoc) { setOut('d14-live-out', 'กดปุ่ม 1 ก่อน', 'bad'); return; }
+  const li = d14LiveDoc.createElement('li');
+  li.className = 'meat';
+  li.textContent = 'Pork Soup ' + (++d14Added);
+  d14LiveDoc.getElementById('soup').appendChild(li);
+  setOut('d14-live-out',
+    'เพิ่ม <li class="meat"> เข้า DOM แล้ว ' + d14Added + ' ตัว — ไม่ได้เรียกเมธอดค้นหาใหม่เลย\n\n' +
+    'live.length   = ' + d14Html.length + '   ← เพิ่มตามเอกสารทันที (HTMLCollection เป็น live)\n' +
+    'static.length = ' + d14Nodes2.length + '   ← เท่าเดิม (NodeList จาก querySelectorAll เป็น static)\n\n' +
+    'เรียก doc.querySelectorAll(".meat") ใหม่ตอนนี้ จะได้ ' + d14LiveDoc.querySelectorAll('.meat').length + ' ตัว',
+    'ok');
+}
+function d14LiveReset(){ d14LiveDoc = null; setOut('d14-live-out', 'กดปุ่ม 1 ก่อน', ''); }
+
+/* ---------- 14.3 traversal ---------- */
+function d14NavInit(){
+  const items = [...d13Doc.querySelectorAll('#soup li, #appetizer li')];
+  $('d14-nav-btns').innerHTML = items.map((el, i) =>
+    '<button class="chip" onclick="d14Nav(' + i + ',this)">' + esc(el.textContent.trim()) + '</button>').join('');
+}
+function d14Nav(i, btn){
+  chipOn(btn);
+  const el = [...d13Doc.querySelectorAll('#soup li, #appetizer li')][i];
+  const show = n => n ? nodeLabel(n) : 'null';
+  setOut('d14-nav-out',
+    'element ที่เลือก: ' + nodeLabel(el) + '  "' + el.textContent.trim() + '"\n\n' +
+    'parentNode              : ' + show(el.parentNode) + '\n' +
+    'parentElement           : ' + show(el.parentElement) + '\n' +
+    'previousSibling         : ' + show(el.previousSibling) + '   ← มักเป็น whitespace\n' +
+    'previousElementSibling  : ' + show(el.previousElementSibling) + '\n' +
+    'nextSibling             : ' + show(el.nextSibling) + '   ← มักเป็น whitespace\n' +
+    'nextElementSibling      : ' + show(el.nextElementSibling) + '\n' +
+    'closest("div.menu")     : ' + show(el.closest('div.menu')) + '\n' +
+    'closest("li")           : ' + show(el.closest('li')) + '   ← ตัวมันเองก็นับ', 'info');
+}
+
+/* ---------- 15.1 innerHTML / innerText / textContent ---------- */
+const D15A_HTML = '<b>Hello</b>\n  <span style="display:none">hidden</span>\n  world';
+function d15aPick(prop, btn){
+  chipOn(btn);
+  const host = document.createElement('div');
+  host.innerHTML = D15A_HTML;
+  let val;
+  if (prop === 'innerHTML') val = host.innerHTML;
+  else if (prop === 'textContent') val = host.textContent;
+  else {
+    // innerText ต้องอยู่ใน document จริงถึงจะคำนวณ CSS ได้
+    host.style.position = 'absolute'; host.style.left = '-9999px';
+    document.body.appendChild(host);
+    val = host.innerText;
+    document.body.removeChild(host);
+  }
+  const note = { innerHTML: 'ได้ tag ทั้งหมดกลับมา — ถ้าเอาค่าจากผู้ใช้มาใส่ตรง ๆ คือช่องโหว่ XSS',
+                 innerText: 'ประมวลผล CSS แล้ว — คำว่า hidden หายไปเพราะ display:none',
+                 textContent: 'ไม่สนใจ CSS — ได้คำว่า hidden กลับมาด้วย' }[prop];
+  setOut('d15a-out', 'el.' + prop + '\n→ ' + JSON.stringify(val) + '\n\n' + note,
+    prop === 'textContent' ? 'ok' : prop === 'innerHTML' ? 'bad' : 'info');
+}
+
+/* ---------- 15.2 six-step node creation ---------- */
+const D15B = [
+  { code: '// ยังไม่ได้ทำอะไร', state: 'ยังไม่มี node ใหม่', dom: '<main id="main-1">\n  <chapter class="chapter">lesson 1</chapter>\n</main>' },
+  { code: "const newChapter = document.createElement('chapter');",
+    state: 'สร้าง element node แล้ว — ยังลอยอยู่ในหน่วยความจำ ไม่มี attribute ไม่มีข้อความ\nnewChapter → <chapter></chapter>',
+    dom: null },
+  { code: "const attrNode = document.createAttribute('class');\nattrNode.value = 'chapter';",
+    state: 'สร้าง attribute node แล้ว — แต่ยังไม่ได้ผูกกับ element ใด\nattrNode.ownerElement → null',
+    dom: null },
+  { code: 'newChapter.setAttributeNode(attrNode);',
+    state: 'ผูก attribute เข้า element แล้ว\nnewChapter → <chapter class="chapter"></chapter>',
+    dom: null },
+  { code: "const textNode = document.createTextNode('lesson 4');",
+    state: 'สร้าง text node แล้ว — ยังลอยอยู่เช่นกัน\ntextNode.nodeValue → "lesson 4"',
+    dom: null },
+  { code: 'newChapter.appendChild(textNode);',
+    state: 'ผูก text node เป็นลูกของ element แล้ว\nnewChapter → <chapter class="chapter">lesson 4</chapter>\n\nแต่หน้าเว็บยังไม่เปลี่ยน! node ทั้งก้อนยังไม่อยู่ใน DOM tree',
+    dom: null },
+  { code: 'mainElement.appendChild(newChapter);   // ← ขั้นที่ 6',
+    state: '✓ ผูกเข้า tree แล้ว — ตอนนี้ browser render ทันที',
+    dom: '<main id="main-1">\n  <chapter class="chapter">lesson 1</chapter>\n  <chapter class="chapter">lesson 4</chapter>\n</main>' },
+];
+let d15bI = 0;
+function d15bStep(d){
+  d15bI = d === 0 ? 0 : Math.max(0, Math.min(D15B.length - 1, d15bI + d));
+  const s = D15B[d15bI];
+  $('d15b-n').textContent = 'ขั้นที่ ' + d15bI + ' / ' + (D15B.length - 1);
+  $('d15b-code').textContent = D15B.slice(1, d15bI + 1).map(x => x.code).join('\n') || s.code;
+  setOut('d15b-state', s.state, d15bI === D15B.length - 1 ? 'ok' : d15bI === 0 ? '' : 'info');
+  let dom = null;
+  for (let i = d15bI; i >= 0; i--) { if (D15B[i].dom) { dom = D15B[i].dom; break; } }
+  setOut('d15b-dom', 'DOM จริงตอนนี้:\n' + dom, d15bI === D15B.length - 1 ? 'ok' : 'bad');
+  if (d15bI > 0 && d15bI < D15B.length - 1) $('d15b-dom').className = 'out bad';
+}
+
+/* ---------- 15.3 manipulation sandbox ---------- */
+let d15cDoc = null, d15cSeq = 0;
+function d15cReset(){ d15cDoc = domParse(); d15cSeq = 0; }
+function d15cShow(msg, cls){
+  const ul = d15cDoc.getElementById('soup');
+  const lines = [...ul.children].map((li, i) => '  [' + i + '] <li class="' + li.className + '">' + li.textContent.trim() + '</li>').join('\n');
+  setOut('d15c-dom', '<ul id="soup">  → children.length = ' + ul.children.length + '\n' + lines + '\n</ul>', '');
+  setOut('d15c-log', msg, cls);
+}
+function d15cOp(op){
+  if (!d15cDoc || op === 'reset') { d15cReset(); d15cShow('รีเซ็ตกลับเป็นเมนูตั้งต้น', ''); return; }
+  const ul = d15cDoc.getElementById('soup');
+  if (op === 'append') {
+    const li = d15cDoc.createElement('li'); li.className = 'vegan'; li.textContent = 'Pumpkin Soup ' + (++d15cSeq);
+    ul.appendChild(li);
+    d15cShow('ul.appendChild(li)\n→ เพิ่มไว้ท้ายสุดของ childNodes · คืน node ที่เพิ่ม', 'ok');
+  } else if (op === 'insert') {
+    const li = d15cDoc.createElement('li'); li.className = 'meat'; li.textContent = 'Tom Yum ' + (++d15cSeq);
+    ul.insertBefore(li, ul.firstElementChild);
+    d15cShow('ul.insertBefore(li, ul.firstElementChild)\n→ li กลายเป็น previous sibling ของตัวที่อ้างอิง = แทรกหน้าสุด\n→ ตัวใหม่มาก่อนเสมอในลำดับ argument', 'ok');
+  } else if (op === 'replace') {
+    if (!ul.firstElementChild) { d15cShow('ไม่มีลูกให้แทนที่แล้ว — กดรีเซ็ตก่อน', 'bad'); return; }
+    const li = d15cDoc.createElement('li'); li.className = 'vegan'; li.textContent = 'Miso Soup ' + (++d15cSeq);
+    const old = ul.replaceChild(li, ul.firstElementChild);
+    d15cShow('const old = ul.replaceChild(li, ul.firstElementChild)\n→ แทนที่ตัวแรกด้วยตัวใหม่\n→ คืนค่า node ที่ถูกแทนที่: <li>' + old.textContent.trim() + '</li>', 'ok');
+  } else if (op === 'remove') {
+    if (!ul.firstElementChild) { d15cShow('ไม่มีลูกให้ลบแล้ว — กดรีเซ็ตก่อน', 'bad'); return; }
+    const gone = ul.removeChild(ul.firstElementChild);
+    d15cShow('const gone = ul.removeChild(ul.firstElementChild)\n→ ลบตัวแรกออกจาก DOM\n→ คืนค่า node ที่ถูกลบ: <li>' + gone.textContent.trim() + '</li>  (ยังใช้ต่อได้)', 'ok');
+  }
+}
+
+/* ---------- 15.4 classList ---------- */
+let d15dEl = null;
+function d15dReset(){ d15dEl = document.createElement('p'); d15dEl.className = 'text-xl font-semibold'; }
+function d15dShow(msg, cls){
+  setOut('d15d-out', '<p class="' + d15dEl.className + '">\n\nclassList.length = ' + d15dEl.classList.length + '\n\n' + msg, cls);
+}
+function d15dOp(op){
+  if (!d15dEl || op === 'reset') { d15dReset(); d15dShow('รีเซ็ตกลับเป็น class ตั้งต้น', ''); return; }
+  if (op === 'add') { d15dEl.classList.add('p-5'); d15dShow("classList.add('p-5')\n→ เพิ่มเข้าไป · กดซ้ำก็ไม่เพิ่มซ้ำ", 'ok'); }
+  else if (op === 'remove') { d15dEl.classList.remove('text-xl'); d15dShow("classList.remove('text-xl')\n→ ลบออก · ลบตัวที่ไม่มีอยู่ก็ไม่ error", 'ok'); }
+  else if (op === 'toggle') { const on = d15dEl.classList.toggle('active'); d15dShow("classList.toggle('active') → คืน " + on + "\n→ มีอยู่แล้วลบ / ไม่มีก็เพิ่ม", 'ok'); }
+  else if (op === 'replace') { const ok = d15dEl.classList.replace('p-5', 'p-2'); d15dShow("classList.replace('p-5','p-2') → คืน " + ok + (ok ? '' : '\n→ false เพราะไม่มี p-5 อยู่ ลอง add ก่อน'), ok ? 'ok' : 'bad'); }
+  else if (op === 'contains') { const has = d15dEl.classList.contains('p-2'); d15dShow("classList.contains('p-2') → " + has, has ? 'ok' : 'info'); }
+}
+
+/* ---------- 15.5 homework: chapter 4..N ---------- */
+let d15eDoc = null;
+function d15eReset(){
+  d15eDoc = domParse('<!doctype html><html><body><main id="main-1"><chapter class="chapter">lesson 1</chapter><chapter class="chapter">lesson 2</chapter><chapter class="chapter">lesson 3</chapter></main></body></html>');
+  setOut('d15e-log', 'ล้างแล้ว — เหลือ lesson 1-3 ตามที่ HTML โหลดมา', '');
+  d15eShow();
+}
+function d15eShow(){
+  const main = d15eDoc.getElementById('main-1');
+  const all = [...main.children];
+  const head = all.slice(0, 6).map(c => '  <chapter class="' + c.className + '">' + c.textContent + '</chapter>').join('\n');
+  const tail = all.length > 6 ? '\n  … อีก ' + (all.length - 6) + ' ตัว …\n  <chapter class="chapter">' + all[all.length - 1].textContent + '</chapter>' : '';
+  setOut('d15e-dom', '<main id="main-1">  → childElementCount = ' + main.childElementCount + '\n' + head + tail + '\n</main>', '');
+}
+function d15eRun(useFragment){
+  if (!d15eDoc) d15eReset();
+  const n = Math.max(4, Math.min(100, +$('d15e-n').value || 10));
+  const main = d15eDoc.getElementById('main-1');
+  const before = main.childElementCount;
+  const make = i => { const el = d15eDoc.createElement('chapter'); el.setAttribute('class', 'chapter'); el.textContent = 'lesson ' + i; return el; };
+  let touches;
+  const t0 = performance.now();
+  if (useFragment) {
+    const frag = d15eDoc.createDocumentFragment();
+    for (let i = 4; i <= n; i++) frag.appendChild(make(i));
+    main.appendChild(frag);
+    touches = 1;
+  } else {
+    for (let i = 4; i <= n; i++) main.appendChild(make(i));
+    touches = n - 3;
+  }
+  const ms = (performance.now() - t0).toFixed(2);
+  setOut('d15e-log',
+    (useFragment ? 'สร้างใน DocumentFragment ก่อน แล้ว appendChild เข้า main ครั้งเดียว' : 'วน appendChild เข้า main ทีละตัว') +
+    '\nสร้าง lesson 4 ถึง ' + n + ' → เพิ่ม ' + (main.childElementCount - before) + ' ตัว (ใช้ ' + ms + ' ms)' +
+    '\nแตะ DOM จริง ' + touches + ' ครั้ง' + (useFragment ? '  ← reflow/repaint เกิดครั้งเดียว' : '  ← reflow/repaint เกิดทุกรอบ'),
+    useFragment ? 'ok' : 'info');
+  d15eShow();
+}
+
+/* ---------- init 13-15 ---------- */
+d13Render();
+d13bMode('childNodes', $('d13b-a'));
+d14NavInit();
+d14Preset('.meat');
+d14LiveReset();
+d15aPick('innerHTML', $('d15a-1'));
+d15bStep(0);
+d15cOp('reset');
+d15dOp('reset');
+d15eReset();
+
+/* ---------- exam-scope filter ---------- */
+function examFilter(on){
+  saved.examOnly = on ? 1 : 0; persist();
+  document.querySelectorAll('section.ch').forEach(sec => {
+    sec.hidden = on && sec.dataset.exam !== '1';
+  });
+  document.querySelectorAll('#toc a').forEach(a => {
+    const sec = document.getElementById(a.dataset.id);
+    a.parentElement.hidden = on && sec.dataset.exam !== '1';
+  });
+  const btn = $('exam-btn');
+  btn.classList.toggle('on', on);
+  btn.textContent = on ? '● เฉพาะที่ออกสอบ (8 บท)' : '○ แสดงทุกบท (15 บท)';
+  $('exam-note').hidden = !on;
+}
+function examToggle(){ examFilter(!saved.examOnly); }
+examFilter(!!saved.examOnly);
 </script>
 </body>
 </html>
