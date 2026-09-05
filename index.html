@@ -174,7 +174,7 @@
   <div class="score" id="ch-progress">บทที่ทวนครบ: <b>0</b> / 15</div>
   <div class="weak" id="weak">ยังไม่มีข้อที่ตอบผิด</div>
   <button class="chip" id="exam-btn" onclick="examToggle()">○ แสดงทุกบท (15 บท)</button>
-  <div id="exam-note" hidden>กำลังแสดงเฉพาะขอบเขต <b>สอบครั้งที่ 1</b><br>เงื่อนไข · วนซ้ำ · Array · Object · Exception · DOM</div>
+  <div id="exam-note" hidden>กำลังแสดงเฉพาะขอบเขต <b>สอบครั้งที่ 1</b><br>เงื่อนไข · วนซ้ำ · Array · Object · Exception · DOM + ข้อสอบจำลอง</div>
   <ol id="toc"></ol>
   <button class="chip" style="margin-top:14px;font-size:12px" onclick="window.print()">พิมพ์เป็น cheat sheet</button>
 </nav>
@@ -800,28 +800,81 @@ s.replace(re, x) <span class="c">// สตริงใหม่</span></pre>
 <div class="quiz" data-q='{"q":"ผ่าน 2 จาก 3 เทส แปลว่าอะไร","opts":["โค้ดถูก 66%","ใกล้เสร็จแล้ว","เคสที่ไม่ผ่านคือเบาะแสว่า edge case ไหนยังไม่ครอบคลุม","เทสผิด"],"ans":2,"exp":"เทสแต่ละเคสตรวจคนละมุม เคสเดียวที่ไม่ผ่านอาจสำคัญที่สุด"}'></div>
 
 <div class="checkpoint"><p>Checkpoint — สรุปสั้น ๆ</p><ul><li>error message บอกทั้ง "อะไรผิด" และ "ผิดที่ไหน" — อ่านบรรทัดบนสุดก่อนเสมอ</li><li><code>undefined</code> มาได้ 3 ทาง: ตัวแปรไม่มีค่า / ฟังก์ชันไม่ return / เข้าถึง property ที่ไม่มี</li><li>ผ่านบางเทสไม่ได้แปลว่าใกล้ถูก — ดูว่าเคสที่ไม่ผ่านต่างจากเคสที่ผ่านตรงไหน</li><li>เช็ค 3 จุดก่อนส่งเสมอ: <code>return</code> ครบไหม, ข้อความตรง spec เป๊ะไหม, สะกดชื่อตรงไหม</li></ul><div class="selfcheck"><p>✓ Self-Check</p><label><input type="checkbox" data-sc="ch11-0"> แปลความหมายของ 5 error ที่เจอบ่อยได้ และรู้ว่าต้องไปดูบรรทัดไหน</label><label><input type="checkbox" data-sc="ch11-1"> แยกได้ว่า <code>undefined</code> ที่เจอมาจากทางไหนใน 3 ทาง</label><label><input type="checkbox" data-sc="ch11-2"> ไม่เข้าใจผิดว่าผ่านบางเทสแปลว่าใกล้เสร็จแล้ว</label><label><input type="checkbox" data-sc="ch11-3"> เช็ค 3 จุดก่อนส่งคำตอบได้ทุกครั้ง</label></div></div>
-<div class="chnav"><a href="#ch10">← Exception</a><a href="#ch12">ชุดฝึกรวบยอด →</a></div>
+<div class="chnav"><a href="#ch10">← Exception</a><a href="#ch12">ข้อสอบจำลอง Exam-01 →</a></div>
 </section>
 
 <!-- ============ 12 ============ -->
-<section class="ch" id="ch12">
-<h3>12 ชุดฝึกรวบยอด</h3>
-<p class="lead">Perfect Match 24 ข้อ ครบทุกบท ตัวเลือกสลับตำแหน่งทุกครั้งที่เปิด — ติ๊กครบทุกข้อที่ถูก และห้ามติ๊กข้อที่ผิดแม้แต่ข้อเดียว ไม่มีคะแนนบางส่วน</p>
-<div class="chmeta"><span class="pill">บทที่ 12</span><span class="pill">~30 นาที</span><span class="pill lv3">ท้าทาย</span></div>
+<section class="ch" id="ch12" data-exam="1">
+<h3>12 ข้อสอบจำลอง Exam-01</h3>
+<p class="lead">ออกข้อสอบตามกติกาที่อาจารย์ประกาศในคาบ และตามหัวข้อในสไลด์ — ฝึกให้ชินกับรูปแบบ "ต้องเลือกครบทุกตัวที่ถูก" ก่อนเจอของจริง</p>
+<div class="chmeta"><span class="pill">บทที่ 12</span><span class="pill">~30 นาที</span><span class="pill lv3">ท้าทาย</span><span class="pill exam">ออกสอบ</span></div>
 <div class="outcomes"><p>จบบทนี้ต้องทำได้</p><ul>
-<li>อธิบายกติกา Perfect Match และรู้ว่าทำไม "ติ๊กเผื่อ" เสียคะแนน</li>
-<li>ตัดสินตัวเลือกทีละตัว แทนหา "ข้อที่ถูกที่สุด"</li>
-<li>จับคำเสี่ยง "เสมอ / ทุกกรณี / เท่านั้น"</li>
-<li>รู้จุดอ่อนของตัวเองแล้วย้อนไปทวนบทที่เกี่ยวข้อง</li></ul></div>
+<li>บอกกติกาการสอบครั้งที่ 1 ได้ครบ ทั้งส่วนทฤษฎีและปฏิบัติ</li>
+<li>ตัดสินตัวเลือกทีละตัวว่า "จริงไหม" แทนการหาข้อที่ถูกที่สุด — เพราะข้อเดียวถูกได้หลายตัว</li>
+<li>ทำข้อสอบจำลอง 10 ข้อในเวลา 30 นาทีได้โดยไม่เปิดอะไรช่วย</li>
+<li>รู้ว่าสอบปฏิบัติรันบน Node จึงต้องเขียน <code>module.exports</code> / <code>require</code> ไม่ใช่ ES Module</li></ul></div>
 
-<p>รู้เนื้อหาอย่างเดียวไม่พอ ถ้ายังไม่รู้วิธีอ่านตัวเลือกให้ละเอียด — บทนี้เริ่มจากกติกาของชุดฝึก แล้วให้ฝึกจริง 24 ข้อ ครบทุกหัวข้อที่ผ่านมา</p><div class="concept"><b>PERFECT MATCH</b><span>รูปแบบคำถามที่ให้ตัวเลือกหลายข้อในคำถามเดียว แล้วให้ระบุ "สถานะจริง" ของทุกตัวเลือกพร้อมกันทั้งชุด — ติ๊กข้อที่ถูกทุกข้อ และไม่ติ๊กข้อที่ผิดแม้แต่ข้อเดียว ชุดคำตอบที่ถูกจริงมีอยู่แบบเดียวเท่านั้น ผิดไปแม้แค่ตำแหน่งเดียว ก็ถือว่าทั้งข้อไม่ได้คะแนน</span></div><h4>อ่านทีละตัวเลือก ไม่ใช่หาข้อที่ถูกที่สุด</h4><p>นิสัยที่ติดมาจากแบบทดสอบปรนัยทั่วไปคืออ่านทุกตัวเลือกแล้วเลือก "ข้อที่ดูถูกที่สุด" ข้อเดียว — วิธีนี้ใช้ไม่ได้กับ Perfect Match เพราะแต่ละตัวเลือกเป็นอิสระจากกัน ต้องตัดสินทีละตัวว่า "ประโยคนี้ถูกหรือผิด" โดยไม่สนใจตัวเลือกข้างเคียงเลย วิธีที่ได้ผลคือปิดตัวเลือกอื่นในใจ แล้วถามกับตัวเลือกที่กำลังอ่านอยู่ตัวเดียวว่า "ประโยคนี้จริงไหม" ก่อนขยับไปตัวถัดไป</p><h4>คำเสี่ยง: เสมอ / ทุกกรณี / เท่านั้น</h4><p>ตัวเลือกที่มีคำเด็ดขาดแบบนี้มักเป็นกับดัก เพราะกฎในภาษาโปรแกรมมักมีข้อยกเว้นซ้อนอยู่เสมอ — ตัวเลือกที่พูดว่า "<code>for...in</code> ใช้กับ array เหมือน <code>for...of</code> ทุกกรณี" ผิดทันที เพราะ <code>for...in</code> ให้ key เป็น string ต่างจาก <code>for...of</code> ที่ให้ตัวสมาชิกตรง ๆ</p><div class="trap"><b>พลาดกันบ่อย</b><span>เจอ "เสมอ/ทุกกรณี/เท่านั้น" แล้วเชื่อทันทีโดยไม่หาข้อยกเว้น — สมองมักอ่านคำเด็ดขาดแล้วรีบตัดสินว่า "ฟังดูสมเหตุสมผลก็ต้องถูก" ทุกครั้งที่เจอคำพวกนี้ ให้หยุดแล้วถามตัวเองว่า "มีเคสไหนที่กฎนี้ไม่จริงบ้างไหม" ก่อนติ๊ก</span></div><h4>จัดเวลา</h4><p>24 ข้อด้านล่างครอบทุกหัวข้อที่ผ่านมาทั้งเล่ม ฝึกทีละชุด อย่าเร่งอ่านผ่าน ๆ เพราะจุดประสงค์ของ Perfect Match ไม่ใช่แค่ "รู้คำตอบ" แต่คือ <b>"มั่นใจในทุกตัวเลือกที่ติ๊กและไม่ติ๊ก"</b> — ข้อไหนพลาดบ่อยเป็นสัญญาณว่าควรย้อนกลับไปทวนบทนั้นอีกรอบ</p><div class="pinned"><b>จดไว้ตรงนี้</b>ถ้าข้อไหนอ่านแล้วยังไม่แน่ใจภายใน 3 รอบ ให้กลับไปอ่านบทที่เกี่ยวข้องซ้ำก่อน แล้วค่อยย้อนมาดูเฉลย — เดาส่งเดชแล้วข้ามไปเรื่อย ๆ โดยไม่ทวนต้นตอ คือการเสียโอกาสฝึกที่ป้องกันได้ง่ายที่สุด</div>
-<div class="note">วิธีทำ: ปิดตัวเลือกอื่นในใจ แล้วถามทีละข้อว่า "ประโยคนี้จริงไหม" — เจอคำว่า เสมอ/ทุกกรณี/เท่านั้น ให้หาข้อยกเว้นก่อนติ๊ก</div>
+<h4>กติกาที่อาจารย์ประกาศ — สรุปจากคาบเรียน</h4>
+<p>ทุกข้อด้านล่างมาจากสิ่งที่อาจารย์พูดในห้อง (ถอดจากไฟล์เสียง W1 · W3 · W4) ไม่ใช่การเดา — ถ้าอาจารย์ประกาศเปลี่ยน ให้ยึดของใหม่</p>
 
-<div class="coder" data-id="c12"></div>
+<table><tr><th>เรื่อง</th><th>กติกา</th><th>ที่มา</th></tr>
+<tr><td>คะแนน</td><td>สอบครั้งที่ 1 = <b>ทฤษฎี 15 + ปฏิบัติ 15</b> ครอบคลุม <b>JavaScript ที่ทบทวนไป + DOM</b> ทั้งสองส่วน</td><td>W3, W4</td></tr>
+<tr><td>รูปแบบข้อทฤษฎี</td><td>multiple choice ที่ <b>หนึ่งข้ออาจถูกหลายตัว</b> — ต้องติ๊กครบทุกตัวที่ถูกและไม่ติ๊กตัวที่ผิด จึงได้คะแนนข้อนั้น (ไม่มีคะแนนบางส่วน)</td><td>W1, W3</td></tr>
+<tr><td>รูปแบบอ้างอิง</td><td>quiz ในระบบคือ <b>10 ข้อ / 30 นาที</b> — ทำเสร็จต้องกดปุ่ม <b>"จบการทดสอบ" มุมบนขวา</b> ระบบถึงจะตรวจ</td><td>W3</td></tr>
+<tr><td>ห้องสอบ</td><td>ปิดหนังสือ · ห้ามคุย · ห้ามเปิด browser / editor · ห้ามใช้ AI · ห้ามใช้มือถือ — <b>ทุจริตได้ 0 ทันที</b></td><td>W3, outline</td></tr>
+<tr><td>ชุดข้อสอบ</td><td>Group 1 กับ Group 2 <b>ออกคนละชุด</b> และสลับลำดับกลุ่มที่สอบก่อน/หลัง</td><td>W3</td></tr>
+<tr><td>สิ่งที่ไม่ออก</td><td><b>Temporal ยังไม่ออกสอบ</b> — อาจารย์บอกว่าเกริ่นให้ดูเฉย ๆ</td><td>W3</td></tr>
+<tr><td>ปฏิบัติ: JavaScript</td><td>อาจารย์รันตรวจด้วย <b>Node</b> — ต้อง export/import แบบ <b>CommonJS</b> (<code>module.exports</code> / <code>require</code>) ไม่ใช่ ES Module</td><td>W3</td></tr>
+<tr><td>ปฏิบัติ: DOM</td><td>DOM รันบน Node เปล่าไม่ได้ อาจารย์ใช้ <b>jsdom</b> จำลองตอนตรวจ — ตอนฝึกให้ดูผลบน browser ผ่าน Live Server</td><td>W4</td></tr>
+<tr><td>ระดับความยาก</td><td>แบบฝึกหัดในระบบแบ่ง <b>ง่าย / กลาง / ยาก อย่างละ 2 ข้อ</b> — ใครทำได้ระดับไหนควรไต่ขึ้นอีกระดับ</td><td>W3, W4</td></tr></table>
+
+<div class="pinned"><b>จดไว้ตรงนี้</b>สองอย่างที่ทำให้เสียคะแนนทั้งที่รู้เนื้อหา — <b>ติ๊กเผื่อ</b> (ติ๊กตัวที่ไม่แน่ใจเพิ่ม 1 ตัว = ข้อนั้นเป็น 0) และ <b>ส่งโค้ดปฏิบัติแบบ ES Module</b> (<code>export</code>/<code>import</code>) ทั้งที่ระบบตรวจรันด้วย Node แบบ CommonJS</div>
+
+<h4>วิธีอ่านตัวเลือกให้ไม่พลาด</h4>
+<p>แต่ละตัวเลือกเป็นอิสระจากกัน ให้ปิดตัวเลือกอื่นในใจ แล้วถามกับตัวที่กำลังอ่านว่า <b>"ประโยคนี้จริงไหม"</b> ก่อนขยับไปตัวถัดไป — ตัดสินได้ 4 รอบ ก็ได้คำตอบของข้อนั้นเอง ไม่ต้องหาว่า "ข้อไหนถูกที่สุด"</p>
+<p>ระวังคำเด็ดขาดอย่าง <b>เสมอ / ทุกกรณี / เท่านั้น / ไม่มีทาง</b> — กฎในภาษาโปรแกรมมักมีข้อยกเว้น เจอคำพวกนี้ให้หยุดแล้วถามว่า "มีเคสไหนที่กฎนี้ไม่จริงไหม" ก่อนติ๊ก</p>
+
+<div class="cols">
+<div class="box"><b>โหมดฝึก</b><span style="font-size:13.5px">ทำทีละข้อ ตรวจได้ทันที เห็นเหตุผลทุกตัวเลือก — เหมาะกับตอนทวนบท</span></div>
+<div class="box"><b>โหมดจำลองสอบ</b><span style="font-size:13.5px">สุ่ม 10 ข้อ จับเวลา 30 นาที <b>ไม่เฉลยจนกว่าจะกด "จบการทดสอบ"</b> — เหมือนระบบจริง</span></div>
+</div>
+
+<div class="play" id="pm-panel"><p class="t">คลังข้อสอบ — ออกตามหัวข้อในสไลด์ W1 และ DOM</p>
+<div class="row">
+<button class="chip on" id="pm-mode-p" onclick="pmSetMode('practice')">โหมดฝึก</button>
+<button class="chip" id="pm-mode-e" onclick="pmSetMode('exam')">โหมดจำลองสอบ</button>
+<span class="pill" id="pm-bank"></span></div>
+<div id="pm-examhead" hidden class="row" style="justify-content:space-between;align-items:center;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--paper)">
+  <span>เหลือเวลา <b class="mono" id="pm-timer">30:00</b> · ตอบแล้ว <b id="pm-answered">0</b> / 10</span>
+  <button class="primary" onclick="pmFinish()">จบการทดสอบ</button></div>
 <div id="pm-wrap"></div>
 <div class="row"><button onclick="pmNav(-1)">← ข้อก่อน</button><button class="primary" onclick="pmNav(1)">ข้อถัดไป →</button><span id="pm-score" class="pill"></span></div>
+<div id="pm-result" hidden></div>
+<div id="pm-log" class="out" hidden></div></div>
 
-<div class="checkpoint"><p>Checkpoint — สรุปสั้น ๆ</p><ul><li>Perfect Match ต้องติ๊กครบทุกข้อที่ถูกและไม่ติ๊กข้อที่ผิด ไม่มีคะแนนบางส่วน</li><li>ตัดสินทีละตัวเลือกอย่างเป็นอิสระ อย่าหาข้อที่ "ถูกที่สุด"</li><li>คำว่า "เสมอ/ทุกกรณี/เท่านั้น" มักซ่อนข้อยกเว้นไว้ — อ่านช้าลงตรงจุดนี้</li><li>ข้อที่พลาดบ่อยในชุดฝึกคือสัญญาณว่าควรย้อนไปทวนบทนั้นอีกรอบ</li></ul><div class="selfcheck"><p>✓ Self-Check</p><label><input type="checkbox" data-sc="ch12-0"> อธิบายกติกา Perfect Match ได้ และรู้ว่าทำไมติ๊กเผื่อถึงเสียคะแนน</label><label><input type="checkbox" data-sc="ch12-1"> ตัดสินตัวเลือกทีละตัวได้ ไม่หาแค่ "ข้อที่ถูกที่สุด"</label><label><input type="checkbox" data-sc="ch12-2"> จับสัญญาณคำเสี่ยงอย่าง "เสมอ/ทุกกรณี/เท่านั้น" ในตัวเลือกได้</label><label><input type="checkbox" data-sc="ch12-3"> ทำครบทั้ง 24 ข้อในชุดฝึก และรู้แล้วว่าจุดไหนของตัวเองยังอ่อนอยู่</label></div></div>
+<h4>ส่วนปฏิบัติ — ลองเขียนแบบที่ระบบตรวจจริง</h4>
+<p>ข้อปฏิบัติจะให้เขียนฟังก์ชันตาม spec แล้วระบบเรียกฟังก์ชันของเราด้วยข้อมูลหลายชุดเทียบผลลัพธ์ตรงตัวอักษร — โจทย์ด้านล่างเป็นแนวเดียวกัน อย่าลืม <code>return</code> ครบทุกเส้นทาง และเช็ค output ให้ตรง spec ทุกช่องว่าง</p>
+<pre><span class="c">// ตอนส่งจริงต้อง export แบบ CommonJS เพราะระบบตรวจรันด้วย Node</span>
+<span class="k">function</span> getCartSummary(items, shippingFee = <span class="n">50</span>) { <span class="c">/* ... */</span> }
+module.exports = { getCartSummary };   <span class="c">// ไม่ใช่ export function ...</span></pre>
+<div class="coder" data-id="c12"></div>
+
+<div class="mistakes"><p>พลาดกันบ่อย</p><ul>
+<li>หาข้อที่ "ถูกที่สุด" ข้อเดียว — Perfect Match ต้องตัดสินทุกตัวเลือกแยกกัน</li>
+<li>ติ๊กเผื่อไว้ทั้งที่ไม่มั่นใจ — ติ๊กเกิน 1 ตัว ข้อนั้นเป็น 0 เท่ากับไม่ติ๊กตัวที่ถูกเลย</li>
+<li>ลืมกด "จบการทดสอบ" — ระบบไม่ตรวจให้ ต่อให้ตอบครบทุกข้อ</li>
+<li>เขียน <code>export</code>/<code>import</code> ในข้อปฏิบัติ — ระบบตรวจรันด้วย Node ต้อง <code>module.exports</code>/<code>require</code></li></ul></div>
+
+<div class="checkpoint"><p>Checkpoint — สรุปสั้น ๆ</p><ul>
+<li>ทฤษฎีข้อเดียวถูกได้หลายตัว ต้องติ๊กครบและไม่ติ๊กเกิน — ไม่มีคะแนนบางส่วน</li>
+<li>quiz อ้างอิงคือ 10 ข้อ / 30 นาที และต้องกด "จบการทดสอบ" ระบบถึงตรวจ</li>
+<li>ปฏิบัติรันด้วย Node → CommonJS เท่านั้น · DOM ตรวจผ่าน jsdom</li>
+<li>Temporal ไม่ออก · ห้ามใช้ AI และอุปกรณ์ทุกชนิดในห้องสอบ</li></ul>
+<div class="selfcheck"><p>✓ Self-Check</p>
+<label><input type="checkbox" data-sc="ch12-0"> บอกกติกาสอบครั้งที่ 1 ได้ครบทั้งทฤษฎีและปฏิบัติ</label>
+<label><input type="checkbox" data-sc="ch12-1"> ตัดสินตัวเลือกทีละตัวได้ ไม่ติ๊กเผื่อ</label>
+<label><input type="checkbox" data-sc="ch12-2"> ทำข้อสอบจำลองครบ 10 ข้อในเวลา และได้อย่างน้อย 7 ข้อเต็ม</label>
+<label><input type="checkbox" data-sc="ch12-3"> เขียน export แบบ CommonJS ได้โดยไม่ต้องเปิดดู</label></div></div>
 <div class="chnav"><a href="#ch11">← อ่าน error ให้เป็น</a><a href="#ch13">DOM: เอกสารที่กลายเป็นต้นไม้ →</a></div>
 </section>
 
@@ -957,7 +1010,7 @@ console.log(htmlNode === rootNode.childNodes[<span class="n">1</span>]); <span c
 <label><input type="checkbox" data-sc="ch13-1"> แยก root node กับ root element ได้ พร้อมบอก nodeType ของทั้งคู่</label>
 <label><input type="checkbox" data-sc="ch13-2"> บอก nodeType ของ Element / Text / Comment / Document / DocumentType ได้</label>
 <label><input type="checkbox" data-sc="ch13-3"> แยก childNodes กับ children ได้ และรู้ว่าทำไมจำนวนลูกไม่ตรงกับที่ตาเห็น</label></div></div>
-<div class="chnav"><a href="#ch12">← ชุดฝึกรวบยอด</a><a href="#ch14">เลือกและเดินใน DOM →</a></div>
+<div class="chnav"><a href="#ch12">← ข้อสอบจำลอง Exam-01</a><a href="#ch14">เลือกและเดินใน DOM →</a></div>
 </section>
 <!-- ============ 14 ============ -->
 <section class="ch" id="ch14" data-exam="1">
@@ -1306,7 +1359,7 @@ let score = 0, total = 0;
 const STORE = 'js-review-v1';
 let saved = {}; try { saved = JSON.parse(localStorage.getItem(STORE) || '{}'); } catch(e){ saved = {}; }
 function persist(){ try { localStorage.setItem(STORE, JSON.stringify(saved)); } catch(e){} }
-let pmDone = saved.pm || {};   /* ประกาศไว้ก่อน เพราะ updateWeak() ถูกเรียกตอนกู้คำตอบ */
+let pmDone2 = {};   /* ประกาศก่อน quiz engine — updateWeak() อ่านตัวนี้ตอนกู้คำตอบ ค่าจริงเติมใน block ข้อสอบจำลอง */
 document.querySelectorAll('.quiz[data-q]').forEach((box, i) => {
   const q = JSON.parse(box.dataset.q); total++;
   box.innerHTML = `<p class="q">${q.q}</p>` + q.opts.map((o, j) => `<label><input type="radio" name="q${i}" value="${j}">${o}</label>`).join('') + `<div class="exp"></div>`;
@@ -1632,48 +1685,185 @@ function runCoder(id){ const c = CODERS[id], code = $('ta-' + id).value; saved.c
 
 /* ---------- weak spots ---------- */
 function updateWeak(){ const wrong = {}; document.querySelectorAll('.quiz[data-q]').forEach((b, i) => { if (saved['q' + i] !== undefined && b.querySelector('label.wrong')) { const ch = b.closest('section').id; wrong[ch] = (wrong[ch] || 0) + 1; } });
-  Object.entries(pmDone).forEach(([i, d]) => { if (!d.ok) wrong.ch12 = (wrong.ch12 || 0) + 1; });
+  Object.entries(pmDone2).forEach(([i, d]) => { if (!d.ok) { const c = pm[+i].ch; wrong[c] = (wrong[c] || 0) + 1; } });
   const list = Object.entries(wrong).sort((a, b) => b[1] - a[1]).slice(0, 3);
   $('weak').innerHTML = list.length ? 'ควรทวน: ' + list.map(([ch, n]) => `<a href="#${ch}"><b>${ch.slice(2)}</b> (ผิด ${n})</a>`).join(' · ') : 'ยังไม่มีข้อที่ตอบผิด'; }
 function adRun(){ const src = $('ad-in').value; try { new Function('return (' + src + ')'); setOut('ad-out', `parse ผ่าน ✓\n${src}`, 'ok'); } catch(e){ setOut('ad-out', `✗ ${e.name}: ${e.message}\nJS แยกไม่ออกว่า { } ตัวแรกคือ destructuring หรือ block — ต้องครอบพารามิเตอร์ด้วย ( )`, 'bad'); } }
 adRun();
 
 /* ---------- 12 Perfect Match ---------- */
+/* ---------- 12 ข้อสอบจำลอง — คลังข้อสอบออกตามสไลด์ W1 (JS Review) และ Ch01 (DOM) ---------- */
+/* รูปแบบตามที่อาจารย์ประกาศ: ข้อเดียวถูกได้หลายตัว ต้องติ๊กครบและไม่ติ๊กเกิน (W1, W3) */
+/* ch = บทที่ควรกลับไปทวน · exam = อยู่ในขอบเขตสอบครั้งที่ 1 (JS ที่ทบทวน + DOM — W4) */
 const pm = [
-  { q: 'ข้อใดให้ผลเป็น true', opts: ['0 == ""', 'null == undefined', 'null === undefined', 'NaN === NaN'], ans: [0, 1], exp: ['== แปลง "" เป็น 0', '== ถือว่าใกล้กัน', '=== เทียบชนิดด้วย คนละชนิด', 'NaN ไม่เท่าตัวเอง'] },
-  { q: 'method ใดของ Array แก้ต้นฉบับ', opts: ['push', 'sort', 'map', 'slice', 'splice'], ans: [0, 1, 4], exp: ['เพิ่มท้ายในต้นฉบับ', 'เรียงในต้นฉบับ', 'คืน array ใหม่', 'คืน array ใหม่', 'ลบ/แทรกในต้นฉบับ'] },
-  { q: 'เกี่ยวกับ Date ข้อใดถูก', opts: ['Date.now() คืนตัวเลข ms ไม่ใช่ Date object', "new Date('2026-08-20') ต้องใส่ quote", 'getDay() คืน 0 แทนวันจันทร์', 'getMonth() คืน 0–11'], ans: [0, 1, 3], exp: ['ถูก — เป็น number', 'ถูก — ไม่งั้นเป็นการลบเลข', '0 คือวันอาทิตย์', 'ถูก'] },
-  { q: 'เกี่ยวกับ arrow function ข้อใดถูก', opts: ['ไม่มี this ของตัวเอง', 'ใช้ new ได้เหมือน function ปกติ', 'บรรทัดเดียวไม่มี {} จะ return ให้เอง', 'เรียกก่อนบรรทัด const ที่ประกาศได้เสมอ'], ans: [0, 2], exp: ['ถูก — ยืมจาก scope นอก', 'ไม่ได้ — TypeError', 'ถูก — implicit return', 'ไม่ได้ — TDZ ("เสมอ" คือคำเสี่ยง)'] },
-  { q: 'เกี่ยวกับ for...in / for...of ข้อใดถูก', opts: ['for...in กับ array ให้ key เป็น string', 'for...of ให้สมาชิกแต่ละตัวตรง ๆ', 'for...in ใช้กับ array เหมือน for...of ทุกกรณี', 'forEach ใช้ break ได้'], ans: [0, 1], exp: ['ถูก', 'ถูก', '"ทุกกรณี" — ผิด ได้ของคนละแบบ', 'ไม่ได้ — เป็น callback ไม่ใช่ลูป'] },
-  { q: 'เกี่ยวกับ default parameter ข้อใดถูก', opts: ['ทำงานเมื่อได้ undefined', 'ทำงานเมื่อได้ null', 'ทำงานเมื่อไม่ส่ง argument', 'ทำงานเมื่อได้ ""'], ans: [0, 2], exp: ['ถูก', 'null = มีของส่งมาแล้ว', 'ถูก — ไม่ส่ง = undefined', '"" = มีของส่งมาแล้ว'] },
-  { q: 'เกี่ยวกับ spread ข้อใดถูก', opts: ['{...a, ...b} ถ้า key ชน b ชนะ', 'spread คัดลอกลึกทุกชั้น', '[...arr] ได้ array ใหม่', '...rest ต้องอยู่ท้ายสุด'], ans: [0, 2, 3], exp: ['ถูก — ตัวหลังทับ', 'ผิด — shallow แค่ชั้นบน', 'ถูก', 'ถูก — ไม่งั้น SyntaxError'] },
-  { q: 'เกี่ยวกับ try/catch ข้อใดถูก', opts: ['finally ทำงานเสมอ', 'return new Error() ทำให้ catch ทำงาน', 'error.message ให้ข้อความล้วนไม่ติด "Error:"', 'try โดยไม่มี catch และ finally เขียนได้'], ans: [0, 2], exp: ['ถูก', 'ผิด — ต้อง throw', 'ถูก', 'ผิด — ต้องมีอย่างน้อยหนึ่งอย่าง'] },
+  /* — เงื่อนไข (สไลด์ 4-7) — */
+  { ch:'ch02', exam:1, q:'เกี่ยวกับ switch ข้อใดถูก', opts:['switch เทียบค่าด้วย === เสมอ','ถ้าไม่ใส่ break จะ "ไหล" ต่อไป case ถัดไป','default ต้องใส่เสมอ ไม่งั้น error','เหมาะกับการเทียบช่วงตัวเลข เช่น score >= 80'], ans:[0,1], exp:['ถูก — สไลด์ระบุว่าใช้ strict equality','ถูก — fall-through','ผิด — ใส่หรือไม่ใส่ก็ได้','ผิด — ช่วงตัวเลขใช้ if/else'] },
+  { ch:'ch02', exam:1, q:'สไลด์แนะนำให้ใช้ switch แทน if/else เมื่อใด', opts:['เทียบตัวแปรเดียวกับค่าคงที่หลายค่า','มี case มากกว่า 3-4 กรณี','ต้องเทียบหลายตัวแปรร่วมกันด้วย && ||','เงื่อนไขเป็นช่วงตัวเลข'], ans:[0,1], exp:['ถูก','ถูก','ผิด — อันนี้ใช้ if/else','ผิด — อันนี้ใช้ if/else'] },
+  { ch:'ch02', exam:1, q:'if (amount < 1000) return "ปกติ"; if (amount < 0) return "ติดลบ"; เรียกด้วย -50 ได้อะไร', opts:['"ปกติ" เพราะ if แรกจริงก่อน','"ติดลบ"','เงื่อนไขที่แคบกว่าควรอยู่บนสุด','ทั้งสอง if ถูกเช็คทั้งคู่'], ans:[0,2], exp:['ถูก — -50 < 1000','ผิด — ไปไม่ถึงบรรทัดนั้น','ถูก — guard แคบก่อนกว้าง','ผิด — เจอ return แล้วออกเลย'] },
+  { ch:'ch02', exam:1, q:'เกี่ยวกับการเช็คช่วงค่าและค่าว่าง ข้อใดถูก', opts:['0 <= x <= 100 ทำงานแบบคณิตศาสตร์','ต้องเขียน x >= 0 && x <= 100','x == null เป็นจริงทั้งเมื่อ x เป็น null และ undefined','if (arr) เช็ค array ว่างได้'], ans:[1,2], exp:['ผิด — จริงเกือบเสมอ','ถูก','ถูก','ผิด — [] เป็น truthy'] },
+  /* — วนซ้ำ (สไลด์ 8-12) — */
+  { ch:'ch03', exam:1, q:'ชนิด loop กับสถานการณ์ในสไลด์ ข้อใดจับคู่ถูก', opts:['for — รู้จำนวนรอบแน่นอน','while — ไม่รู้จำนวนรอบ แต่รู้เงื่อนไขจบ','do...while — เช็คเงื่อนไขก่อน ถ้าเท็จไม่ทำเลย','for...in — วนอ่าน key ของ Object'], ans:[0,1,3], exp:['ถูก','ถูก','ผิด — do...while ทำก่อนอย่างน้อย 1 ครั้ง','ถูก'] },
+  { ch:'ch03', exam:1, q:'let count = 10; do { console.log(count); count++; } while (count < 3); พิมพ์อะไร', opts:['ไม่พิมพ์เลย เพราะ 10 < 3 เป็นเท็จ','พิมพ์ 10 หนึ่งครั้ง','ถ้าเป็น while ธรรมดาจะไม่พิมพ์เลย','พิมพ์ 10, 11, 12'], ans:[1,2], exp:['ผิด','ถูก — ทำก่อนแล้วค่อยเช็ค','ถูก','ผิด'] },
+  { ch:'ch03', exam:1, q:'for (let i=1;i<=10;i++){ if(i===3) continue; if(i===7) break; console.log(i);} พิมพ์อะไร', opts:['1, 2, 4, 5, 6','1, 2, 4, 5, 6, 7','continue ข้ามรอบปัจจุบัน','break ออกจาก loop ทันที'], ans:[0,2,3], exp:['ถูก — ตามสไลด์','ผิด — 7 โดน break ก่อนพิมพ์','ถูก','ถูก'] },
+  { ch:'ch03', exam:1, q:'เกี่ยวกับ for...of / for...in ข้อใดถูก', opts:['for...of อ่าน "ค่า" ใช้กับ Array/String/Map/Set','for...in อ่าน "key" ใช้กับ Object','for...in กับ Array ได้ index เป็น string','forEach ใช้ break ได้'], ans:[0,1,2], exp:['ถูก','ถูก','ถูก — สไลด์เตือนตรงนี้','ผิด'] },
+  { ch:'ch03', exam:1, q:'loop ซ้อน loop ตามสไลด์ (categories × sizes) ข้อใดถูก', opts:['วงนอกควบคุมแกนหนึ่ง วงในควบคุมอีกแกน','categories 2 × sizes 3 ได้ 6 บรรทัด','ตัวแปรวงในกับวงนอกใช้ชื่อเดียวกันได้','วงในวนครบก่อน วงนอกถึงขยับ'], ans:[0,1,3], exp:['ถูก','ถูก','ผิด — ชนกัน','ถูก'] },
+  /* — Array (สไลด์ 18-19) — */
+  { ch:'ch05', exam:1, q:'method ใดของ Array แก้ต้นฉบับ', opts:['push','pop','map','filter','sort'], ans:[0,1,4], exp:['ถูก','ถูก','ผิด — คืน array ใหม่','ผิด — คืน array ใหม่','ถูก'] },
+  { ch:'ch05', exam:1, q:'จับคู่ method กับงานในสไลด์ ข้อใดถูก', opts:['map — ดึงชื่อสินค้าไปแสดงใน dropdown','filter — กรองเฉพาะสินค้าที่ยังมีสต๊อก','reduce — รวมยอดราคาตะกร้า','find — หาสินค้าทุกชิ้นที่ตรง id'], ans:[0,1,2], exp:['ถูก','ถูก','ถูก','ผิด — find คืนตัวแรกตัวเดียว'] },
+  { ch:'ch05', exam:1, q:'map / filter / find คืนอะไร', opts:['map คืน array ยาวเท่าเดิม','filter คืน array ที่อาจสั้นกว่า','find คืน array ที่มีสมาชิกเดียว','find คืน undefined ถ้าไม่เจอ'], ans:[0,1,3], exp:['ถูก','ถูก','ผิด — คืนตัวสมาชิกตรง ๆ','ถูก'] },
+  { ch:'ch05', exam:1, q:'เกี่ยวกับ reduce และ sort ข้อใดถูก', opts:['reduce ต้องมี initial value ไม่งั้น array ว่างจะ error','[40,5,100].sort() ได้ [5,40,100]','sort() แก้ต้นฉบับ','ใส่ (a,b)=>a-b เพื่อเรียงตัวเลขน้อยไปมาก'], ans:[0,2,3], exp:['ถูก','ผิด — เรียงแบบ string ได้ [100,40,5]','ถูก','ถูก'] },
+  /* — Object (สไลด์ 21-22) — */
+  { ch:'ch06', exam:1, q:'เกี่ยวกับการเข้าถึง property ข้อใดถูก', opts:['student.name กับ student["name"] ได้ค่าเดียวกัน','student[name] ไม่มี quote จะไปหาตัวแปรชื่อ name','เพิ่ม property ใหม่ได้ทันทีด้วย obj.theme = "dark"','อ่าน property ที่ไม่มีจะ error'], ans:[0,1,2], exp:['ถูก','ถูก','ถูก — ตามสไลด์','ผิด — ได้ undefined เงียบ ๆ'] },
+  { ch:'ch06', exam:1, q:'const b = a; b.x = 99; (a เป็น object) ข้อใดถูก', opts:['a.x กลายเป็น 99 ด้วย','a === b เป็น true','const ห้ามแก้ property ของ object','สะกด key ผิดตอนแก้ค่าจะสร้าง key ใหม่เงียบ ๆ'], ans:[0,1,3], exp:['ถูก — ชี้ก้อนเดียวกัน','ถูก','ผิด — ล็อกแค่ป้าย','ถูก'] },
+  { ch:'ch06', exam:1, q:'เกี่ยวกับ method และ this ใน object (สไลด์ 21) ข้อใดถูก', opts:['method คือฟังก์ชันที่อยู่ในอ็อบเจกต์','this อ้างถึงตัวอ็อบเจกต์นั้นเอง (เบื้องต้น)','property คือข้อมูล/คุณสมบัติของอ็อบเจกต์','เรียก method ต้องไม่ใส่วงเล็บ'], ans:[0,1,2], exp:['ถูก','ถูก','ถูก','ผิด — student.greet()'] },
+  /* — Exception (สไลด์ 46-48) — */
+  { ch:'ch10', exam:1, q:'เกี่ยวกับ try/catch/finally ข้อใดถูก', opts:['catch ทำงานเมื่อเกิด error ใน try เท่านั้น','finally ทำงานเสมอ ไม่ว่ามี error หรือไม่','เขียน try { } finally { } โดยไม่มี catch ได้','ถ้าไม่จับ error โปรแกรมยังทำงานต่อได้ปกติ'], ans:[0,1,2], exp:['ถูก','ถูก','ถูก — สไลด์ระบุ','ผิด — ทั้งหน้าหยุดทันที'] },
+  { ch:'ch10', exam:1, q:'เกี่ยวกับ throw ข้อใดถูก', opts:['throw หยุดการทำงานทันที ส่งไปให้ catch ที่ใกล้ที่สุด','new Error(message) มี .message และ .name','return new Error() ทำให้ catch ทำงาน','return throw new Error() เขียนได้'], ans:[0,1], exp:['ถูก','ถูก','ผิด — แค่คืนค่า','ผิด — SyntaxError'] },
+  { ch:'ch10', exam:1, q:'class ApiError extends Error ข้อใดถูก', opts:['ต้องเรียก super(message) ก่อนใช้ this','ตั้ง this.name เพื่อแยกประเภท error','เพิ่ม property พิเศษเช่น statusCode ได้','ใน catch ใช้ typeof แยกประเภท error'], ans:[0,1,2], exp:['ถูก','ถูก','ถูก','ผิด — ใช้ instanceof'] },
+  { ch:'ch10', exam:1, q:'ใน catch (error) การพิมพ์ข้อความ error ข้อใดถูก', opts:['`${error}` ได้ "Error: ข้อความ" ติดคำนำหน้า','error.message ได้ข้อความล้วน','catch จับได้เฉพาะ error ที่เรา throw เอง','error ที่ catch รับมาเป็น object'], ans:[0,1,3], exp:['ถูก','ถูก','ผิด — จับ bug ของเราด้วย','ถูก'] },
+  /* — DOM: โครงสร้าง (สไลด์ 15-28) — */
+  { ch:'ch13', exam:1, q:'เกี่ยวกับ DOM ตามสไลด์ ข้อใดถูก', opts:['DOM แทนหน้า HTML เพื่อให้โปรแกรมเปลี่ยน structure, style, content ได้','DOM เป็นภาษาโปรแกรม','DOM เป็น cross-platform และ language-independent','DOM ใช้ได้กับ HTML เท่านั้น'], ans:[0,2], exp:['ถูก','ผิด','ถูก','ผิด — XML ก็ได้'] },
+  { ch:'ch13', exam:1, q:'ทำไมสไลด์แนะนำให้วาง <script> ก่อนปิด </body>', opts:['วางใน <head> ต้องโหลด JS เสร็จก่อน หน้าจึงจะ render','script รันก่อนเอกสารโหลดเสร็จจะหา node ไม่เจอ','วางที่ไหนก็ได้ผลเหมือนกัน','browser จะว่างเปล่าทั้งหน้าระหว่างรอ JS'], ans:[0,1,3], exp:['ถูก','ถูก — เหตุผลที่อาจารย์ย้ำ','ผิด','ถูก'] },
+  { ch:'ch13', exam:1, q:'เกี่ยวกับ root node / root element ข้อใดถูก', opts:['document คือ root node (nodeType 9)','document.documentElement คือ <html>','<!DOCTYPE html> อยู่ระดับเดียวกับ <html>','document.body เป็น child ของ document'], ans:[0,1,2], exp:['ถูก','ถูก','ถูก — nodeType 10','ผิด — เป็น descendant'] },
+  { ch:'ch13', exam:1, q:'nodeType ข้อใดถูก', opts:['Element = 1','Attribute = 2','Text = 3','Comment = 9'], ans:[0,1,2], exp:['ถูก','ถูก','ถูก','ผิด — Comment = 8, Document = 9'] },
+  { ch:'ch13', exam:1, q:'nodeName / nodeValue ข้อใดถูก', opts:['nodeValue ของ element เป็น null','nodeName ของ text node คือ "#text"','nodeValue ของ text node คือเนื้อข้อความ','nodeName ของ document คือ "html"'], ans:[0,1,2], exp:['ถูก','ถูก','ถูก','ผิด — "#document"'] },
+  { ch:'ch13', exam:1, q:'childNodes กับ children ข้อใดถูก', opts:['childNodes คืน NodeList รวม text/comment','children คืน HTMLCollection เฉพาะ element','whitespace ระหว่าง tag นับเป็น text node','HTMLCollection มี forEach'], ans:[0,1,2], exp:['ถูก','ถูก','ถูก — อาจารย์เดโมสด','ผิด — ต้อง Array.from()'] },
+  { ch:'ch15', exam:1, q:'innerHTML / innerText / textContent ข้อใดถูก', opts:['innerHTML เสี่ยง XSS ถ้ารับค่าจากผู้ใช้','innerText ประมวลผล CSS ไม่รวมข้อความที่ซ่อน','textContent รวมข้อความที่ display:none','textContent parse HTML'], ans:[0,1,2], exp:['ถูก','ถูก','ถูก','ผิด'] },
+  /* — DOM: เลือก/เดิน (สไลด์ 29-41) — */
+  { ch:'ch14', exam:1, q:'เมธอดเลือก element คืนอะไร', opts:['getElementById คืน element เดียวหรือ null','getElementsByClassName คืน HTMLCollection','querySelectorAll คืน NodeList','querySelector คืน NodeList'], ans:[0,1,2], exp:['ถูก','ถูก','ถูก','ผิด — คืน element แรกตัวเดียว'] },
+  { ch:'ch14', exam:1, q:'live vs static ข้อใดถูก', opts:['getElementsByTagName เป็น live','getElementsByClassName เป็น live','querySelectorAll เป็น static','เพิ่ม <li> แล้ว NodeList จาก querySelectorAll โตตาม'], ans:[0,1,2], exp:['ถูก','ถูก','ถูก','ผิด — static ไม่เปลี่ยน'] },
+  { ch:'ch14', exam:1, q:'CSS selector ใน querySelectorAll ข้อใดถูก', opts:['"div.tech > p" = <p> ที่ parent โดยตรงคือ div.tech','"div.tech p" = <p> ที่เป็น descendant ทุกระดับ','"p.warning, p.note" = เลือกทั้งสองแบบ','"div#x" กับ "div[id=\'x\']" ได้ผลต่างกัน'], ans:[0,1,2], exp:['ถูก','ถูก','ถูก','ผิด — เหมือนกัน'] },
+  { ch:'ch14', exam:1, q:'Node relationships ข้อใดถูก', opts:['firstChild เท่ากับ childNodes[0] เสมอ','firstChild อาจเป็น text node','firstElementChild คืนเฉพาะ element','html.parentElement คือ #document'], ans:[0,1,2], exp:['ถูก','ถูก','ถูก','ผิด — null; parentNode ต่างหากที่ได้ #document'] },
+  { ch:'ch14', exam:1, q:'element.closest(selector) ข้อใดถูก', opts:['ค้นขึ้นไปหา ancestor ที่ใกล้ที่สุด','ตัวมันเองก็นับถ้าตรง selector','ไม่เจอคืน null','ค้นลงไปในลูกหลาน'], ans:[0,1,2], exp:['ถูก','ถูก','ถูก','ผิด'] },
+  /* — DOM: แก้ไข (สไลด์ 43-54) — */
+  { ch:'ch15', exam:1, q:'สร้าง node ใหม่ตามสไลด์ ข้อใดถูก', opts:['createElement สร้าง node แต่ยังไม่อยู่ใน tree','ต้อง appendChild เข้า parent จึงจะขึ้นหน้าเว็บ','setAttribute("id", 1001) ใช้แทน createAttribute + setAttributeNode ได้','Attr node มี parentNode ชี้ไป element เจ้าของ'], ans:[0,1,2], exp:['ถูก','ถูก — ขั้นที่ 6','ถูก','ผิด — null ใช้ ownerElement'] },
+  { ch:'ch15', exam:1, q:'เมธอดจัดการ node ข้อใดถูก', opts:['insertBefore(newNode, refNode) แทรกหน้า refNode','insertBefore(newNode, null) = ต่อท้าย','replaceChild(newChild, oldChild)','removeChild คืน node ที่ถูกลบ'], ans:[0,1,2,3], exp:['ถูก','ถูก','ถูก','ถูก'] },
+  { ch:'ch15', exam:1, q:'classList ข้อใดถูก', opts:['add() เพิ่มซ้ำถ้ามีอยู่แล้ว','toggle() มีอยู่ลบ ไม่มีเพิ่ม','contains() คืน boolean','replace(old, new) แทนที่ class'], ans:[1,2,3], exp:['ผิด — ไม่เพิ่มซ้ำ','ถูก','ถูก','ถูก'] },
+  { ch:'ch15', exam:1, q:'dataset ข้อใดถูก', opts:['data-modal-id อ่านด้วย el.dataset.modalId','ชื่อถูกแปลง kebab-case → camelCase','el.dataset.color = "green" เพิ่ม data-color ได้','ลบด้วย el.dataset.remove("modalId")'], ans:[0,1,2], exp:['ถูก','ถูก','ถูก','ผิด — removeAttribute("data-modal-id")'] },
+  { ch:'ch15', exam:1, q:'DocumentFragment ข้อใดถูก', opts:['เป็นพื้นที่พักในหน่วยความจำ ไม่ใช่ส่วนของหน้าเว็บ','สร้างใน fragment ก่อน แล้ว appendChild เข้า DOM ครั้งเดียว','reflow/repaint เกิดครั้งเดียวแทนทุกรอบ','ผลลัพธ์ต่างจากการ append ทีละตัว'], ans:[0,1,2], exp:['ถูก','ถูก','ถูก','ผิด — เหมือนกันเป๊ะ'] },
+  { ch:'ch15', exam:1, q:'System Dialogs (alert / confirm / prompt) ข้อใดถูก', opts:['confirm() คืน true เมื่อกด OK, false เมื่อ Cancel','prompt() คืน null เมื่อกด Cancel','หน้าตา dialog กำหนดด้วย CSS ได้','dialog เป็น synchronous — โค้ดหยุดรอจนกว่าจะปิด'], ans:[0,1,3], exp:['ถูก','ถูก','ผิด — OS/browser กำหนด','ถูก'] },
+  /* — หัวข้ออื่นในสไลด์ (นอกขอบเขตที่กำหนด แต่ยังอยู่ใน "JS ที่ทบทวน") — */
+  { ch:'ch04', exam:0, q:'เกี่ยวกับ function ข้อใดถูก', opts:['ฟังก์ชันที่ไม่มี return คืน undefined','default parameter ทำงานเมื่อได้ undefined เท่านั้น','arrow function มี this ของตัวเอง','ส่ง callback ต้องไม่ใส่วงเล็บเรียก'], ans:[0,1,3], exp:['ถูก','ถูก','ผิด','ถูก'] },
+  { ch:'ch07', exam:0, q:'เกี่ยวกับ spread / destructuring ข้อใดถูก', opts:['{...a, ...b} ถ้า key ซ้ำ b ทับ a','spread คัดลอกแค่ชั้นบนสุด','{ name: fullName } คือ rename','...rest วางตรงไหนก็ได้'], ans:[0,1,2], exp:['ถูก','ถูก','ถูก','ผิด — ต้องท้ายสุด'] },
+  { ch:'ch08', exam:0, q:'เกี่ยวกับ Date ข้อใดถูก', opts:['getMonth() สิงหาคมคือ 7','getDay() 0 คืออาทิตย์','Date.now() คืน Date object','ผลต่างวันต้องหาร (1000*60*60*24) มีวงเล็บ'], ans:[0,1,3], exp:['ถูก','ถูก','ผิด — คืนตัวเลข ms','ถูก'] },
+  { ch:'ch09', exam:0, q:'เกี่ยวกับ regex ข้อใดถูก', opts:['test() คืน boolean','match() คืน array หรือ null','. จับตัวอักษรอะไรก็ได้ 1 ตัว','ไม่มี ^ $ ก็เช็คทั้งสตริงได้'], ans:[0,1,2], exp:['ถูก','ถูก','ถูก','ผิด'] },
+  { ch:'ch11', exam:1, q:'สอบปฏิบัติตามที่อาจารย์ประกาศ ข้อใดถูก', opts:['ระบบตรวจรันด้วย Node','ต้องใช้ module.exports / require','ใช้ export / import แบบ ES Module ได้','DOM ตรวจผ่าน jsdom'], ans:[0,1,3], exp:['ถูก — W3','ถูก — W3','ผิด — W3 ย้ำว่าไม่ใช่ ES Module','ถูก — W4'] },
 ];
-pm.push(
-  { q: 'เกี่ยวกับ const ข้อใดถูก', opts: ['const obj = {}; obj.x = 1 ทำได้', 'const obj = {}; obj = {} ทำได้', 'const ต้องกำหนดค่าตอนประกาศ', 'const ป้องกันการแก้ property ทุกกรณี'], ans: [0, 2], exp: ['ถูก — แก้ของข้างในได้', 'ผิด — เปลี่ยนป้ายไม่ได้', 'ถูก', '"ทุกกรณี" — ผิด ล็อกแค่ป้าย'] },
-  { q: 'ค่าใดเป็น falsy', opts: ['"0"', '0', '[]', 'NaN', 'undefined'], ans: [1, 3, 4], exp: ['สตริงมีตัวอักษร = truthy', 'falsy', 'array = truthy', 'falsy', 'falsy'] },
-  { q: 'เกี่ยวกับ ternary ข้อใดถูก', opts: ['เป็น expression คืนค่าได้', 'เขียนลอย ๆ ไม่เก็บผลก็มีผล', 'ซ้อนกันหลายชั้นอ่านง่ายกว่า if/else', 'ใช้ใน template literal ได้'], ans: [0, 3], exp: ['ถูก', 'ผิด — คำนวณแล้วทิ้ง', 'ผิด — อ่านยากกว่า', 'ถูก'] },
-  { q: 'เกี่ยวกับ break / continue ข้อใดถูก', opts: ['break ออกจากลูปทันที', 'continue ข้ามแค่รอบนี้', 'ใช้ทั้งคู่ใน forEach ได้', 'continue ออกจากลูป'], ans: [0, 1], exp: ['ถูก', 'ถูก', 'ผิด — forEach ไม่ใช่ลูป', 'ผิด — แค่ข้ามรอบ'] },
-  { q: 'เรียก applyDiscount(250) กับ function applyDiscount(price, rate) { return price * rate } ได้อะไร', opts: ['error เพราะส่งไม่ครบ', 'NaN', 'rate เป็น undefined', '250'], ans: [1, 2], exp: ['ผิด — ไม่ error', 'ถูก — 250 * undefined', 'ถูก', 'ผิด'] },
-  { q: 'เกี่ยวกับ callback ข้อใดถูก', opts: ['filter(fn) ยื่นฟังก์ชันให้ filter เรียกเอง', 'filter(fn()) เรียก fn ทันที', 'ระบบตรวจเป็นคนเรียกฟังก์ชันที่เราเขียน', 'ต้องเรียกฟังก์ชันตัวเองก่อนส่งงานเสมอ'], ans: [0, 1, 2], exp: ['ถูก', 'ถูก — นี่คือกับดัก', 'ถูก', '"เสมอ" — ผิด ไม่จำเป็น'] },
-  { q: 'map / filter / find คืนอะไร', opts: ['map คืน array ยาวเท่าเดิม', 'filter ไม่เจอเลยคืน undefined', 'find ไม่เจอคืน undefined', 'find คืน array ที่มีตัวเดียว'], ans: [0, 2], exp: ['ถูก', 'ผิด — คืน []', 'ถูก', 'ผิด — คืนตัวสมาชิกตรง ๆ'] },
-  { q: 'เกี่ยวกับ sort ข้อใดถูก', opts: ['[40,5,100].sort() ได้ [5,40,100]', 'sort() แก้ต้นฉบับ', 'ใส่ (a,b) => a - b เรียงตัวเลขจากน้อยไปมาก', 'sort() คืน array ใหม่ไม่แตะต้นฉบับ'], ans: [1, 2], exp: ['ผิด — เรียงแบบ string ได้ [100,40,5]', 'ถูก', 'ถูก', 'ผิด'] },
-  { q: 'เกี่ยวกับการเข้าถึง property ข้อใดถูก', opts: ['u.key หา property ชื่อ "key" ตรงตัว', 'u[key] ใช้ค่าของตัวแปร key', "u['name'] กับ u.name ได้ผลเหมือนกัน", 'u[name] ไม่มี quote เหมือน u.name'], ans: [0, 1, 2], exp: ['ถูก', 'ถูก', 'ถูก', 'ผิด — ไปหาตัวแปร name'] },
-  { q: 'สะกด key ผิดตอนแก้ค่า (u.pionts = 200) จะเกิดอะไร', opts: ['error', 'สร้าง key ใหม่ชื่อ pionts', 'u.points ยังเป็นค่าเดิม', 'u.points กลายเป็น 200'], ans: [1, 2], exp: ['ผิด — ไม่มี error', 'ถูก', 'ถูก', 'ผิด'] },
-  { q: 'เกี่ยวกับ destructuring ข้อใดถูก', opts: ['{ name: fullName } คือ rename', '{ phone = "x" } default ทำงานเมื่อ phone เป็น null', 'array destructuring อ้างด้วยตำแหน่ง', '[a, b] = [b, a] สลับค่าได้'], ans: [0, 2, 3], exp: ['ถูก', 'ผิด — เฉพาะ undefined', 'ถูก', 'ถูก'] },
-  { q: 'เกี่ยวกับ getDay / getDate / getMonth ข้อใดถูก', opts: ['getDate() คืนวันที่ในเดือน', 'getDay() คืนวันที่ในเดือน', 'getDay() 0 คืออาทิตย์', 'getMonth() สิงหาคมคือ 8'], ans: [0, 2], exp: ['ถูก', 'ผิด — วันในสัปดาห์', 'ถูก', 'ผิด — คือ 7'] },
-  { q: 'Date สองตัวเวลาเดียวกันเป๊ะ เทียบยังไงถึงได้ true', opts: ['a === b', 'a == b', 'a.getTime() === b.getTime()', 'a - b === 0'], ans: [2, 3], exp: ['ผิด — object คนละก้อน', 'ผิด — เช่นกัน', 'ถูก', 'ถูก — ลบแล้วเป็นตัวเลข'] },
-  { q: 'เกี่ยวกับ regex ข้อใดถูก', opts: ['test คืน boolean', 'match คืน boolean', '. จับตัวอักษรอะไรก็ได้ 1 ตัว', 'ไม่มี ^ $ ก็ยังเช็คทั้งสตริงได้'], ans: [0, 2], exp: ['ถูก', 'ผิด — array หรือ null', 'ถูก', 'ผิด — เจอบางส่วนก็ผ่าน'] },
-  { q: 'เกี่ยวกับ throw ข้อใดถูก', opts: ['throw หยุดฟังก์ชันทันที', 'return throw new Error() เขียนได้', 'throw "ข้อความ" เขียนได้แต่ไม่แนะนำ', 'catch จับได้เฉพาะ error ที่เรา throw เอง'], ans: [0, 2], exp: ['ถูก', 'ผิด — SyntaxError', 'ถูก — เสีย .message/stack', 'ผิด — จับ bug ของเราด้วย'] },
-  { q: 'undefined มาจากทางไหนได้บ้าง', opts: ['ตัวแปรประกาศแต่ไม่ assign', 'ฟังก์ชันไม่ return', 'อ่าน property ที่ไม่มี', 'เรียกตัวแปรที่ไม่เคยประกาศ'], ans: [0, 1, 2], exp: ['ถูก', 'ถูก', 'ถูก', 'ผิด — อันนี้ ReferenceError'] },
-);
-let pi = 0;
-const pmOrder = pm.map(q => { const idx = q.opts.map((_, i) => i); for (let i = idx.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [idx[i], idx[j]] = [idx[j], idx[i]]; } return idx; });
-function pmRender(){ const q = pm[pi]; const d = pmDone[pi];
-  $('pm-wrap').innerHTML = `<div class="quiz"><p class="q">ข้อ ${pi + 1} / ${pm.length} — ${q.q} (เลือกได้มากกว่า 1)</p>${pmOrder[pi].map(i => { const o = q.opts[i]; return `<label class="${d ? (q.ans.includes(i) ? 'right' : (d.pick.includes(i) ? 'wrong' : '')) : ''}"><input type="checkbox" value="${i}" ${d ? 'disabled' : ''} ${d && d.pick.includes(i) ? 'checked' : ''}>${o}${d ? ` <span class="pill">${q.exp[i]}</span>` : ''}</label>`; }).join('')}<div class="row"><button class="primary" onclick="pmCheck()" ${d ? 'disabled' : ''}>ตรวจข้อนี้</button></div><div class="exp ${d ? 'show ' + (d.ok ? 'ok' : 'bad') : ''}">${d ? (d.ok ? '✓ ตรงทั้งชุด — ได้คะแนนเต็มข้อ' : '✗ ไม่ตรงทั้งชุด — Perfect Match ไม่มีคะแนนบางส่วน ต้องติ๊กครบและไม่ติ๊กเกิน') : ''}</div></div>`;
-  $('pm-score').textContent = `เต็มข้อ ${Object.values(pmDone).filter(x => x.ok).length} / ${pm.length}`; }
-function pmCheck(){ const pick = [...$('pm-wrap').querySelectorAll('input:checked')].map(x => +x.value); const ans = pm[pi].ans; const ok = pick.length === ans.length && pick.every(p => ans.includes(p)); pmDone[pi] = { pick, ok }; saved.pm = pmDone; persist(); pmRender(); updateWeak(); }
-function pmNav(d){ pi = (pi + d + pm.length) % pm.length; pmRender(); } pmRender(); updateWeak();
+const PM_CH_NAME = { ch02:'เงื่อนไข', ch03:'วนซ้ำ', ch04:'ฟังก์ชัน', ch05:'Array', ch06:'Object', ch07:'Destructuring', ch08:'Date', ch09:'Regex', ch10:'Exception', ch11:'สอบปฏิบัติ', ch13:'DOM โครงสร้าง', ch14:'DOM เลือก/เดิน', ch15:'DOM แก้ไข' };
+
+/* ---------- engine ---------- */
+/* pmDone2 = ผลโหมดฝึก (key = index ในคลัง) · saved.examLog = ประวัติจำลองสอบ */
+let pmMode = 'practice', pv = 0, pmView = [], pmOrder = {};
+pmDone2 = saved.pm2 || {};
+let ex = null;  /* สถานะการสอบจำลอง: { idx:[...], pick:{}, start, timer, finished } */
+
+function pmShuffle(a){ for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function pmOrderFor(i){ if (!pmOrder[i]) pmOrder[i] = pmShuffle(pm[i].opts.map((_, k) => k)); return pmOrder[i]; }
+function pmInScope(i){ return !saved.examOnly || pm[i].exam === 1; }
+
+function pmBuildView(){
+  pmView = pmMode === 'exam' && ex ? ex.idx : pm.map((_, i) => i).filter(pmInScope);
+  if (pv >= pmView.length) pv = 0;
+  const scoped = pm.filter((_, i) => pmInScope(i)).length;
+  $('pm-bank').textContent = saved.examOnly ? `คลัง ${scoped} ข้อ (เฉพาะขอบเขตสอบ)` : `คลัง ${pm.length} ข้อ`;
+}
+
+function pmSetMode(m){
+  if (m === 'exam' && !ex) { pmExamStart(); return; }
+  pmMode = m;
+  $('pm-mode-p').classList.toggle('on', m === 'practice');
+  $('pm-mode-e').classList.toggle('on', m === 'exam');
+  $('pm-examhead').hidden = !(m === 'exam' && ex && !ex.finished);
+  $('pm-result').hidden = !(m === 'exam' && ex && ex.finished);
+  pv = 0; pmBuildView(); pmRender();
+}
+
+function pmRender(){
+  if (!pmView.length) { $('pm-wrap').innerHTML = '<div class="quiz"><p class="q">ไม่มีข้อในขอบเขตนี้</p></div>'; $('pm-score').textContent = ''; return; }
+  const ai = pmView[pv], q = pm[ai];
+  const inExam = pmMode === 'exam' && ex;
+  const d = inExam ? (ex.finished ? { pick: ex.pick[ai] || [], ok: pmIsOk(ai, ex.pick[ai] || []) } : null) : pmDone2[ai];
+  const picked = inExam && !ex.finished ? (ex.pick[ai] || []) : (d ? d.pick : []);
+  const reveal = !!d;
+  const badge = `<a class="pill" href="#${q.ch}" title="กลับไปทวนบทนี้">${PM_CH_NAME[q.ch] || q.ch}</a>`;
+  $('pm-wrap').innerHTML = `<div class="quiz"><p class="q">ข้อ ${pv + 1} / ${pmView.length} ${badge} — ${q.q} <span class="pill">เลือกได้มากกว่า 1</span></p>` +
+    pmOrderFor(ai).map(i => {
+      const cls = reveal ? (q.ans.includes(i) ? 'right' : (picked.includes(i) ? 'wrong' : '')) : '';
+      return `<label class="${cls}"><input type="checkbox" value="${i}" ${reveal ? 'disabled' : ''} ${picked.includes(i) ? 'checked' : ''} ${inExam && !ex.finished ? 'onchange="pmExamPick(this)"' : ''}>${q.opts[i]}${reveal ? ` <span class="pill">${q.exp[i]}</span>` : ''}</label>`;
+    }).join('') +
+    (inExam ? '' : `<div class="row"><button class="primary" onclick="pmCheck()" ${reveal ? 'disabled' : ''}>ตรวจข้อนี้</button></div>`) +
+    `<div class="exp ${reveal ? 'show ' + (d.ok ? 'ok' : 'bad') : ''}">${reveal ? (d.ok ? '✓ ตรงทั้งชุด — ได้คะแนนเต็มข้อ' : '✗ ไม่ตรงทั้งชุด — ไม่มีคะแนนบางส่วน ต้องติ๊กครบและไม่ติ๊กเกิน') : ''}</div></div>`;
+  if (inExam) {
+    const answered = Object.values(ex.pick).filter(p => p.length).length;
+    $('pm-answered').textContent = answered;
+    $('pm-score').textContent = ex.finished ? `ได้ ${ex.score} / ${ex.idx.length}` : `ข้อที่ยังไม่ตอบ: ${ex.idx.length - answered}`;
+  } else {
+    const done = pmView.filter(i => pmDone2[i]), ok = done.filter(i => pmDone2[i].ok);
+    $('pm-score').textContent = `เต็มข้อ ${ok.length} / ${done.length} ที่ตรวจแล้ว (จาก ${pmView.length})`;
+  }
+}
+function pmIsOk(ai, pick){ const ans = pm[ai].ans; return pick.length === ans.length && pick.every(p => ans.includes(p)); }
+function pmCheck(){
+  const ai = pmView[pv];
+  const pick = [...$('pm-wrap').querySelectorAll('input:checked')].map(x => +x.value);
+  pmDone2[ai] = { pick, ok: pmIsOk(ai, pick) }; saved.pm2 = pmDone2; persist(); pmRender(); updateWeak();
+}
+function pmNav(d){ if (!pmView.length) return; pv = (pv + d + pmView.length) % pmView.length; pmRender(); }
+
+/* ---------- โหมดจำลองสอบ: 10 ข้อ / 30 นาที / ตรวจเมื่อกด "จบการทดสอบ" (W3) ---------- */
+function pmExamStart(){
+  const pool = pm.map((_, i) => i).filter(i => pm[i].exam === 1);
+  ex = { idx: pmShuffle(pool.slice()).slice(0, 10), pick: {}, start: Date.now(), finished: false, score: 0 };
+  ex.idx.forEach(i => { pmOrder[i] = pmShuffle(pm[i].opts.map((_, k) => k)); });
+  pmMode = 'exam';
+  $('pm-mode-p').classList.remove('on'); $('pm-mode-e').classList.add('on');
+  $('pm-result').hidden = true; $('pm-log').hidden = true; $('pm-examhead').hidden = false;
+  pv = 0; pmBuildView(); pmRender(); pmTick();
+  ex.timer = setInterval(pmTick, 1000);
+}
+function pmTick(){
+  if (!ex || ex.finished) return;
+  const left = Math.max(0, 30 * 60 - Math.floor((Date.now() - ex.start) / 1000));
+  $('pm-timer').textContent = String(Math.floor(left / 60)).padStart(2, '0') + ':' + String(left % 60).padStart(2, '0');
+  $('pm-timer').style.color = left <= 300 ? 'var(--bad)' : '';
+  if (left === 0) pmFinish(true);
+}
+function pmExamPick(cb){
+  const ai = pmView[pv];
+  ex.pick[ai] = [...cb.closest('.quiz').querySelectorAll('input:checked')].map(x => +x.value);
+  const answered = Object.values(ex.pick).filter(p => p.length).length;
+  $('pm-answered').textContent = answered;
+  $('pm-score').textContent = `ข้อที่ยังไม่ตอบ: ${ex.idx.length - answered}`;
+}
+function pmFinish(timeout){
+  if (!ex || ex.finished) return;
+  const unanswered = ex.idx.filter(i => !(ex.pick[i] || []).length).length;
+  if (!timeout && unanswered && !confirm(`ยังไม่ได้ตอบ ${unanswered} ข้อ — จบการทดสอบเลยไหม?`)) return;
+  clearInterval(ex.timer); ex.finished = true;
+  ex.score = ex.idx.filter(i => pmIsOk(i, ex.pick[i] || [])).length;
+  const used = Math.floor((Date.now() - ex.start) / 1000);
+  saved.examLog = (saved.examLog || []).concat([{ t: Date.now(), score: ex.score, total: ex.idx.length, sec: used }]).slice(-10);
+  persist();
+  const byCh = {};
+  ex.idx.forEach(i => { if (!pmIsOk(i, ex.pick[i] || [])) byCh[pm[i].ch] = (byCh[pm[i].ch] || 0) + 1; });
+  const weak = Object.entries(byCh).sort((a, b) => b[1] - a[1]).map(([c, n]) => `<a href="#${c}"><b>${PM_CH_NAME[c] || c}</b> (พลาด ${n})</a>`).join(' · ');
+  const pct = ex.score / ex.idx.length;
+  $('pm-examhead').hidden = true;
+  $('pm-result').hidden = false;
+  $('pm-result').innerHTML = `<div class="out ${pct >= 0.7 ? 'ok' : 'bad'}">${timeout ? '⏰ หมดเวลา — ระบบตรวจอัตโนมัติ\n' : ''}ได้ ${ex.score} / ${ex.idx.length} ข้อเต็ม (ใช้เวลา ${Math.floor(used / 60)}:${String(used % 60).padStart(2, '0')})${weak ? '\nควรทวน: ' : '\nตรงทุกข้อ 🎉'}</div>` +
+    (weak ? `<div class="weak" style="margin-top:8px">${weak}</div>` : '') +
+    `<div class="row"><button class="primary" onclick="pmExamStart()">สอบใหม่อีกชุด</button><button onclick="pmSetMode('practice')">กลับโหมดฝึก</button></div>`;
+  pv = 0; pmRender(); pmLogRender(); updateWeak();
+}
+function pmLogRender(){
+  const log = saved.examLog || [];
+  if (!log.length) { $('pm-log').hidden = true; return; }
+  $('pm-log').hidden = false;
+  $('pm-log').textContent = 'ประวัติจำลองสอบ (ล่าสุด ' + log.length + ' ครั้ง)\n' + log.slice().reverse().map(r => {
+    const d = new Date(r.t); return `  ${d.getDate()}/${d.getMonth() + 1} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}  →  ${r.score}/${r.total}  (${Math.floor(r.sec / 60)} นาที)`;
+  }).join('\n');
+}
+pmBuildView(); pmRender(); pmLogRender(); updateWeak();
 /* ---------- self-check persistence ---------- */
 saved.sc = saved.sc || {};
 document.querySelectorAll('.selfcheck input[data-sc]').forEach(cb => {
@@ -2026,6 +2216,7 @@ function examFilter(on){
   btn.classList.toggle('on', on);
   btn.textContent = on ? '● เฉพาะที่ออกสอบ (8 บท)' : '○ แสดงทุกบท (15 บท)';
   $('exam-note').hidden = !on;
+  if (typeof pmBuildView === 'function' && pmMode === 'practice') { pv = 0; pmBuildView(); pmRender(); }
 }
 function examToggle(){ examFilter(!saved.examOnly); }
 examFilter(!!saved.examOnly);
