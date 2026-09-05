@@ -29,7 +29,7 @@
   nav.toc li a:hover{background:var(--paper)}
   nav.toc li a.active{background:var(--ink);color:#fff}
   nav.toc li a span{display:inline-block;width:22px;color:inherit;opacity:.6}
-  main{padding:40px 48px 120px;max-width:820px}
+  main{padding:40px 48px 120px;max-width:820px;min-width:0}
   header.hero{margin-bottom:56px}
   header.hero h2{font-size:38px;line-height:1.2;margin:0 0 12px;font-weight:700}
   header.hero h2 mark{background:linear-gradient(transparent 55%,var(--mark) 55%);padding:0 2px}
@@ -102,6 +102,39 @@
   .step-line{padding:4px 8px;border-radius:4px;font-family:"IBM Plex Mono",monospace;font-size:13.5px}
   .step-line.hl{background:var(--mark)}
   .pill{display:inline-block;padding:1px 8px;border-radius:99px;font-size:12px;background:var(--paper);border:1px solid var(--line);color:var(--ink-2)}
+
+  /* ---- prose & chapter furniture ---- */
+  section.ch > p{margin:14px 0;max-width:68ch}
+  .chmeta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 10px}
+  .chmeta .pill.lv1{background:var(--ok-bg);border-color:#B7E0C6;color:var(--ok)}
+  .chmeta .pill.lv2{background:var(--info-bg);border-color:#BFD2FF;color:var(--info)}
+  .chmeta .pill.lv3{background:var(--bad-bg);border-color:#F3C9C2;color:var(--bad)}
+  .concept{background:#fff;border:1px solid var(--line);border-left:4px solid var(--info);padding:12px 16px;margin:18px 0;border-radius:0 8px 8px 0}
+  .concept b{display:block;color:var(--info);font-size:12.5px;letter-spacing:.03em;margin-bottom:4px}
+  .concept span{font-size:14.5px}
+  .pinned{background:#FFFBEA;border:1px solid #EBD98A;border-left:4px solid var(--mark);padding:12px 16px;margin:18px 0;border-radius:0 8px 8px 0;font-size:14.5px}
+  .pinned b{display:block;font-size:12.5px;letter-spacing:.03em;margin-bottom:4px;color:#7A5F00}
+  .trap{background:#fff;border:1px solid var(--line);border-left:4px solid var(--bad);padding:12px 16px;margin:18px 0;border-radius:0 8px 8px 0}
+  .trap b{display:block;color:var(--bad);font-size:12.5px;letter-spacing:.03em;margin-bottom:4px}
+  .trap span{font-size:14.5px}
+  .checkpoint{background:#fff;border:1px solid var(--ink);border-radius:10px;padding:16px 20px;margin:26px 0 0}
+  .checkpoint > p{margin:0 0 8px;font-weight:600;font-size:14px;letter-spacing:.02em}
+  .checkpoint ul{margin:0;padding-left:20px;font-size:14.5px}
+  .checkpoint li{margin:5px 0}
+  .selfcheck{margin:14px 0 0;padding-top:12px;border-top:1px dashed var(--line)}
+  .selfcheck > p{margin:0 0 8px;font-weight:600;font-size:14px;color:var(--ok)}
+  .selfcheck label{display:block;font-size:14.5px;padding:5px 0;cursor:pointer}
+  .selfcheck input{margin-right:8px}
+  .selfcheck label.done{color:var(--ink-2);text-decoration:line-through}
+  .chnav{display:flex;justify-content:space-between;gap:12px;margin-top:22px;font-size:14px}
+  .chnav a{color:var(--ink-2);text-decoration:none;padding:6px 10px;border:1px solid var(--line);border-radius:6px;background:#fff}
+  .chnav a:hover{border-color:var(--ink);color:var(--ink)}
+  .chnav a.sp{visibility:hidden}
+  @media print{ .selfcheck input{display:none} .chnav{display:none} }
+  .tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:10px 0}
+  .tw table{margin:0;min-width:420px}
+  pre{max-width:100%}
+  @media print{ .tw{overflow:visible} .tw table{min-width:0} }
   .toc-toggle{display:none}
   @media (max-width:860px){
     .layout{grid-template-columns:1fr}
@@ -120,6 +153,7 @@
 <nav class="toc" aria-label="สารบัญ">
   <h1>ทบทวน JavaScript</h1>
   <div class="score">คะแนน quiz: <b id="score">0</b> / <b id="score-total">0</b></div>
+  <div class="score" id="ch-progress">บทที่ทวนครบ: <b>0</b> / 12</div>
   <div class="weak" id="weak">ยังไม่มีข้อที่ตอบผิด</div>
   <ol id="toc"></ol>
   <button class="chip" style="margin-top:14px;font-size:12px" onclick="window.print()">พิมพ์เป็น cheat sheet</button>
@@ -135,6 +169,7 @@
 <section class="ch" id="ch01">
 <h3>01 ตัวแปรกับค่า</h3>
 <p class="lead">ตรรกะถูกทั้งหมดแต่ยังได้ 0 คะแนน มักเกิดจากพื้นฐานในบทนี้</p>
+<div class="chmeta"><span class="pill">บทที่ 01</span><span class="pill">~18 นาที</span><span class="pill lv1">เริ่มต้น</span></div>
 <div class="outcomes"><p>จบบทนี้ต้องทำได้</p><ul>
 <li>อธิบายว่า <code>const</code> ล็อกอะไร และทำไมยังแก้ property ของ object ได้</li>
 <li>แยก primitive กับ object และรู้กับดัก <code>typeof null</code></li>
@@ -142,26 +177,32 @@
 <li>บอก falsy 6 ตัวได้ครบ และรู้ว่า <code>[]</code> กับ <code>"0"</code> เป็น truthy</li>
 <li>เขียน template literal ให้ output ตรง spec ทุกช่องว่าง</li></ul></div>
 
+<p>ก่อนจะเขียนเงื่อนไขหรือฟังก์ชันอะไรให้ซับซ้อน ต้องมั่นใจก่อนว่า "ค่า" ที่ถืออยู่ในมือคืออะไรกันแน่ หลายครั้งที่ตรรกะถูกทั้งหมด แต่ระบบยังให้ 0 คะแนน เพราะพลาดตรงพื้นฐานที่ดูเหมือนเรื่องเล็กที่สุดในบทนี้</p>
 <h4>const ล็อก "ป้าย" ไม่ได้ล็อก "ของข้างใน"</h4>
+<p>นึกภาพกล่องพัสดุที่มีป้ายชื่อติดไว้ — ป้ายคือชื่อตัวแปร ของข้างในคือค่าที่มันถืออยู่ <code>let</code> กับ <code>const</code> สร้างกล่องแบบเดียวกันทุกอย่าง ต่างกันแค่ "แปะป้ายแล้วห้ามย้ายป้ายอีก" กับ "ย้ายทีหลังได้"</p><p>จุดที่งงกันบ่อยคือ <code>const</code> ล็อกแค่ว่า <b>ป้ายต้องชี้กล่องใบเดิมเสมอ</b> ไม่ได้ล็อกว่าของข้างในห้ามแก้ ถ้าของข้างในเป็นกล่องอีกใบ (object) เปิดฝาแล้วสลับของข้างในได้ตามสบาย สิ่งที่ทำไม่ได้มีแค่การเอาป้ายไปแปะกล่องใบใหม่ทั้งใบ</p><p>หลักปฏิบัติคือ <b>ใช้ <code>const</code> เป็นค่าเริ่มต้นเสมอ</b> แล้วสลับไป <code>let</code> เฉพาะตอนที่รู้แน่ว่าต้องเปลี่ยนป้ายไปชี้ค่าอื่นทั้งก้อน เช่น ตัวนับในลูป</p>
 <pre><span class="k">const</span> cart = { qty: <span class="n">1</span> };
 cart.qty = <span class="n">2</span>;      <span class="c">// ได้ — แก้ของข้างในกล่องเดิม</span>
 cart = { qty: <span class="n">5</span> };  <span class="c">// TypeError — เปลี่ยนป้ายไปชี้กล่องใหม่ไม่ได้</span></pre>
 
 <h4>primitive คัดลอกค่า · object คัดลอกที่อยู่</h4>
+<p>ข้อมูลแบ่งเป็นสองกลุ่มที่ทำงานคนละแบบ กลุ่มแรกคือ <b>primitive</b> — ตัวเลข ข้อความ boolean null undefined — ก็อปใส่ตัวแปรใหม่แล้วได้ค่าชิ้นใหม่แยกกันเด็ดขาด กลุ่มที่สองคือ <b>object</b> (รวม array และ function) — ก็อปแค่ "ที่อยู่" ไม่ได้ก็อปของข้างใน สองตัวแปรจึงชี้กล่องใบเดียวกัน แก้ทางหนึ่งอีกทางเห็นด้วยทันที</p><p>จุดนี้สำคัญมากเวลาเขียนฟังก์ชันที่รับ array หรือ object เข้าไปแล้วแก้ property ข้างในตรง ๆ — ต้นฉบับข้างนอกจะเปลี่ยนตามไปด้วยเงียบ ๆ โดยไม่ได้ตั้งใจ</p>
 <pre><span class="k">let</span> a = <span class="n">100</span>; <span class="k">let</span> b = a; b = <span class="n">250</span>;
 console.log(a);  <span class="c">// 100 — คนละก้อน</span>
 
 <span class="k">const</span> c1 = { total: <span class="n">100</span> }; <span class="k">const</span> c2 = c1; c2.total = <span class="n">500</span>;
 console.log(c1.total);  <span class="c">// 500 — ก้อนเดียวกัน</span></pre>
 
+<h4>truthy กับ falsy — ค่าที่ "ดูเหมือนว่าง" แต่ไม่ได้ว่างเสมอไป</h4><p>ทุกค่าเวลาโดนใส่ในเงื่อนไข <code>if (ค่า)</code> จะถูกแปลงเป็น true หรือ false เสมอ ค่าที่แปลงแล้วได้ false เรียกว่า <b>falsy</b> มีอยู่แค่ 6 ตัวเป๊ะ ๆ ทั้งภาษา: <code>false</code> · <code>0</code> · <code>""</code> · <code>null</code> · <code>undefined</code> · <code>NaN</code> — นอกนั้นเป็น truthy หมด</p><p>ตัวที่หลอกตาที่สุดคือ <code>[]</code> กับ <code>{}</code> — ดูว่างเปล่าพอ ๆ กับ <code>""</code> แต่เป็น truthy เพราะกฎเช็คแค่ว่าเป็น object ไหม ไม่ได้เช็คว่าข้างในมีอะไร อยากรู้ว่า array ว่างไหมต้องเช็ค <code>arr.length === 0</code> อีกตัวคือสตริง <code>"0"</code> ที่เป็น truthy ต่างจากตัวเลข <code>0</code> ที่เป็น falsy</p>
 <div class="play"><p class="t">truthy หรือ falsy — กดแล้วดูว่าเข้า if ไหม</p>
 <div class="row" id="tf-btns"></div>
 <div class="out" id="tf-out">เลือกค่าด้านบน</div></div>
 
+<h4>typeof — เครื่องมือเช็คชนิดที่มีรูรั่วอยู่ 1 จุด</h4><p>พิมพ์ <code>typeof ค่า</code> แล้วได้สตริงบอกชนิดกลับมา ใช้งานตรงไปตรงมาเกือบทุกกรณี แต่มีจุดเดียวที่มันโกหก และเป็นกับดักที่ถูกหยิบมาถามบ่อยมาก: <code>typeof null</code> คืน <code>"object"</code> ไม่ใช่ <code>"null"</code> เป็นบั๊กเก่าแก่ที่แก้ไม่ได้แล้วเพราะจะทำให้เว็บเก่าพังจำนวนมาก</p><div class="tw"><table><tr><th>ค่า</th><th>typeof คืนอะไร</th></tr><tr><td><code>42</code></td><td>"number"</td></tr><tr><td><code>"สวัสดี"</code></td><td>"string"</td></tr><tr><td><code>true</code></td><td>"boolean"</td></tr><tr><td><code>undefined</code></td><td>"undefined"</td></tr><tr><td><code>null</code></td><td>"object" ⚠ กับดัก</td></tr><tr><td><code>{}</code></td><td>"object"</td></tr><tr><td><code>[]</code></td><td>"object" (ไม่ใช่ "array")</td></tr><tr><td><code>function(){}</code></td><td>"function"</td></tr></table></div><div class="pinned"><b>จดไว้ตรงนี้</b>เจอ <code>typeof x === 'object'</code> แล้วอย่าเพิ่งดีใจ ต้องเช็ค <code>x !== null</code> ต่ออีกชั้นเสมอ ไม่งั้นเผลอเอา null ไปอ่าน property ต่อจะพังทันที — และ array ต้องใช้ <code>Array.isArray()</code> แยกต่างหาก</div>
 <div class="play"><p class="t">typeof — เครื่องมือเช็คชนิดที่มีรูรั่ว 1 จุด</p>
 <div class="row" id="ty-btns"></div>
 <div class="out" id="ty-out">กดค่าแล้วดูว่า typeof ตอบอะไร</div></div>
 
+<h4>== แปลงชนิดให้ก่อนเทียบ · === ไม่ยอมแปลง</h4><p><code>==</code> จะพยายามแปลงชนิดให้ตรงกันก่อนเทียบ ส่วน <code>===</code> เทียบดิบ ๆ ชนิดต้องตรงกันด้วยถึงจะเท่ากัน ปัญหาของ <code>==</code> คือกฎการแปลงซับซ้อนและขัดสามัญสำนึก — <code>0 == ""</code> ได้ true, <code>null == undefined</code> ได้ true, <code>"1" == 1</code> ได้ true ทีละคู่ดูสมเหตุสมผล แต่พอปนกันในโค้ดจริงจะกลายเป็นบั๊กที่หาไม่เจอ</p><div class="tw"><table><tr><th>คู่ที่หลอกตา</th><th>==</th><th>===</th></tr><tr><td><code>0</code> กับ <code>""</code></td><td>true ⚠</td><td>false</td></tr><tr><td><code>null</code> กับ <code>undefined</code></td><td>true ⚠</td><td>false</td></tr><tr><td><code>"1"</code> กับ <code>1</code></td><td>true ⚠</td><td>false</td></tr><tr><td><code>NaN</code> กับ <code>NaN</code></td><td>false เสมอ</td><td>false เสมอ</td></tr></table></div><div class="trap"><b>พลาดกันบ่อย</b><span>คิดว่า <code>ค่า === NaN</code> เช็ค NaN ได้ — NaN ไม่เท่ากับตัวมันเองแม้แต่ด้วย <code>===</code> ต้องใช้ <code>Number.isNaN(ค่า)</code> เท่านั้น</span></div>
 <div class="play"><p class="t">== กับ === ต่างกันยังไง — พิมพ์ค่าสองฝั่งแล้วเทียบ</p>
 <div class="row">
 <input type="text" id="eq-a" value="0" style="width:120px"> vs <input type="text" id="eq-b" value='""' style="width:120px">
@@ -169,6 +210,7 @@ console.log(c1.total);  <span class="c">// 500 — ก้อนเดียว�
 <span class="pill">พิมพ์แบบ JS เช่น null, "1", [], 0</span></div>
 <div class="out" id="eq-out"></div></div>
 
+<h4>template literal — และช่องว่างที่สำคัญเท่าตัวอักษร</h4><p>วิธีเก่าคือใช้ <code>+</code> ต่อทีละท่อน ต้องคอยใส่ช่องว่างเอง วิธีใหม่คือ template literal ใช้ backtick ครอบแล้ววางตัวแปรใน <code>${}</code> ตรง ๆ อ่านง่ายกว่ามาก</p><p>แต่ประเด็นที่สำคัญกว่าความอ่านง่ายคือ <b>ระบบตรวจอัตโนมัติเทียบข้อความแบบตัวต่อตัวอักษร</b> ไม่ได้ตัดสินว่าความหมายถูกไหม — "ราคารวม: 590 บาท" กับ "ราคารวม:590 บาท" หรือ "ราคารวม: 590บาท" ถือเป็นคนละสตริงกันทั้งสิ้น นี่คือเหตุผลที่เขียนโค้ดถูกตรรกะ 100% แต่ยังได้คะแนนไม่เต็ม เพราะพลาดที่ "การพิมพ์ผล" ไม่ใช่ "การคำนวณ"</p>
 <div class="play"><p class="t">template literal — ต้องได้ <code>เสื้อยืด x3 = 750 บาท</code> เป๊ะ</p>
 <div class="row"><span class="mono">`${p.name} x${qty} = ${</span><input type="text" id="tl-in" placeholder="เติมตรงนี้" style="width:160px"><span class="mono">} บาท`</span>
 <button class="primary" onclick="checkTL()">ตรวจ</button></div>
@@ -179,12 +221,16 @@ console.log(c1.total);  <span class="c">// 500 — ก้อนเดียว�
 <div class="coder" data-id="c01"></div>
 <div class="mistakes"><p>พลาดกันบ่อย</p><ul><li>เทียบด้วย <code>==</code> แล้วเจอบั๊กเงียบ — ใช้ <code>===</code> เป็นค่าเริ่มต้นเสมอ</li><li>เช็ค array ว่างด้วย <code>if (arr)</code> — array ว่างเป็น truthy ต้องดู <code>.length</code></li><li>พิมพ์ output ผิดช่องว่างแล้วไปไล่แก้ตรรกะ — เทียบ spec ทีละตัวอักษรก่อน</li></ul></div>
 <div class="quiz" data-q='{"q":"typeof null คืนอะไร","opts":["\"null\"","\"undefined\"","\"object\"","error"],"ans":2,"exp":"บั๊กเก่าแก่ของภาษาที่แก้ไม่ได้แล้ว — เช็ค null ต้องใช้ === null เท่านั้น"}'></div>
+
+<div class="checkpoint"><p>Checkpoint — สรุปสั้น ๆ</p><ul><li><code>const</code> ล็อกแค่ "ป้ายชื่อ" ไม่ได้ล็อก property ข้างในของ object</li><li>falsy มีแค่ 6 ตัวเป๊ะ ๆ — <code>[]</code> กับ <code>{}</code> เป็น truthy เสมอแม้จะว่างเปล่า</li><li><code>typeof null</code> คืน "object" — เช็ค null ต้องใช้ <code>=== null</code> เท่านั้น</li><li>ใช้ <code>===</code> เป็นค่าเริ่มต้น และตรวจ output ให้ตรง spec ถึงระดับช่องว่าง</li></ul><div class="selfcheck"><p>✓ Self-Check</p><label><input type="checkbox" data-sc="ch01-0"> อธิบายได้ว่า <code>const</code> ล็อกอะไร และทำไมยังแก้ property ของ object ได้</label><label><input type="checkbox" data-sc="ch01-1"> บอกค่า truthy/falsy ได้ครบชุด รวมถึงเคสหลอกตาอย่าง <code>[]</code> และ <code>"0"</code></label><label><input type="checkbox" data-sc="ch01-2"> เลือกใช้ <code>===</code> แทน <code>==</code> ได้ และรู้ว่าทำไมคู่หลอกตาถึงเป็น true</label><label><input type="checkbox" data-sc="ch01-3"> เทียบ output ของตัวเองกับ spec ได้ถึงระดับช่องว่าง ไม่ใช่แค่ดูผ่าน ๆ</label></div></div>
+<div class="chnav"><a class="sp">.</a><a href="#ch02">เงื่อนไข →</a></div>
 </section>
 
 <!-- ============ 02 ============ -->
 <section class="ch" id="ch02">
 <h3>02 เงื่อนไข</h3>
 <p class="lead">โปรแกรมเช็คจากบนลงล่าง เจอทางแรกที่จริงก็เข้าทันที — เรียงผิด เคสพิเศษหลุด</p>
+<div class="chmeta"><span class="pill">บทที่ 02</span><span class="pill">~18 นาที</span><span class="pill lv1">เริ่มต้น</span></div>
 <div class="outcomes"><p>จบบทนี้ต้องทำได้</p><ul>
 <li>อธิบายลำดับ if / else if / else ว่าเช็คทีละบรรทัดจากบนลงล่าง</li>
 <li>ใช้ ternary แทน if/else สั้น ๆ และรู้ว่าต้องเก็บผลไว้</li>
@@ -192,7 +238,10 @@ console.log(c1.total);  <span class="c">// 500 — ก้อนเดียว�
 <li>รู้ว่า <code>a &lt;= x &lt;= b</code> ไม่ทำงาน ต้องใช้ <code>&amp;&amp;</code></li>
 <li>แยกวิธีเช็ค "ว่าง" — <code>length === 0</code> · <code>=== ""</code> · <code>== null</code></li></ul></div>
 
-<h4>เช็คแคบก่อนกว้าง</h4>
+<p>โปรแกรมเช็คเงื่อนไขจากบนลงล่างเสมอ เจอทางแรกที่จริงก็เดินเข้าทันที แล้วข้ามเงื่อนไขที่เหลือทั้งหมดไปเลย แม้เงื่อนไขข้างล่างจะเป็นจริงด้วยก็ตาม — ถ้าเรียงลำดับผิด เคสที่ควรถูกจับได้อาจหลุดเข้าไปในทางที่ผิดโดยไม่มีใครรู้</p><h4>เช็คแคบก่อนกว้าง</h4><p>นี่คือกับดักคลาสสิกที่สุดของบทนี้ เวลาตรวจสอบยอดสั่งซื้อมักมีทั้งเคส "ผิดปกติ" (ยอดติดลบ) ปนกับเคส "ปกติแต่แบ่งเป็นช่วง" ถ้าเช็คเงื่อนไขกว้างก่อน เคสผิดปกติจะหลุดเข้าไปโดนตัดสินว่าปกติไปเลย เพราะ <code>if</code> แรกที่ตรงจะจับตัวไปทำงานแล้ว</p><pre><span class="c">// ผิดลำดับ — เช็คช่วงกว้างก่อนเคสผิดปกติที่แคบกว่า</span>
+<span class="k">if</span> (amount &lt; <span class="n">1000</span>) <span class="k">return</span> <span class="s">'ปกติ'</span>;
+<span class="k">if</span> (amount &lt; <span class="n">0</span>)    <span class="k">return</span> <span class="s">'ยอดติดลบ'</span>;
+<span class="c">// amount = -50 → เข้า if แรกทันที เพราะ -50 &lt; 1000 เป็นจริง</span></pre><p>ทางแก้คือเรียงเงื่อนไขที่ <b>แคบและเฉพาะเจาะจงที่สุดไว้บนสุด</b> แล้วค่อยไล่ไปเงื่อนไขที่กว้างขึ้นด้านล่าง</p>
 <pre><span class="c">// ผิด — -50 เข้า if แรกไปเลย ไม่มีวันถึง throw</span>
 <span class="k">if</span> (amount &lt; <span class="n">1000</span>) <span class="k">return</span> <span class="s">'ปกติ'</span>;
 <span class="k">if</span> (amount &lt; <span class="n">0</span>)    <span class="k">return</span> <span class="s">'ติดลบ'</span>;
@@ -201,7 +250,7 @@ console.log(c1.total);  <span class="c">// 500 — ก้อนเดียว�
 <span class="k">if</span> (amount &lt; <span class="n">0</span>)    <span class="k">return</span> <span class="s">'ติดลบ'</span>;
 <span class="k">if</span> (amount &lt; <span class="n">1000</span>) <span class="k">return</span> <span class="s">'ปกติ'</span>;</pre>
 
-<h4>ternary คือ expression — ต้องมีที่รับค่า</h4>
+<h4>ternary คือ expression — ต้องมีที่รับค่า</h4><p>ternary ไม่ใช่แค่ "if/else แบบย่อ" มันคือ expression ที่ประเมินแล้วได้ค่ากลับมาทันที เก็บใส่ตัวแปรได้เลยในบรรทัดเดียว ต่างจาก if/else ที่เป็นคำสั่ง ไม่ได้คืนค่าอะไรออกมาให้เก็บ</p><p>กับดักที่เจอบ่อยคือเขียน ternary เป็นบรรทัดลอย ๆ โดยไม่เก็บผลไว้ที่ไหนเลย ผลที่ตัดสินใจได้ก็หายไปเฉย ๆ — มันไม่ได้พิมพ์อะไรออกมาเอง มันแค่ "คืนค่า" ถ้าไม่มีที่รับก็เหมือนไม่ได้ทำอะไรเลย และถ้าตรรกะเริ่มซับซ้อนเกิน 2 ทางเลือก ให้กลับไปใช้ if/else เพราะ ternary ซ้อนกันอ่านยากกว่าเสมอ</p>
 <pre><span class="k">const</span> label = total &gt;= <span class="n">500</span> ? <span class="s">'ส่งฟรี'</span> : <span class="s">'ค่าส่ง 50 บาท'</span>;
 total &gt;= <span class="n">500</span> ? <span class="s">'ส่งฟรี'</span> : <span class="s">'ค่าส่ง 50 บาท'</span>;  <span class="c">// ❌ คำนวณแล้วทิ้ง</span></pre>
 
@@ -210,21 +259,27 @@ total &gt;= <span class="n">500</span> ? <span class="s">'ส่งฟรี'</s
 <div id="tier-code"></div>
 <div class="out" id="tier-out"></div></div>
 
+<h4>ทำไม a &lt;= x &lt;= b ถึง "จริงเกือบเสมอ"</h4><p>กับดักนี้มาจากนิสัยเดิมจากวิชาคณิตศาสตร์ — JavaScript ไม่มี syntax เปรียบเทียบต่อเนื่องแบบนั้น มันตีความเป็นสอง operation เรียงจากซ้ายไปขวา: ประเมิน <code>0 &lt;= x</code> ก่อนได้ boolean แล้วเอา boolean นั้นไปเทียบกับ 100 ต่อ — <code>true &lt;= 100</code> แปลง true เป็น 1 กลายเป็น <code>1 &lt;= 100</code> ซึ่งจริงแทบทุกกรณี ไม่ว่า x จะเป็นเท่าไหร่</p><p>วิธีเขียนที่ถูกคือแยกเป็นสอง condition เชื่อมด้วย <code>&amp;&amp;</code>: <code>x &gt;= 0 &amp;&amp; x &lt;= 100</code> — ต้องเขียน x ซ้ำสองรอบ ดูยาวกว่า แต่เป็นวิธีเดียวที่ทำงานถูกจริง</p>
 <div class="play"><p class="t">ทำไม <code>0 &lt;= x &lt;= 100</code> จริงเกือบเสมอ</p>
 <div class="row">x = <input type="number" id="rng-x" value="-999" style="width:100px"> <button class="primary" onclick="rng()">ลอง</button></div>
 <div class="out" id="rng-out"></div></div>
 
+<h4>เงื่อนไข "ว่าง" — สามแบบที่เช็คคนละเรื่องกัน</h4><p>คำว่า "ว่าง" ในโค้ดจริงมีอย่างน้อยสามความหมาย และคนมักเลือกวิธีเช็คผิดเพราะไม่ได้แยกให้ชัดว่ากำลังถามอะไร</p><div class="tw"><table><tr><th>ต้องการเช็ค</th><th>วิธีเขียน</th><th>ใช้กับ</th></tr><tr><td>ไม่มีสมาชิกในลิสต์เลย</td><td><code>cartItems.length === 0</code></td><td>array</td></tr><tr><td>เป็นสตริงว่างเป๊ะ</td><td><code>query === ""</code></td><td>string</td></tr><tr><td>ยังไม่มีค่าเลย (null หรือ undefined)</td><td><code>user.phone == null</code></td><td>ตัวแปรใด ๆ</td></tr></table></div><div class="pinned"><b>จดไว้ตรงนี้</b><code>== null</code> เป็นจุดเดียวที่ตั้งใจใช้ <code>==</code> เพราะมันครอบทั้ง null และ undefined ในเงื่อนไขเดียว — ถ้าใช้ <code>=== null</code> จะไม่ครอบ undefined ด้วย</div><h4>early return — เจอเงื่อนไขไม่ผ่านก็ออกทันที</h4><p>พอเจอเงื่อนไขที่ทำให้ฟังก์ชันทำงานต่อไม่ได้ ให้ <code>return</code> ออกทันที แทนที่จะซ้อน <code>if</code> ลึกเข้าไปเรื่อย ๆ วิธีนี้ยังช่วยลดโอกาสลืมเขียน branch ปิดท้ายด้วย เพราะแต่ละเงื่อนไขจบตัวเองทันทีที่บรรทัดนั้น เห็นทุกเส้นทางชัดกว่า</p>
 <div class="quiz" data-q='{"q":"เช็คว่าตะกร้า (array) ว่างไหม ควรเขียนยังไง","opts":["if (cartItems)","if (cartItems == null)","if (cartItems.length === 0)","if (cartItems === [])"],"ans":2,"exp":"array ว่างเป็น truthy และ === [] เทียบ reference คนละก้อนได้ false เสมอ — ต้องดู length"}'></div>
 <div class="coder" data-id="c02"></div>
 <div class="mistakes"><p>พลาดกันบ่อย</p><ul><li>เรียง guard กว้างก่อนแคบ — เคสพิเศษหลุด</li><li>เขียน <code>a &lt;= x &lt;= b</code> — ต้องแยกด้วย <code>&amp;&amp;</code></li><li>ใช้ <code>if (str)</code> เช็คสตริงว่าง — <code>"0"</code> กับช่องว่างล้วนเป็น truthy</li></ul></div>
 <div class="quiz" data-q='{"q":"ต้องการเช็คว่า userProfile.phone ยังไม่มีค่า (null หรือ undefined ก็ได้) เขียนสั้นที่สุดยังไง","opts":["phone === null","phone === undefined","phone == null","!phone"],"ans":2,"exp":"== null ครอบทั้ง null และ undefined — จุดเดียวที่ตั้งใจใช้ == ส่วน !phone จะโดน \"\" กับ 0 ไปด้วย"}'></div>
 <div class="quiz" data-q='{"q":"amount = -20 กับโค้ด if (amount < 1000) return \"A\"; if (amount < 0) return \"B\"; ได้อะไร","opts":["\"A\"","\"B\"","undefined","error"],"ans":0,"exp":"-20 < 1000 เป็นจริง เข้า if แรกทันที บรรทัดที่สองไม่มีวันทำงาน — นี่คือ guard เรียงผิด"}'></div>
+
+<div class="checkpoint"><p>Checkpoint — สรุปสั้น ๆ</p><ul><li>เรียงเงื่อนไขที่แคบและเฉพาะเจาะจงไว้บนสุดเสมอ ไม่งั้นเคสพิเศษจะหลุดเข้าไปในทางที่กว้างกว่า</li><li><code>a &lt;= x &lt;= b</code> ไม่ทำงานแบบคณิตศาสตร์ — ต้องแยกเขียนด้วย <code>&amp;&amp;</code> เสมอ</li><li>เช็คค่า "ว่าง" ให้ตรงกับที่ถามจริง — <code>.length</code>, สตริงว่างเป๊ะ, หรือ <code>== null</code> เป็นคนละเรื่องกัน</li><li>ternary ต้องมีที่รับค่า ไม่งั้นผลที่ตัดสินใจได้จะหายไปเฉย ๆ</li></ul><div class="selfcheck"><p>✓ Self-Check</p><label><input type="checkbox" data-sc="ch02-0"> เรียงลำดับเงื่อนไข guard แบบแคบก่อนกว้างได้ถูกต้อง</label><label><input type="checkbox" data-sc="ch02-1"> เขียนเช็คช่วงค่าด้วย <code>&amp;&amp;</code> แทน <code>a &lt;= x &lt;= b</code> ได้</label><label><input type="checkbox" data-sc="ch02-2"> แยกได้ว่าเมื่อไหร่ควรใช้ <code>&amp;&amp;</code> เมื่อไหร่ควรใช้ <code>||</code></label><label><input type="checkbox" data-sc="ch02-3"> เลือกวิธีเช็คค่า "ว่าง" ได้ถูกแบบตามสิ่งที่ต้องการเช็คจริง ๆ</label></div></div>
+<div class="chnav"><a href="#ch01">← ตัวแปรกับค่า</a><a href="#ch03">วนซ้ำ →</a></div>
 </section>
 
 <!-- ============ 03 ============ -->
 <section class="ch" id="ch03">
 <h3>03 วนซ้ำ</h3>
 <p class="lead">กับดักหลักไม่ใช่เลือกลูปผิด แต่คือสับสน "ตัวที่วนอยู่" กับ "array ทั้งก้อน"</p>
+<div class="chmeta"><span class="pill">บทที่ 03</span><span class="pill">~20 นาที</span><span class="pill lv1">เริ่มต้น</span></div>
 <div class="outcomes"><p>จบบทนี้ต้องทำได้</p><ul>
 <li>เลือก <code>for</code>, <code>for...of</code>, <code>for...in</code>, <code>while</code> ได้ถูกสถานการณ์</li>
 <li>อธิบายว่าทำไม <code>for...in</code> กับ array ได้ key เป็นสตริง</li>
@@ -232,10 +287,10 @@ total &gt;= <span class="n">500</span> ? <span class="s">'ส่งฟรี'</s
 <li>ไม่สับสน <code>item</code> กับ <code>items</code></li>
 <li>ประกาศตัวแปรสะสมไว้นอกลูป</li></ul></div>
 
-<table><tr><th></th><th>for...of</th><th>for...in</th><th>forEach</th></tr>
+<div class="tw"><table><tr><th></th><th>for...of</th><th>for...in</th><th>forEach</th></tr>
 <tr><td>ได้อะไร</td><td>สมาชิกแต่ละตัว</td><td>key เป็นสตริง "0","1"</td><td>(item, index)</td></tr>
 <tr><td>break/continue</td><td>ได้</td><td>ได้</td><td>ไม่ได้</td></tr>
-<tr><td>เหมาะกับ</td><td>array, string</td><td>property ของ object</td><td>array ที่ไม่ต้องหยุดกลางทาง</td></tr></table>
+<tr><td>เหมาะกับ</td><td>array, string</td><td>property ของ object</td><td>array ที่ไม่ต้องหยุดกลางทาง</td></tr></table></div>
 
 <pre><span class="k">for</span> (<span class="k">const</span> key <span class="k">in</span> [<span class="s">'A1'</span>,<span class="s">'B2'</span>]) console.log(key + <span class="n">1</span>); <span class="c">// "01", "11" — ต่อสตริง</span>
 
@@ -244,36 +299,45 @@ total &gt;= <span class="n">500</span> ? <span class="s">'ส่งฟรี'</s
   total += item.price * item.qty;         <span class="c">// item ไม่ใช่ cartItems</span>
 }</pre>
 
+<p>ลูปมีหลายหน้าตา แต่กับดักที่พลาดกันบ่อยที่สุดไม่ใช่การเลือกชนิดลูปผิด — เป็นการสับสนระหว่าง "สมาชิกตัวที่กำลังวนอยู่" กับ "array ทั้งก้อน" ที่ชื่อคล้ายกันจนพิมพ์สลับกันได้ง่ายมาก</p><h4>for คลาสสิก — สามท่อนที่ทำงานคนละจังหวะ</h4><p><code>for (init; condition; step)</code> ดูเหมือนเขียนติดกันบรรทัดเดียว แต่ทำงานคนละจังหวะ — <code>init</code> ทำครั้งเดียวตอนเริ่ม, <code>condition</code> ถูกเช็คก่อนทุกรอบ ถ้าเป็น false เมื่อไหร่ลูปจบทันที, <code>step</code> ทำงานหลังจบเนื้อลูปของแต่ละรอบ ก่อนย้อนกลับไปเช็ค condition อีกครั้ง</p>
 <div class="play"><p class="t">เดินลูปทีละรอบ — ดู i กับ total</p>
 <div class="row"><button onclick="loopStep(-1)">← ย้อน</button><button class="primary" onclick="loopStep(1)">ถัดไป →</button><button onclick="loopReset()">รีเซ็ต</button></div>
 <div id="loop-code"></div>
 <div class="out" id="loop-out"></div></div>
 
+<h4>while — วนซ้ำแบบไม่รู้จำนวนรอบล่วงหน้า</h4><p><code>while</code> เหมาะกับตอนที่ไม่รู้ล่วงหน้าว่าต้องวนกี่รอบ ต่างจาก <code>for</code> ที่มักรู้จำนวนรอบชัดเจนอยู่แล้ว ข้อควรระวังที่สำคัญที่สุดคือ <b>ต้องมีจุดจบเสมอ</b> — เงื่อนไขในวงเล็บต้องกลายเป็น false ได้จริงสักวัน ถ้าลืมอัปเดตตัวแปรที่ใช้เช็คเงื่อนไขไว้ข้างในลูป โปรแกรมจะวนไม่รู้จบจนเบราว์เซอร์ค้าง</p>
 <div class="play"><p class="t">while — ต้องมีจุดจบ</p>
 <div class="row"><button class="chip on" onclick="wh('ok',this)">มี stock-- ในลูป</button><button class="chip" onclick="wh('inf',this)">ลืม stock--</button></div>
 <pre id="wh-code" style="margin:6px 0"></pre>
 <div class="out" id="wh-out"></div></div>
 
+<h4>break กับ continue — ออกทันที กับ ข้ามแค่รอบนี้</h4><p><code>break</code> คือสั่งออกจากลูปทันที ไม่วนต่ออีกเลยแม้ยังมีสมาชิกเหลือ ส่วน <code>continue</code> คือข้ามเนื้อลูปที่เหลือของรอบนี้ไป แล้ววนต่อรอบถัดไปตามปกติ</p><p>วิธีจำง่าย ๆ คือถามตัวเองว่า "หลังจากนี้ยังอยากวนต่อไหม" — ไม่อยากวนต่อเลยเพราะรู้คำตอบแล้ว ให้ใช้ <code>break</code> แต่ถ้าแค่ไม่อยากทำอะไรกับรอบนี้ รอบถัดไปยังอยากวนตามปกติ ให้ใช้ <code>continue</code> — ทั้งคู่ใช้ได้กับ <code>for</code>, <code>for...of</code>, <code>for...in</code>, <code>while</code> แต่ <b>ใช้กับ <code>forEach</code> ไม่ได้เลย</b></p>
 <div class="play"><p class="t">break vs continue — วน orders หายอดเกินงบ / ข้ามที่ยกเลิก</p>
 <div class="row"><button class="chip on" onclick="bc('break',this)">break</button><button class="chip" onclick="bc('continue',this)">continue</button></div>
 <pre id="bc-code" style="margin:6px 0"></pre>
 <div class="out" id="bc-out"></div></div>
 
+<h4>for...of vs for...in — ได้คนละอย่าง</h4><p><code>for...of</code> ให้ "ค่า" ของแต่ละสมาชิกโดยตรง ไม่ต้องยุ่งกับ index ส่วน <code>for...in</code> ออกแบบมาสำหรับวน property ของ object ไม่ใช่ array — ถ้าเอาไปใช้กับ array มันจะให้ key เป็น <b>index ในรูปสตริง</b> เช่น "0" "1" "2" ไม่ใช่ตัวเลข เผลอเอาไปคำนวณต่อ เช่น <code>key + 1</code> จะได้ <code>"01"</code> ซึ่งเป็นการต่อสตริง ไม่ใช่บวกเลข</p><div class="tw"><table><tr><th></th><th>for...of</th><th>for...in</th></tr><tr><td>ได้อะไรแต่ละรอบ</td><td>ค่าของสมาชิก</td><td>key เป็นสตริง</td></tr><tr><td>เหมาะกับ</td><td>array, string ที่ต้องการค่า</td><td>property ของ object</td></tr><tr><td>ใช้กับ array แล้วได้</td><td>สมาชิกแต่ละตัวตรง ๆ</td><td>"0" "1" "2" — สตริง</td></tr></table></div>
 <div class="play"><p class="t">ลูปเดียวกัน 3 แบบ — ผลต่างกันตรงไหน</p>
 <div class="row"><button class="chip on" onclick="loopKind('of',this)">for...of</button><button class="chip" onclick="loopKind('in',this)">for...in</button><button class="chip" onclick="loopKind('each',this)">forEach</button></div>
 <div class="out" id="lk-out"></div></div>
 
+<h4>ตัวที่วนอยู่ ≠ ก้อนทั้งหมด</h4><p>นี่คือกับดักที่ลึกที่สุดของบทนี้ — เขียน <code>for (const item of cartItems)</code> แล้วในเนื้อลูปเผลอเขียน <code>cartItems.price</code> แทน <code>item.price</code> ผลมักไม่ error ทันที เพราะได้ <code>undefined</code> เงียบ ๆ (array ไม่มี property ชื่อ price) ทำให้ต้องนั่งงงว่าทำไมผลผิดทั้งที่โครงสร้างลูปดูถูกทุกอย่าง</p><p>วิธีกันพลาดคือ <b>ตั้งชื่อตัวแปรที่วนให้เป็นเอกพจน์ของ array เสมอ</b> — วน <code>products</code> ใช้ <code>product</code>, วน <code>orders</code> ใช้ <code>order</code> พอเห็นตัว s ต่อท้ายหรือไม่มี ก็แยกออกได้ง่ายกว่าตอนอ่านโค้ดของตัวเองภายหลัง</p><h4>ตัวแปรสะสมค่าต้องประกาศไว้นอกลูป</h4><p>ถ้าอยากรวมยอดทั้งตะกร้า ต้องประกาศ <code>let total = 0;</code> ไว้ก่อนเข้าลูป แล้วค่อยบวกเพิ่มข้างในลูป — ถ้าเผลอประกาศไว้ข้างในลูป ตัวแปรจะถูกสร้างใหม่และรีเซ็ตเป็น 0 ทุกรอบ สุดท้าย <code>total</code> จะเหลือแค่ค่าของรอบสุดท้ายเท่านั้น</p>
 <div class="quiz" data-q='{"q":"for (const item of cartItems) { console.log(cartItems.price) } ได้อะไร","opts":["ราคาแต่ละชิ้น","undefined ทุกรอบ","error","ราคาชิ้นแรก"],"ans":1,"exp":"cartItems เป็น array ไม่มี property price — ต้องใช้ item.price"}'></div>
 <div class="coder" data-id="c03"></div>
 <div class="mistakes"><p>พลาดกันบ่อย</p><ul><li>ใช้ <code>for...in</code> กับ array แล้วเอา key ไปบวกเลข — ได้ต่อสตริง</li><li>ประกาศตัวแปรสะสมในลูป — รีเซ็ตทุกรอบ</li><li>เขียน <code>items.price</code> ในลูปที่ตัวแปรวนคือ <code>item</code> — ได้ undefined เงียบ ๆ</li></ul></div>
 <div class="quiz" data-q='{"q":"อยากข้ามออเดอร์ที่ถูกยกเลิก แล้วนับตัวถัดไปต่อ ใช้อะไร","opts":["break","continue","return","ไม่ต้องใช้อะไร"],"ans":1,"exp":"continue ข้ามแค่รอบนี้ break ออกจากลูปเลย"}'></div>
 <div class="quiz" data-q='{"q":"ประกาศ let total = 0 ไว้ข้างในลูป จะเกิดอะไร","opts":["ทำงานปกติ","total ถูกรีเซ็ตทุกรอบ เหลือแค่ค่ารอบสุดท้าย","error","total เป็น undefined"],"ans":1,"exp":"ตัวแปรถูกสร้างใหม่ทุกรอบ ค่าที่สะสมมาก่อนหน้าหายหมด"}'></div>
+
+<div class="checkpoint"><p>Checkpoint — สรุปสั้น ๆ</p><ul><li><code>for...in</code> กับ array ให้ key เป็นสตริงเสมอ ไม่ใช่ตัวเลข — ระวังเอาไปบวกเลขตรง ๆ</li><li>ตัวแปรสะสมค่าต้องประกาศไว้ก่อนเข้าลูปเสมอ ไม่งั้นจะถูกรีเซ็ตทุกรอบ</li><li>"ตัวที่วนอยู่" (<code>item</code>) กับ "array ทั้งก้อน" (<code>items</code>) เป็นคนละตัวกัน อย่าพิมพ์สลับ</li><li><code>break</code>/<code>continue</code> ใช้กับ <code>forEach</code> ไม่ได้ ต้องใช้ <code>for...of</code> แทน</li></ul><div class="selfcheck"><p>✓ Self-Check</p><label><input type="checkbox" data-sc="ch03-0"> เลือกใช้ <code>for</code>, <code>for...of</code>, <code>for...in</code>, <code>while</code> ได้ถูกสถานการณ์</label><label><input type="checkbox" data-sc="ch03-1"> อธิบายได้ว่าทำไม <code>for...in</code> กับ array ถึงได้ key เป็นสตริง</label><label><input type="checkbox" data-sc="ch03-2"> แยก <code>break</code> กับ <code>continue</code> ได้ชัดเจน</label><label><input type="checkbox" data-sc="ch03-3"> ประกาศตัวแปรสะสมค่าไว้นอกลูปได้ถูกต้อง และไม่สับสน item กับ items</label></div></div>
+<div class="chnav"><a href="#ch02">← เงื่อนไข</a><a href="#ch04">ฟังก์ชัน →</a></div>
 </section>
 
 <!-- ============ 04 ============ -->
 <section class="ch" id="ch04">
 <h3>04 ฟังก์ชัน</h3>
 <p class="lead">รับของเข้าทางหนึ่ง ต้องส่งคำตอบออกให้ถูกทาง — ลืม return คำเดียว งานที่ถูก 100% กลายเป็นศูนย์</p>
+<div class="chmeta"><span class="pill">บทที่ 04</span><span class="pill">~22 นาที</span><span class="pill lv2">ปานกลาง</span></div>
 <div class="outcomes"><p>จบบทนี้ต้องทำได้</p><ul>
 <li>อธิบายว่า <code>return</code> กับ <code>console.log</code> ให้ผลต่างกันสำหรับคนเรียก</li>
 <li>แยก parameter กับ argument และรู้ว่าส่งไม่ครบจะได้ <code>undefined</code></li>
@@ -281,27 +345,30 @@ total &gt;= <span class="n">500</span> ? <span class="s">'ส่งฟรี'</s
 <li>เทียบ arrow function กับ function declaration ทั้ง this, arguments, new, hoisting</li>
 <li>ยื่น callback โดยไม่ใส่วงเล็บเรียก</li></ul></div>
 
-<h4>return vs console.log</h4>
+<p>ฟังก์ชันรับของเข้ามาทางหนึ่ง แล้วต้องส่งคำตอบออกไปให้ถูกทาง — ผิดทางไปนิดเดียว งานที่คำนวณถูกทุกตัวอักษรก็กลายเป็นศูนย์คะแนนได้เงียบ ๆ</p><h4>return vs console.log</h4><p>นึกภาพเครื่องคิดเงินหน้าร้าน มันทำงานได้สองแบบ — แบบแรกคือคำนวณเสร็จแล้ว "แปะตัวเลขไว้บนจอหลังร้าน" ให้พนักงานเห็นเฉย ๆ นั่นคือ <code>console.log</code> แบบที่สองคือ "ส่งใบสรุปยอดออกมาทางช่องรับ" ให้ระบบหน้าบ้านหยิบไปใช้ต่อได้จริง นั่นคือ <code>return</code> — หน้าเว็บที่รอรับยอดไม่เคยแอบมองจอหลังร้านเลยสักครั้ง</p><p>ฟังก์ชันที่ไม่มี <code>return</code> เลยสักบรรทัดจะให้ผลลัพธ์เป็น <code>undefined</code> เสมอ ไม่ว่าโค้ดข้างในจะคำนวณถูกแค่ไหน และถ้ามีหลายเส้นทาง (if/else) แล้วลืมปิดท้ายบางเส้นทางด้วย <code>return</code> เส้นทางที่ตกหล่นก็คืน <code>undefined</code> แบบเงียบ ๆ เหมือนกัน</p>
 <pre><span class="k">function</span> getTotal(items) { console.log(<span class="n">1170</span>); }
 <span class="k">const</span> r = getTotal(cartItems);  <span class="c">// r = undefined — จอโชว์เลข แต่ไม่มีอะไรส่งออกมา</span></pre>
 
-<table><tr><th></th><th>function declaration</th><th>arrow function</th></tr>
+<div class="tw"><table><tr><th></th><th>function declaration</th><th>arrow function</th></tr>
 <tr><td><code>this</code></td><td>ดูตอนเรียก — ใครอยู่หน้าจุด</td><td>ยืมจาก scope ที่ห่อตอนประกาศ</td></tr>
 <tr><td><code>arguments</code></td><td>มี</td><td>ไม่มี</td></tr>
 <tr><td><code>new</code></td><td>ได้</td><td>ไม่ได้ (TypeError)</td></tr>
 <tr><td>hoisting</td><td>เรียกก่อนบรรทัดประกาศได้ (hoist ทั้งตัว)</td><td>ไม่ได้ — เพราะเก็บใน <code>const</code>/<code>let</code> (TDZ) ตัวตัดสินคือวิธีประกาศ ไม่ใช่ตัว arrow</td></tr>
-<tr><td>implicit return</td><td>ต้องเขียน return</td><td>ไม่มี {} จะ return ให้เอง</td></tr></table>
+<tr><td>implicit return</td><td>ต้องเขียน return</td><td>ไม่มี {} จะ return ให้เอง</td></tr></table></div>
 
+<h4>พารามิเตอร์ vs อาร์กิวเมนต์ และ default ที่ทำงานเฉพาะตอน undefined</h4><p><b>พารามิเตอร์</b> คือชื่อช่องรับที่ตั้งไว้ตอนนิยาม ส่วน <b>อาร์กิวเมนต์</b> คือค่าจริงที่ส่งเข้าไปตอนเรียกใช้ ถ้าส่งไม่ครบ ช่องที่ไม่มีของมาเติมจะกลายเป็น <code>undefined</code> โดยอัตโนมัติ ไม่ error ไม่เตือนอะไรทั้งสิ้น</p><p>ตั้งค่าเริ่มต้นได้ด้วย <code>= ค่าตั้งต้น</code> ต่อท้ายชื่อพารามิเตอร์ แต่จุดที่ต้องจำให้แม่นคือ <b>default ทำงานเฉพาะตอนที่พารามิเตอร์นั้นได้ค่า <code>undefined</code> เท่านั้น</b> — ถ้าตั้งใจส่ง <code>null</code>, <code>""</code> หรือ <code>0</code> เข้าไปเอง JavaScript ถือว่า "มีของส่งมาแล้ว" และจะไม่แตะ default เลย ต่อให้ค่านั้นจะดูว่างเปล่าในสายตาคนก็ตาม</p><div class="concept"><b>DEFAULT PARAMETER</b><span>ค่าตั้งต้นที่ JavaScript ใส่ให้อัตโนมัติ เมื่อพารามิเตอร์ตัวนั้นได้รับ <code>undefined</code> พอดี — ไม่ใช่กติกา "ถ้าค่าดูว่าง ๆ ให้ใช้ default" อย่างที่หลายคนเข้าใจผิดตอนแรก</span></div>
 <div class="play"><p class="t">default parameter — ค่าไหนทำให้ default ทำงาน</p>
 <pre style="margin-top:0">const greet = (name = 'ลูกค้า') => `สวัสดีคุณ ${name}`;</pre>
 <div class="row" id="dp-btns"></div>
 <div class="out" id="dp-out">กดค่าที่จะส่งเข้าไป</div></div>
 
+<h4>function กับ arrow — ต่างกัน 5 เรื่อง</h4><p>เขียนฟังก์ชันได้หลายหน้าตา แต่หน้าตาที่ต่างกันไม่ได้แค่เรื่องความยาวโค้ด — มันมีพฤติกรรมข้างในต่างกันจริงด้วย</p><div class="tw"><table><tr><th></th><th>function declaration</th><th>arrow function</th></tr><tr><td><code>this</code></td><td>ชี้ตาม "ใคร" เป็นคนเรียกตอนนั้น</td><td>ไม่มีของตัวเอง — ยืมจาก scope ที่ล้อมรอบ</td></tr><tr><td><code>arguments</code></td><td>มีในตัวเอง</td><td>ไม่มีของตัวเอง</td></tr><tr><td><code>new</code></td><td>สร้าง instance ได้</td><td>ใช้ไม่ได้ — ไม่ใช่ constructor</td></tr><tr><td>hoisting</td><td>ยกทั้งตัวขึ้นไป เรียกก่อนบรรทัดนิยามได้</td><td>ไม่ hoist — ต้องประกาศก่อนใช้</td></tr><tr><td>implicit return</td><td>ต้องเขียน <code>return</code> เสมอ</td><td>บรรทัดเดียวไม่มี <code>{}</code> คืนค่าให้อัตโนมัติ</td></tr></table></div><div class="pinned"><b>จดไว้ตรงนี้</b>hoisting เป็นจุดที่โจทย์ชอบเอามาสลับ — <code>function declaration</code> เรียกก่อนประกาศได้ แต่ <code>const</code> ที่เก็บ function expression หรือ arrow function เรียกก่อนประกาศไม่ได้ ต่อให้ทั้งคู่มีคำว่า function ซ่อนอยู่เหมือนกัน</div>
 <div class="play"><p class="t">hoisting — เรียกก่อนประกาศได้ไหม</p>
 <div class="row"><button class="chip on" onclick="hoist('decl',this)">function declaration</button><button class="chip" onclick="hoist('arrow',this)">const + arrow</button></div>
 <pre id="hoist-code" style="margin:6px 0"></pre>
 <div class="out" id="hoist-out"></div></div>
 
+<h4>callback — ยื่นฟังก์ชันให้คนอื่นเรียกแทนเรา</h4><p>callback คือฟังก์ชันที่เรายื่นให้อีกฟังก์ชันหนึ่งเรียกใช้แทนเรา — <code>.filter()</code>, <code>.map()</code>, <code>.forEach()</code> รับ callback แบบนี้ทั้งนั้น เราแค่ "ส่งชื่อฟังก์ชัน" เข้าไปเฉย ๆ ไม่ได้เรียกมันเอง เพราะ method เหล่านี้จะเป็นคนหยิบไปเรียกให้เองทีละรอบ</p><p>เขียนฟังก์ชันขึ้นมาหนึ่งตัวก็เหมือนส่ง <b>สูตรอาหาร</b> ให้ระบบเก็บไว้ ไม่ใช่ส่งจานที่ปรุงเสร็จแล้วให้ดูจานเดียว ระบบจะหยิบสูตรไปทำเองซ้ำหลายรอบด้วยวัตถุดิบคนละชุด แล้วชิมทุกรอบว่ารสชาติ (ค่าที่ return) ตรงกับที่ควรเป็นไหม — งานของเราคือเขียนสูตรให้แม่นพอที่จะใช้ได้กับวัตถุดิบทุกชุดที่ระบบจะหยิบมาลอง</p><div class="trap"><b>พลาดกันบ่อย</b><span>ใส่วงเล็บเรียกฟังก์ชันไปพร้อมกับส่งเป็น callback — <code>products.filter(isAvailable())</code> เรียก <code>isAvailable</code> ทันทีตรงนั้นโดยไม่มีอาร์กิวเมนต์ แล้วเอาผลลัพธ์ไปให้ filter แทนตัวฟังก์ชัน จำง่าย ๆ ว่าอยาก "ส่งตัวฟังก์ชัน" ห้ามมีวงเล็บต่อท้าย อยาก "เรียกใช้ทันที" ถึงจะใส่วงเล็บ</span></div>
 <div class="play"><p class="t">callback — ใส่วงเล็บหรือไม่ใส่</p>
 <div class="row" id="cb-row"><button class="chip on" onclick="cb('a',this)">filter(hasStock)</button><button class="chip" onclick="cb('b',this)">filter(hasStock())</button><button class="chip" onclick="cb('c',this)">filter(i =&gt; i.qty &gt; 0)</button></div>
 <div class="out" id="cb-out"></div></div>
@@ -311,12 +378,16 @@ total &gt;= <span class="n">500</span> ? <span class="s">'ส่งฟรี'</s
 <div class="quiz" data-q='{"q":"greet(null) เมื่อ greet = (name = \"เพื่อน\") => `สวัสดี ${name}` ได้อะไร","opts":["สวัสดี เพื่อน","สวัสดี null","error","สวัสดี undefined"],"ans":1,"exp":"default ทำงานเฉพาะตอนได้ undefined เท่านั้น — null ถือว่าส่งของมาแล้ว"}'></div>
 <div class="quiz" data-q='{"q":"const f = () => { name: \"หมวก\" }; f() ได้อะไร","opts":["{ name: \"หมวก\" }","undefined","\"หมวก\"","SyntaxError"],"ans":1,"exp":"JS มอง {} เป็น block body ไม่ใช่ object และไม่มี return → undefined ต้องครอบ ({ ... })"}'></div>
 <div class="quiz" data-q='{"q":"console.log(f()); const f = () => 1; เกิดอะไร","opts":["พิมพ์ 1","พิมพ์ undefined","ReferenceError","TypeError"],"ans":2,"exp":"const ถูก hoist แค่ชื่อ ยังอยู่ใน temporal dead zone — Cannot access before initialization"}'></div>
+
+<div class="checkpoint"><p>Checkpoint — สรุปสั้น ๆ</p><ul><li><code>return</code> เท่านั้นที่ส่งค่าออกจากฟังก์ชัน — <code>console.log</code> แค่โชว์ให้เห็นเฉย ๆ</li><li>default parameter ทำงานเฉพาะตอนได้ <code>undefined</code> — <code>null</code>/<code>""</code>/<code>0</code> ไม่ทำให้ default เข้ามาแทน</li><li>arrow function ไม่มี <code>this</code>/<code>arguments</code> ของตัวเอง ใช้ <code>new</code> ไม่ได้ และไม่ hoist</li><li>ส่ง callback ต้องเขียนชื่อฟังก์ชันเปล่า ๆ ห้ามใส่วงเล็บต่อท้าย</li></ul><div class="selfcheck"><p>✓ Self-Check</p><label><input type="checkbox" data-sc="ch04-0"> แยก <code>return</code> กับ <code>console.log</code> ได้ว่าอันไหนส่งค่าออกไปให้คนเรียกใช้ต่อจริง</label><label><input type="checkbox" data-sc="ch04-1"> บอกได้ว่า default parameter จะทำงานก็ต่อเมื่อพารามิเตอร์นั้นได้ค่าอะไร</label><label><input type="checkbox" data-sc="ch04-2"> แยก arrow function กับ function declaration ได้ทั้ง this, arguments, new และ hoisting</label><label><input type="checkbox" data-sc="ch04-3"> ยื่นฟังก์ชันเป็น callback ได้โดยไม่ใส่วงเล็บเรียกไปด้วย</label></div></div>
+<div class="chnav"><a href="#ch03">← วนซ้ำ</a><a href="#ch05">Array →</a></div>
 </section>
 
 <!-- ============ 05 ============ -->
 <section class="ch" id="ch05">
 <h3>05 Array</h3>
 <p class="lead">ก่อนเรียก method ไหน ถามก่อนเสมอ: มันแก้ของเดิม หรือคืนของใหม่</p>
+<div class="chmeta"><span class="pill">บทที่ 05</span><span class="pill">~25 นาที</span><span class="pill lv2">ปานกลาง</span></div>
 <div class="outcomes"><p>จบบทนี้ต้องทำได้</p><ul>
 <li>บอกได้ว่า method ไหนแก้ต้นฉบับ (mutate) ไหนคืนของใหม่</li>
 <li>แยก <code>map</code> / <code>filter</code> / <code>find</code> ว่าคืนอะไร</li>
@@ -324,28 +395,36 @@ total &gt;= <span class="n">500</span> ? <span class="s">'ส่งฟรี'</s
 <li>เขียน <code>reduce</code> จัดกลุ่มด้วย <code>groups[key] = groups[key] || []</code></li>
 <li>รู้ว่า <code>sort()</code> ไม่ใส่ comparator เรียงแบบ string</li></ul></div>
 
-<table><tr><th>แก้ต้นฉบับ</th><th>คืนของใหม่</th></tr>
+<div class="tw"><table><tr><th>แก้ต้นฉบับ</th><th>คืนของใหม่</th></tr>
 <tr><td><code>push</code> <code>pop</code> <code>shift</code> <code>unshift</code> <code>splice</code> <code>sort</code> <code>reverse</code> <code>fill</code></td>
-<td><code>slice</code> <code>concat</code> <code>map</code> <code>filter</code> <code>find</code> <code>some</code> <code>every</code> <code>join</code> <code>[...arr]</code></td></tr></table>
+<td><code>slice</code> <code>concat</code> <code>map</code> <code>filter</code> <code>find</code> <code>some</code> <code>every</code> <code>join</code> <code>[...arr]</code></td></tr></table></div>
 
-<table><tr><th>method</th><th>คืนอะไร</th></tr>
+<div class="tw"><table><tr><th>method</th><th>คืนอะไร</th></tr>
 <tr><td><code>map</code></td><td>array ใหม่ ยาวเท่าเดิม</td></tr>
 <tr><td><code>filter</code></td><td>array ใหม่ อาจสั้นกว่า (ไม่เจอเลยได้ <code>[]</code>)</td></tr>
-<tr><td><code>find</code></td><td>สมาชิกตัวแรกที่ผ่าน หรือ <code>undefined</code></td></tr></table>
+<tr><td><code>find</code></td><td>สมาชิกตัวแรกที่ผ่าน หรือ <code>undefined</code></td></tr></table></div>
 
 <pre><span class="k">const</span> total = cartItems.reduce((acc, item) =&gt; acc + item.price * item.qty, <span class="n">0</span>);
 <span class="c">//                                                       ↑ ถังตั้งต้น — ห้ามลืม</span>
 [<span class="n">40</span>, <span class="n">5</span>, <span class="n">100</span>].sort();              <span class="c">// [100, 40, 5] — เรียงแบบ string</span>
 [<span class="n">40</span>, <span class="n">5</span>, <span class="n">100</span>].sort((a,b) =&gt; a-b);  <span class="c">// [5, 40, 100]</span></pre>
 
+<p>ก่อนเรียก method ไหนกับ array ต้องถามตัวเองก่อนเสมอว่า — <b>มันจะแก้ของเดิม หรือส่งของใหม่กลับมาให้</b></p><h4>สองนิสัยของ array method</h4><p>ลองถามว่า "ถ้าเรียก method นี้แล้วไม่เก็บผลไว้ที่ไหนเลย ข้อมูลต้นฉบับจะเปลี่ยนไหม" — ถ้าเปลี่ยน แปลว่ามันแก้ต้นฉบับ (mutating) เรียกลอย ๆ ก็มีผลอยู่ดี ถ้าไม่เปลี่ยน แปลว่ามันคืนของใหม่ (non-mutating) เรียกลอย ๆ แล้วไม่เก็บผล ค่าที่คำนวณเสร็จจะหายไปเฉย ๆ เหมือนไม่เคยเรียกเลย</p><p>เรื่องนี้สับสนง่ายเพราะทั้งสองกลุ่มเรียกด้วยหน้าตาเหมือนกันเป๊ะ ไวยากรณ์ไม่บอกอะไรเลย ต้องจำเป็นรายตัวเท่านั้น</p><div class="tw"><table><tr><th>method</th><th>หมวด</th><th>คืนอะไร</th><th>ต้นฉบับเปลี่ยน?</th></tr><tr><td><code>push</code> / <code>pop</code></td><td>แก้ต้นฉบับ</td><td>ความยาวใหม่ / สมาชิกที่ดึงออก</td><td>เปลี่ยน</td></tr><tr><td><code>shift</code> / <code>unshift</code></td><td>แก้ต้นฉบับ</td><td>สมาชิกแรก / ความยาวใหม่</td><td>เปลี่ยน</td></tr><tr><td><code>splice</code></td><td>แก้ต้นฉบับ</td><td>array ของสมาชิกที่ถูกลบ</td><td>เปลี่ยน</td></tr><tr><td><code>sort</code> / <code>reverse</code></td><td>แก้ต้นฉบับ</td><td>array เดิม (จัดเรียงแล้ว)</td><td>เปลี่ยน ⚠</td></tr><tr><td><code>slice</code> / <code>concat</code></td><td>คืนของใหม่</td><td>array ใหม่</td><td>ไม่เปลี่ยน</td></tr><tr><td><code>map</code></td><td>คืนของใหม่</td><td>array ใหม่ ยาวเท่าเดิม</td><td>ไม่เปลี่ยน</td></tr><tr><td><code>filter</code></td><td>คืนของใหม่</td><td>array ใหม่ เฉพาะตัวที่ผ่าน</td><td>ไม่เปลี่ยน</td></tr><tr><td><code>find</code></td><td>คืนของใหม่</td><td>สมาชิกตัวแรกที่ผ่าน หรือ <code>undefined</code></td><td>ไม่เปลี่ยน</td></tr><tr><td><code>some</code> / <code>every</code></td><td>คืนของใหม่</td><td><code>true</code> / <code>false</code></td><td>ไม่เปลี่ยน</td></tr><tr><td><code>join</code></td><td>คืนของใหม่</td><td>string</td><td>ไม่เปลี่ยน</td></tr></table></div><div class="concept"><b>MUTATING VS NON-MUTATING</b><span>method ที่แก้ต้นฉบับเข้าไปเปลี่ยนสมาชิกใน array เดิมตรง ๆ ไม่ต้องเก็บผลก็มีผลอยู่ดี ส่วน method ที่คืนของใหม่ไม่แตะต้นฉบับเลย ต้องเก็บสิ่งที่มันคืนมาใส่ตัวแปรหรือ <code>return</code> ต่อ ไม่งั้นผลลัพธ์จะหายไปเฉย ๆ</span></div><h4>map vs filter vs find — คืนอะไรกลับมาไม่เหมือนกัน</h4><p>ทั้งสามรับ callback หน้าตาคล้ายกันมากจนสับสนได้ง่าย แต่คืนของกลับมาคนละแบบ — <code>map</code> คืน array ใหม่ที่ <b>ยาวเท่าต้นฉบับเป๊ะ</b> เพราะแปลงค่าทุกตัวโดยไม่ตัดตัวไหนทิ้ง, <code>filter</code> คืน array ใหม่ที่ <b>อาจสั้นกว่าเดิม</b> เพราะคัดเก็บเฉพาะตัวที่ผ่านเงื่อนไข, <code>find</code> คืน <b>สมาชิกตัวเดียว</b> คือตัวแรกที่ผ่าน หรือ <code>undefined</code> ถ้าไม่มีตัวไหนผ่านเลย</p>
 <div class="play"><p class="t">กด method แล้วดูว่าต้นฉบับเปลี่ยนไหม (เริ่มจากชุดเดิมทุกครั้ง)</p>
 <div class="row" id="arr-btns"></div>
 <div class="out" id="arr-out">ต้นฉบับ: ["เสื้อยืด","หมวก","กางเกง"]</div></div>
 
+<h4>reduce: ตั้งถัง → วนทีละชิ้น → หย่อนของลงถัง → คืนถัง</h4><p><code>reduce</code> ทำงานเป็น 4 จังหวะเสมอ — <b>ตั้งถัง</b> กำหนด initial value ให้ accumulator, <b>วนทีละชิ้น</b> ไล่ทีละสมาชิก, <b>หย่อนของลงถัง</b> เอาผลจากสมาชิกตัวนั้นรวมเข้ากับสิ่งที่อยู่ในถังแล้ว, และ <b>คืนถัง</b> เมื่อวนครบ</p><p>ต่างจาก map/filter/find ที่ทำงานทีละตัวแล้วจบในตัวมันเอง — <code>reduce</code> สะสมผลจากตัวก่อนหน้าเข้าไปเรื่อย ๆ นี่คือความต่างที่ทำให้มันทรงพลังกว่า</p><p><b>ต้องมี initial value เสมอ</b> (ค่าตัวที่สองท้าย callback) ถ้าไม่ใส่ JavaScript จะหยิบสมาชิกตัวแรกมาเป็นถังตั้งต้นแทน ซึ่งเสี่ยงมากถ้า array ว่างเปล่า — จะ error ทันที</p><h4>reduce จัดกลุ่มข้อมูล</h4><pre><span class="k">const</span> grouped = products.reduce((groups, product) =&gt; {
+  groups[product.category] = groups[product.category] || [];
+  groups[product.category].push(product.name);
+  <span class="k">return</span> groups;
+}, {});</pre><p>บรรทัด <code>|| []</code> สำคัญมาก — รอบแรกที่เจอหมวดหมู่ใหม่ ถังยังไม่มีช่องเก็บของหมวดนั้น ค่าจึงเป็น <code>undefined</code> ถ้าเผลอเรียก <code>.push()</code> ใส่ <code>undefined</code> ตรง ๆ จะพังทันที</p><div class="trap"><b>พลาดกันบ่อย</b><span>push เข้า <code>groups[key]</code> ก่อนสร้าง array ให้มันก่อน — ถ้า error บอกว่า "Cannot read properties of undefined (reading 'push')" ให้สงสัยจุดนี้ไว้ก่อนเลย</span></div>
 <div class="play"><p class="t">เดิน reduce ทีละก้าว — ดูถัง (acc) สะสม</p>
 <div class="row"><button onclick="redStep(-1)">← ย้อน</button><button class="primary" onclick="redStep(1)">ถัดไป →</button><button onclick="redReset()">รีเซ็ต</button></div>
 <div class="out" id="red-out"></div></div>
 
+<h4>sort เรียงยังไงถ้าไม่บอกวิธีเปรียบเทียบ</h4><p><code>sort()</code> ถ้าไม่ใส่ comparator จะ <b>แปลงสมาชิกทุกตัวเป็น string ก่อนเทียบเสมอ</b> — สำหรับตัวอักษรแทบไม่มีปัญหา แต่สำหรับตัวเลขนี่คือกับดักคลาสสิก เพราะการเทียบแบบ string เทียบทีละตัวอักษรจากซ้ายไปขวา ไม่ได้สนใจว่าตัวเลขทั้งก้อนมีค่าเท่าไหร่</p><pre>console.log([<span class="n">40</span>, <span class="n">5</span>, <span class="n">100</span>].sort());
+<span class="c">// [100, 40, 5] — เรียงแบบ string: "1" มาก่อน "4" มาก่อน "5"</span></pre><p>ใส่ <code>(a, b) =&gt; a - b</code> เพื่อเรียงน้อยไปมาก หรือ <code>(a, b) =&gt; b - a</code> เพื่อเรียงมากไปน้อย — กติกาคือคืนค่าติดลบ a มาก่อน b, คืนค่าบวก b มาก่อน a</p>
 <div class="play"><p class="t">sort ตัวเลข — มี comparator หรือไม่มี</p>
 <div class="row"><input type="text" id="sort-in" value="40, 5, 100, 9" style="width:200px"><button onclick="doSort(false)">sort()</button><button class="primary" onclick="doSort(true)">sort((a,b)=&gt;a-b)</button></div>
 <div class="out" id="sort-out"></div></div>
@@ -355,12 +434,16 @@ total &gt;= <span class="n">500</span> ? <span class="s">'ส่งฟรี'</s
 <div class="mistakes"><p>พลาดกันบ่อย</p><ul><li>เรียก non-mutating method ลอย ๆ ไม่เก็บผล</li><li>ลืม initial value ให้ <code>reduce</code></li><li><code>groups[key].push(...)</code> ก่อนสร้าง array — ต้อง <code>groups[key] = groups[key] || []</code></li></ul></div>
 <div class="quiz" data-q='{"q":"products.find(p => p.qty > 99) ถ้าไม่มีสักตัว ได้อะไร","opts":["[]","null","undefined","false"],"ans":2,"exp":"find คืนสมาชิกตัวแรกที่ผ่าน ไม่เจอเลยได้ undefined (filter ต่างหากที่คืน [])"}'></div>
 <div class="quiz" data-q='{"q":"[].reduce((s, x) => s + x) โดยไม่ใส่ initial value ได้อะไร","opts":["0","undefined","TypeError","[]"],"ans":2,"exp":"array ว่าง + ไม่มี initial value → Reduce of empty array with no initial value"}'></div>
+
+<div class="checkpoint"><p>Checkpoint — สรุปสั้น ๆ</p><ul><li>ก่อนเรียก method ไหนกับ array ให้เช็คก่อนว่ามันแก้ต้นฉบับหรือคืนของใหม่</li><li><code>map</code> ยาวเท่าเดิม · <code>filter</code> อาจสั้นกว่า · <code>find</code> คืนตัวเดียวหรือ <code>undefined</code></li><li><code>reduce</code> ต้องมี initial value เสมอ และต้องเช็ค <code>groups[key] || []</code> ก่อน push ตอนจัดกลุ่ม</li><li><code>sort()</code> ที่ไม่ใส่ comparator เรียงแบบ string เสมอ — ใส่ <code>(a,b) =&gt; a - b</code> เพื่อเรียงเป็นตัวเลขจริง</li></ul><div class="selfcheck"><p>✓ Self-Check</p><label><input type="checkbox" data-sc="ch05-0"> บอกได้ว่า array method ที่ใช้บ่อยตัวไหนแก้ต้นฉบับ ตัวไหนคืนของใหม่</label><label><input type="checkbox" data-sc="ch05-1"> แยก map, filter, find ได้ว่าแต่ละตัวคืนอะไรกลับมา</label><label><input type="checkbox" data-sc="ch05-2"> อธิบาย 4 จังหวะของ reduce ได้ และรู้ว่าทำไมต้องมี initial value</label><label><input type="checkbox" data-sc="ch05-3"> เขียน reduce จัดกลุ่มข้อมูลด้วย pattern <code>groups[key] || []</code> ได้</label></div></div>
+<div class="chnav"><a href="#ch04">← ฟังก์ชัน</a><a href="#ch06">Object →</a></div>
 </section>
 
 <!-- ============ 06 ============ -->
 <section class="ch" id="ch06">
 <h3>06 Object</h3>
 <p class="lead">ตัวแปรที่เก็บ object แค่ "ชี้" ไปหาก้อนข้อมูล ไม่ได้ "ถือ" ไว้</p>
+<div class="chmeta"><span class="pill">บทที่ 06</span><span class="pill">~22 นาที</span><span class="pill lv2">ปานกลาง</span></div>
 <div class="outcomes"><p>จบบทนี้ต้องทำได้</p><ul>
 <li>เข้าถึง property ได้ทั้ง dot และ bracket และรู้ว่าใช้แบบไหนตอนไหน</li>
 <li>เพิ่ม แก้ ลบ property และเช็คว่ามี key อยู่จริงไหม</li>
@@ -377,27 +460,31 @@ u.key        <span class="c">// undefined — หา property ชื่อ "key"
 
 u.pionts = <span class="n">200</span>;  <span class="c">// สะกดผิด → สร้าง key ใหม่ ไม่ error, points ไม่เปลี่ยน</span></pre>
 
-<table><tr><th>เช็ค</th><th>เขียน</th></tr>
+<div class="tw"><table><tr><th>เช็ค</th><th>เขียน</th></tr>
 <tr><td>มี key ไหม</td><td><code>'phone' in u</code></td></tr>
 <tr><td>อ่านซ้อนชั้นแบบไม่พัง</td><td><code>u.address?.city</code></td></tr>
-<tr><td>วน key/value</td><td><code>for...in</code> · <code>Object.keys()</code> · <code>Object.entries()</code></td></tr></table>
+<tr><td>วน key/value</td><td><code>for...in</code> · <code>Object.keys()</code> · <code>Object.entries()</code></td></tr></table></div>
 
+<p>ตัวแปรที่เก็บ object ไม่ได้เก็บตัวข้อมูลจริงไว้กับตัว — มันแค่ <b>ชี้</b> ไปหาก้อนข้อมูลอีกที แล้วเรื่องนี้เปลี่ยนทุกอย่างที่ตามมา</p><h4>= ไม่ใช่การคัดลอก — สองตัวแปรอาจชี้ก้อนเดียวกัน</h4><p>เขียน <code>const userB = userA</code> ไม่ได้สร้างก้อนข้อมูลใหม่เลยสักนิด มันแค่บอกว่า "userB ก็ชี้ไปที่ก้อนเดียวกับ userA" แก้ property ผ่าน userB จึงกระทบ userA ไปด้วย เพราะทั้งคู่ชี้ก้อนเดียวกันจริง ๆ ไม่ใช่คนละก้อนที่หน้าตาเหมือนกัน</p><p><code>===</code> ของ object เทียบว่า <b>ชี้ไปก้อนเดียวกันหรือเปล่า</b> ไม่ได้เทียบว่าค่าข้างในเหมือนกันไหม — สองก้อนที่มีทุก property เหมือนกันเป๊ะแต่คนละก้อน เทียบด้วย <code>===</code> จะได้ <code>false</code> เสมอ</p><div class="concept"><b>REFERENCE (การอ้างอิง)</b><span>ตัวแปรที่เก็บ object/array เก็บแค่ "ที่อยู่" ของก้อนข้อมูล ไม่ใช่ตัวข้อมูลเอง — คัดลอกตัวแปรจึงเป็นการคัดลอกที่อยู่ ทำให้สองตัวแปรที่ดูเหมือนแยกกันอาจชี้ไปก้อนเดียวกันจริง ๆ</span></div><p>อีกจุดที่เข้าใจผิดบ่อยคือ <code>const</code> กับ object — <code>const</code> ห้ามแค่เปลี่ยนว่าตัวแปรชี้ก้อนไหน แต่ไม่ได้ห้ามแก้ property ข้างในก้อนที่มันชี้อยู่เลย</p>
 <div class="play"><p class="t">reference — แก้ userB แล้ว userA เปลี่ยนไหม</p>
 <div class="row"><button class="chip on" onclick="refMode('same',this)">userB = userA</button><button class="chip" onclick="refMode('copy',this)">userB = { ...userA }</button></div>
 <div class="row">แก้ userB.points = <input type="number" id="ref-in" value="999" style="width:90px"><button class="primary" onclick="refApply()">แก้</button></div>
 <div class="cols"><div class="box"><b>userA</b><span id="ref-a" class="mono"></span></div><div class="box"><b>userB</b><span id="ref-b" class="mono"></span></div></div>
 <div class="out" id="ref-out"></div></div>
 
+<h4>เพิ่ม แก้ ลบ property และเช็คว่ามี key ไหม</h4><p>เขียน property ที่ยังไม่มีก็เท่ากับเพิ่มใหม่ เขียนทับที่มีอยู่แล้วก็เท่ากับแก้ค่า และใช้ <code>delete</code> เพื่อลบทิ้ง ปัญหาคือถ้าอ่าน property ที่ไม่มีอยู่จริง จะได้ <code>undefined</code> เงียบ ๆ โดยไม่ error จึงต้องมีวิธีเช็คก่อนใช้งาน</p><div class="tw"><table><tr><th>วิธีเช็ค</th><th>ใช้ยังไง</th><th>ได้อะไร</th></tr><tr><td><code>in</code></td><td><code>'key' in obj</code></td><td>true/false ว่ามี key อยู่จริงไหม (แม้ค่าจะเป็น undefined ก็นับว่ามี)</td></tr><tr><td><code>?.</code></td><td><code>obj.a?.b</code></td><td><code>undefined</code> อย่างปลอดภัย ถ้า <code>obj.a</code> ไม่มีอยู่จริง — ไม่ throw</td></tr><tr><td>เทียบ undefined</td><td><code>obj.key === undefined</code></td><td>ใช้ได้ แต่แยกไม่ออกระหว่าง "ไม่มี key" กับ "มี key แต่ค่าเป็น undefined"</td></tr></table></div>
 <div class="play"><p class="t">เช็คว่ามี key ไหม / อ่านซ้อนชั้นแบบไม่พัง</p>
 <div class="row"><span class="mono">u = { name:'มด', points:120, phone: undefined }</span></div>
 <div class="row" id="in-btns"></div>
 <div class="out" id="in-out">กดดูผลแต่ละแบบ</div></div>
 
+<h4>วน object ได้ 3 วิธี — ผลเหมือนกัน หน้าตาต่างกัน</h4><p><code>Object.keys(obj)</code> ได้ array ของชื่อ key ทั้งหมด, <code>Object.values(obj)</code> ได้ค่าทั้งหมด, <code>Object.entries(obj)</code> ได้คู่ <code>[key, value]</code> — เอาไปวนต่อกับ <code>forEach</code> หรือ <code>for...of</code> ได้ทันที นอกจากนี้ยังมี <code>for...in</code> ที่วน key ได้ตรง ๆ โดยไม่ต้องผ่าน <code>Object.keys()</code> ก่อน</p><p>ทั้งสามแบบให้ผลเหมือนกันทุกประการ เพราะทำสิ่งเดียวกันแค่คนละมุม — เลือกใช้แบบไหนก็ได้ แต่ควรรู้จักทั้งสามแบบ เพราะโค้ดที่เจอในอนาคตอาจเขียนด้วยแบบใดก็ได้</p>
 <div class="play"><p class="t">วน object 3 วิธี — ผลเหมือนกัน</p>
 <div class="row"><button class="chip on" onclick="ol('in',this)">for...in</button><button class="chip" onclick="ol('keys',this)">Object.keys().forEach()</button><button class="chip" onclick="ol('entries',this)">Object.entries()</button></div>
 <pre id="ol-code" style="margin:6px 0"></pre>
 <div class="out" id="ol-out"></div></div>
 
+<h4>จุด กับ วงเล็บเหลี่ยม — สองทางเข้าถึง property</h4><p><b>dot notation</b> เขียนชื่อ key ตรง ๆ ต่อท้ายจุด ใช้เมื่อรู้ชื่อ key แน่นอนตอนเขียนโค้ด <b>bracket notation</b> เขียนชื่อ key เป็นสตริงในวงเล็บเหลี่ยม ใช้ได้ทั้งตอนรู้ชื่อตรง ๆ และตอนชื่อ key มาจากตัวแปร</p><p>กับดักที่พลาดบ่อยคือ <code>userProfile.key</code> ไม่ได้แปลว่า "หยิบชื่อ key จากตัวแปร key" แบบที่ <code>userProfile[key]</code> ทำ — มันแปลว่า "หา property ที่ชื่อว่า key ตรงตัวอักษร" ซึ่งมักไม่มีอยู่จริง ผลจึงเป็น <code>undefined</code> และถ้าเขียน <code>userProfile[name]</code> โดยลืม quote JavaScript จะไปหาตัวแปรชื่อ <code>name</code> มาใช้แทน ถ้าไม่มีก็ error ทันที</p><h4>สะกด key ผิดแล้ว JS เงียบ ไม่เตือนอะไรเลย</h4><p>JavaScript ไม่เช็คให้ว่า key ที่พิมพ์ตรงกับที่นิยามไว้จริงไหม — เขียนผิดแค่ตัวเดียวก็กลายเป็น <b>key ใหม่</b> ทันที ไม่มี error ไม่มีคำเตือน เพราะในสายตา JavaScript มันแค่กำลังสร้าง property ใหม่ตามปกติ อาการที่เจอคือแก้ค่าไปแล้วแต่ค่ายังเหมือนเดิมทุกครั้ง</p><div class="pinned"><b>จดไว้ตรงนี้</b>สงสัยว่าทำไมแก้ property แล้วค่าไม่เปลี่ยนสักที ลอง <code>console.log(Object.keys(obj))</code> ดูก่อนได้เลย — ถ้าเห็นชื่อ key แปลก ๆ โผล่มาเพิ่มที่ไม่เคยตั้งใจสร้าง แปลว่าพิมพ์ชื่อ key ผิดที่ไหนสักจุดแน่นอน</div>
 <div class="play"><p class="t">เข้าถึง property — พิมพ์ expression แล้วดูผล</p>
 <div class="row"><span class="mono">const u = { name:'มด', points:120 }; const key = 'points';</span></div>
 <div class="row"><input type="text" id="acc-in" value="u.key" style="width:200px"><button class="primary" onclick="accRun()">รัน</button>
@@ -410,12 +497,16 @@ u.pionts = <span class="n">200</span>;  <span class="c">// สะกดผิด
 <div class="mistakes"><p>พลาดกันบ่อย</p><ul><li>bracket ลืม quote — JS ไปหาตัวแปร</li><li>คิดว่า <code>const b = a</code> สร้างสำเนา — ชี้ก้อนเดียวกัน</li><li>สะกด key ผิดตอนแก้ — ได้ key ใหม่เงียบ ๆ ค่าเดิมไม่เปลี่ยน</li></ul></div>
 <div class="quiz" data-q='{"q":"u = { phone: undefined }; \"phone\" in u ได้อะไร","opts":["true","false","undefined","error"],"ans":0,"exp":"in เช็คว่ามี key อยู่จริงไหม — มี แม้ค่าจะเป็น undefined (ต่างจาก u.phone === undefined ที่แยกไม่ออก)"}'></div>
 <div class="quiz" data-q='{"q":"u[points] โดยไม่มี quote และไม่มีตัวแปร points จะเกิดอะไร","opts":["ได้ค่าของ property points","undefined","ReferenceError","ได้ property ทั้งหมด"],"ans":2,"exp":"JS ไปหาตัวแปรชื่อ points มาใช้เป็น key — ไม่มีตัวแปรนี้ → ReferenceError (ยกเว้นชื่อที่บังเอิญเป็น global ใน browser เช่น name = window.name จะได้ undefined แทน)"}'></div>
+
+<div class="checkpoint"><p>Checkpoint — สรุปสั้น ๆ</p><ul><li>dot ใช้ตอนรู้ชื่อ key แน่นอน · bracket ใช้ตอน key มาจากตัวแปร — เขียนชื่อตรง ๆ ใน bracket ต้องมี quote</li><li>ตัวแปรที่เก็บ object ชี้ไปหาก้อนข้อมูล ไม่ได้ถือไว้เอง — <code>const b = a</code> ไม่ได้สำเนาใหม่ให้</li><li><code>===</code> ของ object เทียบว่าชี้ก้อนเดียวกันไหม ไม่ได้เทียบค่าข้างใน</li><li>สะกด key ผิดไม่มี error เตือนเลย — JS สร้าง key ใหม่ให้เงียบ ๆ</li></ul><div class="selfcheck"><p>✓ Self-Check</p><label><input type="checkbox" data-sc="ch06-0"> เข้าถึง property ด้วย dot และ bracket ได้ถูกต้อง และรู้ว่า bracket ต้องมี quote เมื่อไหร่</label><label><input type="checkbox" data-sc="ch06-1"> เพิ่ม แก้ ลบ property และเช็คว่ามี key อยู่จริงได้ด้วย <code>in</code> หรือ <code>?.</code></label><label><input type="checkbox" data-sc="ch06-2"> อธิบายได้ว่าทำไม <code>const b = a</code> ไม่ได้สร้างสำเนาใหม่ให้ object</label><label><input type="checkbox" data-sc="ch06-3"> ระวังเรื่องสะกด key ผิดที่ทำให้ JS สร้าง key ใหม่ขึ้นมาเงียบ ๆ</label></div></div>
+<div class="chnav"><a href="#ch05">← Array</a><a href="#ch07">Destructuring + Spread →</a></div>
 </section>
 
 <!-- ============ 07 ============ -->
 <section class="ch" id="ch07">
 <h3>07 Destructuring + Spread</h3>
 <p class="lead">แกะกล่อง แจกจ่าย คัดลอก — สั้นลงเยอะ แต่พลาดง่ายตรงวงเล็บกับของซ้อน</p>
+<div class="chmeta"><span class="pill">บทที่ 07</span><span class="pill">~22 นาที</span><span class="pill lv2">ปานกลาง</span></div>
 <div class="outcomes"><p>จบบทนี้ต้องทำได้</p><ul>
 <li>แกะค่าจาก object/array ได้ ทั้ง rename และ default</li>
 <li>destructure ตรงพารามิเตอร์ได้ รวมถึง arrow function ที่ต้องครอบ <code>()</code></li>
@@ -431,16 +522,19 @@ u.pionts = <span class="n">200</span>;  <span class="c">// สะกดผิด
 <span class="k">const</span> merged = { ...defaults, ...override };          <span class="c">// override ชนะ</span>
 <span class="k">function</span> sum(...nums) {}                              <span class="c">// rest ต้องท้ายสุด</span></pre>
 
+<p>ตัวดำเนินการสองตัวที่ทำให้บรรทัดโค้ดสั้นลงไปเยอะ แต่ก็เป็นจุดที่พลาดกันบ่อยไม่แพ้กัน โดยเฉพาะตอนใช้กับฟังก์ชันและข้อมูลที่ซ้อนกันหลายชั้น</p><h4>Destructuring — แกะกล่องแทนที่จะหยิบทีละชิ้น</h4><p>คือการ "แกะ" object หรือ array ออกมาทีเดียว แล้วตั้งชื่อตัวแปรให้แต่ละชิ้นในจังหวะเดียว <b>Object destructuring อ้างด้วยชื่อ key</b> — เขียนสลับตำแหน่งในวงเล็บปีกกาก็ได้ ผลเหมือนเดิม ส่วน <b>array destructuring อ้างด้วยตำแหน่ง</b> เพราะ array ไม่มี key ให้อ้างอิง</p><div class="tw"><table><tr><th>เขียนแบบ</th><th>ตัวอย่าง</th><th>ได้อะไร</th></tr><tr><td>rename อย่างเดียว</td><td><code>{ name: fullName }</code></td><td>ตัวแปรชื่อ <code>fullName</code></td></tr><tr><td>default อย่างเดียว</td><td><code>{ phone = 'ไม่ระบุ' }</code></td><td>ตัวแปร <code>phone</code> ที่มีค่าสำรอง</td></tr><tr><td>rename + default</td><td><code>{ phone: contactPhone = 'ไม่ระบุ' }</code></td><td><code>contactPhone</code> ที่มีค่าสำรอง</td></tr></table></div><p>default ที่นี่ใช้หลักการเดียวกับ default parameter — <b>ทำงานเฉพาะตอนได้ <code>undefined</code> เท่านั้น</b> ถ้าค่าเป็น <code>null</code> หรือ <code>""</code> default จะไม่ทำงาน</p><h4>Spread — แจกออกมาแล้วประกอบใหม่</h4><p>ถ้า destructuring คือการแกะของออกจากกล่อง spread (<code>...</code>) ก็คือทิศตรงข้าม — เทของทุกชิ้นออกจากกล่องเดิม แล้วเอาไปใส่กล่องใหม่ทั้งหมดในทีเดียว</p><p>เวลา spread สอง object เข้าด้วยกัน ถ้ามี key ชื่อเดียวกันซ้ำ <b>ตัวที่วางอยู่หลังสุดจะทับตัวที่วางอยู่ก่อนหน้าเสมอ</b> — กฎนี้ใช้ตัดสินใจได้ว่าควรวาง object ไหนไว้ก่อนหรือหลัง ถ้าอยากให้ค่าที่ผู้ใช้กำหนดเองชนะค่าตั้งต้นของระบบ ก็ต้องวาง defaults ไว้ก่อน</p><div class="concept"><b>SPREAD OPERATOR</b><span><code>...</code> "แผ่" สมาชิกทั้งหมดของ array หรือ property ทั้งหมดของ object ออกมาเป็นรายการเดี่ยว ๆ ในจังหวะที่กำลังสร้างของใหม่ — ไม่แก้ต้นฉบับ และของที่ได้เป็นคนละก้อนกับต้นฉบับเสมอ (อย่างน้อยก็ในชั้นบนสุด)</span></div>
 <div class="play"><p class="t">spread แล้วใครทับใคร — สลับลำดับดู</p>
 <div class="row"><span class="mono">defaults = {theme:'light', discount:0}</span> · <span class="mono">override = {discount:0.1}</span></div>
 <div class="row"><button class="chip on" onclick="spr('a',this)">{ ...defaults, ...override }</button><button class="chip" onclick="spr('b',this)">{ ...override, ...defaults }</button></div>
 <div class="out" id="spr-out"></div></div>
 
+<h4>สำเนาตื้น vs สำเนาลึก — จุดที่พลาดบ่อยที่สุดของบทนี้</h4><p>spread คัดลอกของใหม่ให้จริง แต่คัดลอก <b>แค่ชั้นบนสุดชั้นเดียว</b> ถ้า property ไหนเป็น object หรือ array ซ้อนอยู่ข้างใน spread จะไม่เดินลงไปคัดลอกชั้นนั้นด้วย มันแค่คัดลอก "ที่อยู่อ้างอิง" มาวางไว้ สุดท้ายทั้งของเก่าและของใหม่จึงชี้ไปที่ก้อนของซ้อนก้อนเดียวกัน</p><div class="concept"><b>สำเนาตื้น (SHALLOW COPY)</b><span>spread และ <code>Object.assign</code> สร้าง object/array ใหม่จริง แต่ property ที่เป็นของซ้อนยังคงเป็น reference เดียวกับต้นฉบับ — แก้ของซ้อนผ่านสำเนาจึงกระทบต้นฉบับไปด้วย</span></div><div class="trap"><b>พลาดกันบ่อย</b><span>เขียน <code>const copy = { ...user }</code> แล้วอุ่นใจว่าคัดลอกครบ พอไปแก้ <code>copy.address.province</code> กลับพบว่าต้นฉบับเปลี่ยนตาม — ถ้าต้องแก้ของซ้อนโดยไม่กระทบต้นฉบับ ต้อง spread ทีละชั้นลงไปให้ถึงชั้นที่จะแก้ หรือใช้ <code>structuredClone(user)</code> เพื่อคัดลอกลึกทุกชั้นในทีเดียว</span></div>
 <div class="play"><p class="t">shallow copy — แก้ของซ้อนผ่านสำเนา</p>
 <div class="row"><button class="chip on" onclick="shallow('spread',this)">{ ...original }</button><button class="chip" onclick="shallow('deep',this)">structuredClone(original)</button><button class="primary" onclick="shallowEdit()">copy.address.city = 'เชียงใหม่'</button></div>
 <div class="cols"><div class="box"><b>original</b><span id="sh-o" class="mono"></span></div><div class="box"><b>copy</b><span id="sh-c" class="mono"></span></div></div>
 <div class="out" id="sh-out"></div></div>
 
+<h4>destructure ตรงพารามิเตอร์ของฟังก์ชัน</h4><p>เขียน destructuring ไว้ตรงวงเล็บพารามิเตอร์เลยก็ได้ — สั้นกว่า และเห็นชัดตั้งแต่หัวฟังก์ชันว่าฟังก์ชันนี้ต้องการ property อะไรบ้าง ใช้ได้ตรงหัว <code>for...of</code> ด้วย ไม่ต้องเขียน <code>item.name</code> ซ้ำทุกบรรทัดข้างใน</p><div class="trap"><b>พลาดกันบ่อย</b><span>ลืมครอบวงเล็บ <code>()</code> รอบพารามิเตอร์ที่ destructure ใน arrow function — เขียน <code>{ name, price } =&gt; ...</code> ลอย ๆ JavaScript จะแยกไม่ออกว่า <code>{ }</code> คือ destructuring pattern หรือจุดเริ่ม function body ผลคือ SyntaxError ทันที ต้องเขียน <code>({ name, price }) =&gt; ...</code> เสมอ</span></div><h4>rest ต้องอยู่ท้ายสุด</h4><p><code>...</code> ตัวเดียวกันนี้ ถ้าอยู่ฝั่ง "รับค่าเข้า" แทนที่จะ "แจกค่าออก" จะเรียกว่า <b>rest</b> — ใช้เก็บส่วนที่เหลือที่ไม่ได้ระบุชื่อไว้ ข้อจำกัดเดียวคือ <b>ต้องอยู่ตำแหน่งสุดท้ายเสมอ</b> เพราะมันแปลว่า "เก็บทุกอย่างที่เหลือ" ถ้าวางกลางทางแล้วมีอะไรตามหลังอีก JS จะฟันธงเป็น SyntaxError ตั้งแต่ยังไม่ทันรัน</p>
 <div class="play"><p class="t">arrow function + destructuring — ลืม ( ) แล้วเกิดอะไร</p>
 <div class="row"><input type="text" id="ad-in" value="{ name, price } => `${name} ${price}`" style="width:360px"><button class="primary" onclick="adRun()">parse</button><button class="chip" onclick="$('ad-in').value='({ name, price }) => `${name} ${price}`';adRun()">ใส่ ( )</button></div>
 <div class="out" id="ad-out"></div></div>
@@ -454,12 +548,16 @@ u.pionts = <span class="n">200</span>;  <span class="c">// สะกดผิด
 <div class="mistakes"><p>พลาดกันบ่อย</p><ul><li>arrow function ลืม <code>()</code> ครอบ destructuring</li><li><code>...rest</code> ไม่อยู่ท้ายสุด</li><li>คิดว่า spread คัดลอกลึก</li></ul></div>
 <div class="quiz" data-q='{"q":"const { phone = \"ไม่ระบุ\" } = { phone: null }; phone ได้อะไร","opts":["\"ไม่ระบุ\"","null","undefined","error"],"ans":1,"exp":"default ของ destructuring ทำงานเฉพาะ undefined เหมือน default parameter — null ถูกใช้ตรง ๆ"}'></div>
 <div class="quiz" data-q='{"q":"function f(...rest, last) {} เกิดอะไร","opts":["ทำงานปกติ","rest เป็น []","SyntaxError","last เป็น undefined"],"ans":2,"exp":"rest ต้องอยู่ตำแหน่งสุดท้ายเสมอ"}'></div>
+
+<div class="checkpoint"><p>Checkpoint — สรุปสั้น ๆ</p><ul><li>Destructuring แกะค่าออกมาตั้งชื่อได้ทันที — object อ้างด้วยชื่อ key, array อ้างด้วยตำแหน่ง</li><li>destructure ใน arrow function ต้องครอบด้วย <code>()</code> เสมอ ไม่งั้น SyntaxError</li><li>spread merge แล้วตัวที่มาทีหลังทับตัวก่อนหน้า และ <code>...rest</code> ต้องอยู่ท้ายสุดเสมอ</li><li>spread คัดลอกได้แค่ชั้นบนสุด (shallow) ของซ้อนยังใช้ reference เดิม</li></ul><div class="selfcheck"><p>✓ Self-Check</p><label><input type="checkbox" data-sc="ch07-0"> เขียน object/array destructuring พร้อม rename และ default ได้</label><label><input type="checkbox" data-sc="ch07-1"> destructure ตรงพารามิเตอร์ฟังก์ชันได้ถูกไวยากรณ์ รวมถึงใน arrow function ที่ต้องครอบวงเล็บ</label><label><input type="checkbox" data-sc="ch07-2"> บอกได้ว่า spread สอง object ที่มี key ซ้ำกัน ค่าไหนจะชนะ</label><label><input type="checkbox" data-sc="ch07-3"> อธิบายได้ว่าทำไมแก้ของซ้อนผ่านสำเนาที่ spread มาแล้วยังกระทบต้นฉบับ</label></div></div>
+<div class="chnav"><a href="#ch06">← Object</a><a href="#ch08">Date →</a></div>
 </section>
 
 <!-- ============ 08 ============ -->
 <section class="ch" id="ch08">
 <h3>08 Date</h3>
 <p class="lead">ข้างใน Date คือตัวเลข ms ตัวเดียว — เทียบวันที่ = เทียบตัวเลข</p>
+<div class="chmeta"><span class="pill">บทที่ 08</span><span class="pill">~20 นาที</span><span class="pill lv2">ปานกลาง</span></div>
 <div class="outcomes"><p>จบบทนี้ต้องทำได้</p><ul>
 <li>อธิบายว่า Date เก็บอะไร และสร้างได้ 4 แบบ</li>
 <li>แยก <code>getMonth()</code> (0–11) / <code>getDate()</code> (วันที่) / <code>getDay()</code> (0 = อาทิตย์)</li>
@@ -475,6 +573,7 @@ Date.now();                  <span class="c">// ตัวเลข ms ไม่�
 a &lt; b            <span class="c">// เทียบได้เลย</span>
 a === b          <span class="c">// false เสมอ (object) — ใช้ a.getTime() === b.getTime()</span></pre>
 
+<p>เบื้องหลัง <code>Date</code> ทั้งก้อนคือ <b>ตัวเลขตัวเดียว</b> — พอจับหลักนี้ได้ สูตรคำนวณวันที่ที่เคยดูซับซ้อนจะกลายเป็นแค่เลขคณิตธรรมดา</p><h4>Date คือจำนวน millisecond เท่านั้นเอง</h4><p>ข้างใน <code>Date</code> ทุกก้อนคือจำนวน millisecond ที่นับตั้งแต่เที่ยงคืนของวันที่ 1 มกราคม ค.ศ. 1970 (จุดอ้างอิงนี้เรียกว่า epoch) วันที่ในอนาคตคือเลขที่มากกว่า อดีตคือเลขที่น้อยกว่า — ทุกครั้งที่เทียบวันที่สองวัน จริง ๆ แล้วคือการเทียบตัวเลขสองตัวเฉย ๆ</p><div class="concept"><b>EPOCH TIME</b><span>จุดเริ่มนับเวลาของคอมพิวเตอร์เกือบทุกระบบคือ 00:00:00 UTC วันที่ 1 มกราคม 1970 — <code>Date</code> เก็บระยะห่างจากจุดนั้นเป็น millisecond (ไม่ใช่วินาที) ตัวเลขนี้เรียกว่า timestamp เอาไปบวกลบเปรียบเทียบกันได้เหมือนตัวเลขทั่วไป</span></div><h4>ดึงส่วนประกอบออกจาก Date</h4><p>ตัวที่สับสนกันบ่อยที่สุดคือ <code>getDate()</code> กับ <code>getDay()</code> ชื่อคล้ายกันมากแต่คืนคนละอย่าง</p><div class="tw"><table><tr><th>method</th><th>คืนอะไร</th><th>ตัวอย่าง (23 ส.ค. 2026)</th></tr><tr><td><code>getFullYear()</code></td><td>ปี ค.ศ. เต็ม</td><td>2026</td></tr><tr><td><code>getMonth()</code></td><td>เดือน แบบ 0–11 ⚠</td><td>7 (สิงหาคม)</td></tr><tr><td><code>getDate()</code></td><td>วันที่ในเดือน (1–31)</td><td>23</td></tr><tr><td><code>getDay()</code></td><td>วันในสัปดาห์ 0–6 (0 = อาทิตย์)</td><td>0 (อาทิตย์)</td></tr></table></div><p>วิธีจำ: <code>getDate</code> ตอบ "วันที่เท่าไหร่ในเดือน" ส่วน <code>getDay</code> ตอบ "วันอะไรในสัปดาห์" และเริ่มนับที่อาทิตย์เป็น 0 เสมอ</p><h4>หาผลต่างระหว่างวัน — สูตรที่พลาดกันบ่อยที่สุด</h4><p>เพราะ <code>Date</code> คือตัวเลข การลบ Date สองตัวจึงได้ผลต่างเป็นจำนวน millisecond ตรง ๆ ทิศทางคือ <b>ใหม่ลบเก่า</b> ถ้าอยากได้ผลบวก</p><div class="trap"><b>พลาดกันบ่อย</b><span>ลืมวงเล็บครอบตัวหาร — <code>diffMs / 1000 * 60 * 60 * 24</code> ไม่เท่ากับ <code>diffMs / (1000 * 60 * 60 * 24)</code> เพราะ <code>/</code> กับ <code>*</code> มีความสำคัญเท่ากันและอ่านจากซ้ายไปขวา ไม่มีวงเล็บแล้วตัวเลขจะพองมหาศาลจนดูออกทันทีว่าไม่ใช่จำนวนวัน และอย่าลืม <code>Math.floor()</code> ครอบทับอีกที เพราะผลต่างมักมีเศษของวัน</span></div><p><code>Date</code> สองตัวเทียบกันด้วย <code>&gt;</code> หรือ <code>&lt;</code> ได้เลย แต่ <code>===</code> ใช้ไม่ได้ เพราะ Date เป็น object — สอง Date ที่แทนเวลาเดียวกันเป๊ะแต่คนละก้อนจะได้ <code>false</code> เสมอ ต้องเทียบด้วย <code>.getTime()</code> ทั้งสองฝั่งแทน</p>
 <div class="play"><p class="t">หาผลต่างวัน — ใส่วงเล็บกับไม่ใส่</p>
 <div class="row"><input type="date" id="d1" value="2026-08-10"> ถึง <input type="date" id="d2" value="2026-08-23"><button class="primary" onclick="dateDiff()">คำนวณ</button></div>
 <div class="out" id="date-out"></div></div>
@@ -483,6 +582,7 @@ a === b          <span class="c">// false เสมอ (object) — ใช้ a.
 <div class="row"><input type="date" id="d3" value="2026-08-23" oninput="dateParts()"></div>
 <div class="out" id="dp2-out"></div></div>
 
+<h4>จัดรูปแบบให้อ่านง่ายด้วย toLocaleDateString</h4><p><code>toLocaleDateString(locale, options)</code> จัดรูปแบบวันที่ให้อ่านง่ายตามภาษาที่ต้องการ พารามิเตอร์แรกเป็นรหัสภาษา (เช่น <code>'th-TH'</code>) ตัวที่สองเป็น object ระบุว่าอยากเห็นส่วนไหนบ้าง</p><p>จุดที่ทำให้งงบ่อยที่สุดคือ <b>มันไม่เตือนเลยถ้าสะกด key ใน options ผิด</b> — object ทั่วไปใน JS ไม่ตรวจว่า key ที่ใส่มีอยู่จริงหรือเปล่า สะกด <code>weekday</code> เป็น <code>weekDay</code> ก็ไม่มี error ขึ้นเลย เพียงแต่ผลลัพธ์จะไม่มีชื่อวันโผล่มาตามที่ตั้งใจ</p><div class="pinned"><b>จดไว้ตรงนี้</b>เจอ options ที่ไม่มีผลอะไรเลย ให้สงสัยเรื่องตัวสะกดและตัวพิมพ์ใหญ่-เล็กก่อนเป็นอันดับแรก — key ที่ถูกต้องทั้งหมดเป็นตัวพิมพ์เล็กล้วน (<code>weekday</code>, <code>year</code>, <code>month</code>, <code>day</code>)</div>
 <div class="play"><p class="t">toLocaleDateString — ต่อ option ให้ได้ "วันอาทิตย์ที่ 23 สิงหาคม 2569"</p>
 <div class="row" id="tl-opts"></div>
 <div class="out" id="tld-out"></div></div>
@@ -492,30 +592,34 @@ a === b          <span class="c">// false เสมอ (object) — ใช้ a.
 <div class="row"><span class="pill">ตัวแปรที่มี: now, startDate, endDate</span></div>
 <div class="out" id="promo-out"></div></div>
 
-<h4>Temporal — ของใหม่ที่กำลังมาแทน</h4>
+<h4>Temporal — ของใหม่ที่กำลังมาแทน</h4><p><code>Date</code> ถูกออกแบบไว้ตั้งแต่ปี 1995 โดยเลียนแบบ API วันที่ของ Java รุ่นเก่าซึ่งภายหลัง Java เองก็เลิกใช้ไปแล้ว ปัญหาที่ติดมาตรงกับกับดักในบทนี้พอดี — mutable (<code>setDate()</code> แก้ต้นฉบับตรง ๆ), เดือนนับ 0–11 ที่ขัดสามัญสำนึก, และแยกโซนเวลาไม่ได้ TC39 จึงออกแบบ API ชุดใหม่ชื่อ <b>Temporal</b> มาแก้ปัญหาเหล่านี้โดยเฉพาะ</p><div class="tw"><table><tr><th>เรื่อง</th><th>Date</th><th>Temporal</th></tr><tr><td>เดือน</td><td><code>getMonth()</code> นับ 0–11</td><td><code>.month</code> นับ 1–12</td></tr><tr><td>หาผลต่างวัน</td><td>ลบ ms แล้วหาร + <code>Math.floor</code></td><td><code>d1.until(d2).days</code></td></tr><tr><td>แก้ค่า</td><td><code>setDate()</code> แก้ต้นฉบับ</td><td><code>.add()</code> คืนตัวใหม่เสมอ</td></tr><tr><td>โซนเวลา</td><td>ผูกกับเครื่องผู้ใช้ แยกไม่ออก</td><td><code>ZonedDateTime</code> แยกชัดเจน</td></tr></table></div><p>แถว "แก้ค่า" คือแนวคิดเดียวกับบท Array — <code>setDate()</code> เป็นฝั่งแก้ต้นฉบับ (เหมือน push/sort) ส่วน <code>.add()</code> เป็นฝั่งคืนของใหม่ (เหมือน map/filter)</p><p>Temporal ผ่าน Stage 4 เมื่อมีนาคม 2026 และเป็นส่วนหนึ่งของ ES2026 แล้ว Firefox (139+) และ Chrome (144+) เปิดใช้เป็นค่าเริ่มต้น แต่ Safari รุ่น stable ยังไม่รองรับ — งานจริงที่ต้องรันข้ามเบราว์เซอร์จึงยังต้องพึ่ง polyfill ไปก่อน <b>สิ่งที่ควรได้จากหัวข้อนี้คือ "รู้จักไว้ก่อนว่ามีของนี้อยู่" ไม่ใช่ "ต้องใช้แทน Date ตั้งแต่ตอนนี้"</b></p>
 <p>Date ถูกออกแบบตั้งแต่ปี 1995 มีปัญหาที่เพิ่งเจอในบทนี้ครบ: mutable (<code>setDate()</code> แก้ต้นฉบับ), เดือน 0–11, แยก timezone ไม่ชัด — <code>Temporal</code> แก้ทั้งหมด (<code>.month</code> นับ 1–12, <code>.add()</code> คืนของใหม่, <code>d1.until(d2).days</code> ได้จำนวนวันตรง ๆ) เข้า ES2026 แล้ว แต่ Safari ยังไม่รองรับ — โจทย์ที่เจอตอนนี้ยังใช้ Date ทั้งหมด รู้ไว้ก่อนพอ</p>
 <div class="coder" data-id="c08"></div>
 <div class="mistakes"><p>พลาดกันบ่อย</p><ul><li>ลืมวงเล็บครอบตัวหารตอนหาผลต่างวัน</li><li><code>new Date(2026-08-23)</code> ไม่มี quote — กลายเป็นลบเลข</li><li>สะกด option ผิด (<code>weekDay</code>) — ไม่ error แค่เมิน</li></ul></div>
 <div class="quiz" data-q='{"q":"Date.now() คืนอะไร","opts":["Date object","ตัวเลข ms นับจาก 1970","สตริงวันที่","undefined"],"ans":1,"exp":"เป็น number เรียก .getMonth() ต่อไม่ได้ ต้อง new Date() ถ้าอยากได้ object"}'></div>
 <div class="quiz" data-q='{"q":"new Date(2026, 7, 23).getMonth() ได้อะไร","opts":["8","7","\"August\"","23"],"ans":1,"exp":"getMonth นับ 0–11 — สิงหาคมคือ 7"}'></div>
 <div class="quiz" data-q='{"q":"diffMs / 1000 * 60 * 60 * 24 ทำไมได้เลขมหาศาล","opts":["diffMs ผิด","/ กับ * อ่านซ้ายไปขวา กลายเป็นหาร 1000 แล้วคูณ 86400","ต้องใช้ Math.round","Date ไม่ลบกันได้"],"ans":1,"exp":"ต้องครอบตัวหารด้วยวงเล็บ (1000*60*60*24)"}'></div>
+
+<div class="checkpoint"><p>Checkpoint — สรุปสั้น ๆ</p><ul><li><code>Date</code> คือตัวเลข ms นับจาก epoch — ลบกันได้ตรง ๆ เทียบด้วย <code>&gt; &lt;</code> ได้ แต่ <code>===</code> ใช้ไม่ได้</li><li><code>getMonth()</code> นับ 0–11 และ <code>getDay()</code> (0 = อาทิตย์) คนละความหมายกับ <code>getDate()</code></li><li>สูตรหาผลต่างวันต้องมีวงเล็บครอบตัวหารเสมอ + <code>Math.floor()</code> ปิดท้าย</li><li><code>toLocaleDateString</code> เมิน key ที่สะกดผิดแบบเงียบ ๆ · Temporal คือของใหม่ที่ยังใช้แทนไม่ได้ทุกที่</li></ul><div class="selfcheck"><p>✓ Self-Check</p><label><input type="checkbox" data-sc="ch08-0"> อธิบายได้ว่า Date เก็บค่าเป็นตัวเลขอะไร และสร้างได้กี่แบบ</label><label><input type="checkbox" data-sc="ch08-1"> แยก <code>getMonth()</code> / <code>getDate()</code> / <code>getDay()</code> ได้ไม่สับสน</label><label><input type="checkbox" data-sc="ch08-2"> เขียนสูตรหาผลต่างวันได้ถูกต้อง ไม่พลาดเรื่องวงเล็บ</label><label><input type="checkbox" data-sc="ch08-3"> ใช้ <code>toLocaleDateString</code> จัดรูปแบบวันที่ได้ และรู้ทันกับดักตอนสะกด option ผิด</label></div></div>
+<div class="chnav"><a href="#ch07">← Destructuring + Spread</a><a href="#ch09">Regex →</a></div>
 </section>
 
 <!-- ============ 09 ============ -->
 <section class="ch" id="ch09">
 <h3>09 Regex</h3>
 <p class="lead">อ่านออกเสียงทีละชิ้นก่อนเขียน — สัญลักษณ์มีไม่กี่ตัว</p>
+<div class="chmeta"><span class="pill">บทที่ 09</span><span class="pill">~22 นาที</span><span class="pill lv3">ท้าทาย</span></div>
 <div class="outcomes"><p>จบบทนี้ต้องทำได้</p><ul>
 <li>อ่าน pattern ทีละชิ้นด้วยตารางตัวอักษรพิเศษ</li>
 <li>แยก <code>test</code> (boolean) / <code>match</code> (array หรือ null) / <code>replace</code> (string ใหม่)</li>
 <li>ใช้ escape <code>\.</code>, anchor <code>^ $</code>, character class <code>[...]</code>, flags <code>g i</code></li>
 <li>ประกอบ pattern ตรวจอีเมลที่รองรับโดเมนหลายชั้น</li></ul></div>
 
-<table><tr><th>สัญลักษณ์</th><th>ความหมาย</th><th>สัญลักษณ์</th><th>ความหมาย</th></tr>
+<div class="tw"><table><tr><th>สัญลักษณ์</th><th>ความหมาย</th><th>สัญลักษณ์</th><th>ความหมาย</th></tr>
 <tr><td><code>^</code> <code>$</code></td><td>ต้น / ท้ายข้อความ</td><td><code>+</code> <code>*</code> <code>?</code></td><td>1+ / 0+ / มีหรือไม่มี</td></tr>
 <tr><td><code>.</code></td><td>ตัวอะไรก็ได้ 1 ตัว</td><td><code>{n,m}</code></td><td>ซ้ำ n ถึง m</td></tr>
 <tr><td><code>\d</code> <code>\w</code> <code>\s</code></td><td>ตัวเลข / ตัวอักษร / ช่องว่าง</td><td><code>[...]</code> <code>(...)</code> <code>|</code></td><td>ชุดตัวอักษร / กลุ่ม / หรือ</td></tr>
-<tr><td><code>\.</code></td><td>จุดจริง ๆ</td><td><code>/.../g</code> <code>/.../i</code></td><td>ทุกจุด / ไม่สนตัวพิมพ์</td></tr></table>
+<tr><td><code>\.</code></td><td>จุดจริง ๆ</td><td><code>/.../g</code> <code>/.../i</code></td><td>ทุกจุด / ไม่สนตัวพิมพ์</td></tr></table></div>
 
 <pre><span class="s">/^\d{3}-\d{4}$/</span>   <span class="c">// ต้น → เลข 3 ตัว → ขีด → เลข 4 ตัว → จบ</span>
 <span class="s">/^[\w.-]+@[\w-]+(\.[\w-]+)+$/</span>   <span class="c">// อีเมล รองรับ .co.th</span>
@@ -524,19 +628,23 @@ re.test(s)       <span class="c">// true/false</span>
 s.match(re)      <span class="c">// ['2026'] หรือ null — ไม่ใช่ boolean</span>
 s.replace(re, x) <span class="c">// สตริงใหม่</span></pre>
 
+<p>Regex ดูเหมือนภาษาต่างดาวตอนเจอครั้งแรก แต่จริง ๆ เป็นแค่สัญลักษณ์ไม่กี่ตัวที่ประกอบกันได้ — อ่านออกทีละชิ้นแล้วมันจะไม่น่ากลัวอีกต่อไป</p><h4>อ่านทีละชิ้น — ตัวอักษรพิเศษที่ต้องรู้</h4><p>ตารางนี้คือคำศัพท์ทั้งหมดที่ต้องรู้จักก่อนอ่าน pattern ไหนก็ตาม ไม่ต้องท่องจำ แค่รู้ว่าเจอตัวไหนแล้วกลับมาเปิดดูได้</p><div class="tw"><table><tr><th>สัญลักษณ์</th><th>ความหมาย</th><th>ตัวอย่าง</th></tr><tr><td><code>^</code></td><td>ปักหมุดต้นข้อความ</td><td><code>/^A/</code> ต้องขึ้นต้นด้วย A</td></tr><tr><td><code>$</code></td><td>ปักหมุดท้ายข้อความ</td><td><code>/z$/</code> ต้องลงท้ายด้วย z</td></tr><tr><td><code>.</code></td><td>ตัวอักษรอะไรก็ได้ 1 ตัว</td><td><code>/a.c/</code> จับ "abc" "axc"</td></tr><tr><td><code>\d</code></td><td>ตัวเลข 1 ตัว (0-9)</td><td><code>/\d\d/</code> ตัวเลข 2 หลักติดกัน</td></tr><tr><td><code>\w</code></td><td>ตัวอักษร/ตัวเลข/underscore 1 ตัว</td><td><code>/\w+/</code> คำที่ไม่มีช่องว่าง</td></tr><tr><td><code>\s</code></td><td>ช่องว่าง</td><td><code>/a\sb/</code> จับ "a b"</td></tr><tr><td><code>+</code></td><td>ตัวก่อนหน้า 1 ตัวขึ้นไป</td><td><code>/\d+/</code> ตัวเลข 1 หลักขึ้นไป</td></tr><tr><td><code>*</code></td><td>ตัวก่อนหน้า 0 ตัวขึ้นไป</td><td><code>/ab*/</code> "a", "ab", "abb"</td></tr><tr><td><code>?</code></td><td>มีหรือไม่มีก็ได้</td><td><code>/colou?r/</code> จับทั้ง color/colour</td></tr><tr><td><code>{n,m}</code></td><td>ซ้ำ n ถึง m ครั้ง</td><td><code>/\d{3,4}/</code> ตัวเลข 3-4 หลัก</td></tr><tr><td><code>[...]</code></td><td>character class — 1 ตัวจากชุด</td><td><code>/[aeiou]/</code> สระตัวใดตัวหนึ่ง</td></tr><tr><td><code>(...)</code></td><td>group — จัดกลุ่มไว้ทำงานร่วมกัน</td><td><code>/(ab)+/</code> "ab" ซ้ำได้หลายรอบ</td></tr><tr><td><code>|</code></td><td>หรือ (ใช้ในกลุ่ม)</td><td><code>/(cat|dog)/</code></td></tr><tr><td><code>\</code></td><td>escape — ทำให้ตัวพิเศษเป็นตัวธรรมดา</td><td><code>/\./</code> จับจุดจริง ๆ</td></tr></table></div><h4>อ่านออกเสียงเป็นภาษาไทยก่อนเขียน</h4><p>วิธีที่ช่วยได้มากที่สุดตอนเจอ pattern ยาว ๆ คืออ่านออกเสียงทีละชิ้น แทนที่จะมองทั้งก้อนแล้วเดา ลองแกะ <code>/^\d{3}-\d{4}$/</code> ดู: <code>^</code> = "เริ่มต้นข้อความ" → <code>\d{3}</code> = "ตัวเลข 3 ตัวติดกัน" → <code>-</code> = "ตามด้วยขีดกลางตัวจริง" → <code>\d{4}</code> = "ตัวเลข 4 ตัว" → <code>$</code> = "แล้วจบข้อความพอดี" — รวมความคือ "ทั้งก้อนต้องเป็นตัวเลข 3 ตัว ขีด ตัวเลข 4 ตัว ไม่มีอะไรเกิน"</p><h4>escape จุด กับ anchor ปักหมุด</h4><p><code>.</code> แปลว่า "ตัวอักษรอะไรก็ได้ 1 ตัว" ไม่ใช่ "จุดจริง ๆ" ถ้าอยากจับจุดตัวจริงต้อง escape ด้วย <code>\.</code> เสมอ ไม่งั้น pattern จะหลวมเกินไป</p><p>อีกจุดที่มักถูกมองข้ามคือ anchor (<code>^</code> กับ <code>$</code>) — ถ้าไม่ปักหมุด regex จะพอใจแค่เจอ pattern อยู่ที่ไหนก็ได้ในสตริง แม้เป็นแค่ส่วนหนึ่งตรงกลางประโยคยาว ๆ ก็ผ่าน เวลาต้องการตรวจว่า "ทั้งสตริงต้องมีหน้าตาแบบนี้เป๊ะ" ต้องใส่ <code>^...$</code> ครอบไว้เสมอ</p><div class="concept"><b>GROUP ที่ทำซ้ำได้</b><span><code>(\.[\w-]+)+</code> คือเทคนิคหลักของบทนี้ — เอา group มาห่อ pattern ย่อยที่อยากให้เกิดซ้ำได้กี่รอบก็ได้ แล้วปิดท้ายด้วย <code>+</code> ต่างจาก <code>\.[\w-]+</code> เฉย ๆ ที่ยอมให้จุดปรากฏได้แค่ครั้งเดียว ใช้ได้กับทุกกรณีที่ท่อนซ้ำ ๆ ไม่รู้ล่วงหน้าว่าจะซ้ำกี่รอบ</span></div>
 <div class="play"><p class="t">ห้องทดลอง regex — พิมพ์ pattern แล้วดูว่าผ่านกี่เคส</p>
 <div class="row"><span class="mono">/</span><input type="text" id="re-in" value=".+@.+" style="width:300px" oninput="reRun()"><span class="mono">/</span>
 <button class="chip" onclick="reSet('.+@.+')">หลวม</button><button class="chip" onclick="reSet('^[\\w.-]+@[\\w-]+\\.[a-z]{2,}$')">ปักหมุด</button><button class="chip" onclick="reSet('^[\\w.-]+@[\\w-]+(\\.[\\w-]+)+$')">หลายชั้น</button></div>
 <div class="out" id="re-out"></div></div>
 
+<h4>character class เทียบกับ group</h4><p><code>[...]</code> กับ <code>(...)</code> หน้าตาคล้ายกันแต่ทำหน้าที่ต่างกันโดยสิ้นเชิง — <code>[...]</code> (character class) หมายถึง "เลือกมา 1 ตัวจากชุดตัวอักษรนี้" ส่วน <code>(...)</code> (group) หมายถึง "จัดกลุ่มลำดับตัวอักษรทั้งชุดนี้ไว้ทำงานร่วมกัน" — มักใช้คู่กับ <code>|</code> หรือใช้ทำซ้ำทั้งกลุ่มด้วย <code>+</code></p>
 <div class="play"><p class="t">[...] vs (...) — ชุดตัวอักษร กับ กลุ่ม</p>
 <div class="row" id="cg-btns"></div>
 <div class="out" id="cg-out">กดดูว่าแต่ละ pattern จับอะไร</div></div>
 
+<h4>flags: g กับ i</h4><p>Flags เขียนต่อท้ายเครื่องหมายทับตัวที่สอง เปลี่ยนพฤติกรรมการค้นหาทั้งก้อน — <code>g</code> (global) หาให้ครบทุกจุดที่เจอ ไม่ใช่แค่จุดแรก · <code>i</code> (ignore case) ไม่สนตัวพิมพ์ใหญ่เล็ก ไม่ใส่ <code>g</code> เวลา <code>replace</code> จะแทนที่แค่จุดแรกที่เจอแล้วหยุด</p><div class="pinned"><b>จดไว้ตรงนี้</b>ถ้าเอา regex ตัวเดียวกันที่มี flag <code>g</code> ไปเรียก <code>.test()</code> ซ้ำหลายรอบ ผลจะสลับ true/false ไปมาแบบงง ๆ — เพราะ regex ที่มี <code>g</code> จะจำตำแหน่งล่าสุดไว้ใน <code>lastIndex</code> แล้วค้นต่อจากตรงนั้นในรอบถัดไป ถ้าไม่ได้ตั้งใจใช้ฟีเจอร์นี้ ให้สร้าง regex ใหม่ทุกรอบ หรือไม่ใส่ <code>g</code> ตอนจะใช้ <code>.test()</code></div>
 <div class="play"><p class="t">flag g กับ .test() — ทำไมผลสลับ true/false</p>
 <div class="row"><button class="primary" onclick="gflag()">เรียก re.test('a1') 4 รอบติด</button></div>
 <div class="out" id="g-out"></div></div>
 
+<h4>test, match, replace — คืนคนละชนิดกัน</h4><p>สาม method นี้ชื่อฟังดูคล้ายกันแต่คืนค่าคนละชนิดโดยสิ้นเชิง</p><div class="tw"><table><tr><th>method</th><th>เรียกจาก</th><th>คืนอะไร</th></tr><tr><td><code>regex.test(str)</code></td><td>regex</td><td><code>true</code> / <code>false</code> เท่านั้น</td></tr><tr><td><code>str.match(regex)</code></td><td>string</td><td>array ของสิ่งที่จับได้ หรือ <code>null</code> ถ้าไม่เจอ</td></tr><tr><td><code>str.replace(regex, s)</code></td><td>string</td><td>สตริงใหม่ที่แทนที่ส่วนที่จับได้แล้ว</td></tr></table></div><div class="trap"><b>พลาดกันบ่อย</b><span>เข้าใจผิดว่า <code>match</code> คืน boolean เหมือน <code>test</code> — ถ้าจับคู่ได้มันคืน array (แม้จับได้แค่ 1 อันก็ยังเป็น array) ถ้าจับไม่ได้คืน <code>null</code> เอาไปใช้ในเงื่อนไข <code>if</code> ได้จริงเพราะ array เป็น truthy และ null เป็น falsy แต่ถ้าเผลอเขียน <code>str.match(re) === true</code> จะได้ <code>false</code> เสมอ</span></div>
 <div class="play"><p class="t">test / match / replace คืนคนละอย่าง</p>
 <div class="row">ข้อความ <input type="text" id="tm-s" value="order2026 ส่ง 15 ชิ้น" style="width:220px"> pattern /<input type="text" id="tm-p" value="\d+" style="width:80px">/<input type="text" id="tm-f" value="" style="width:40px" placeholder="flags"><button class="primary" onclick="tmRun()">รัน</button></div>
 <div class="out" id="tm-out"></div></div>
@@ -546,12 +654,16 @@ s.replace(re, x) <span class="c">// สตริงใหม่</span></pre>
 <div class="mistakes"><p>พลาดกันบ่อย</p><ul><li>ลืม anchor <code>^ $</code> — เจอบางส่วนก็ผ่าน</li><li>ลืม escape จุด — <code>.</code> จับอะไรก็ได้</li><li>คิดว่า <code>match</code> คืน boolean — คืน array หรือ null</li></ul></div>
 <div class="quiz" data-q='{"q":"/(cat|dog)/ กับ /[cat|dog]/ ต่างกันยังไง","opts":["เหมือนกัน","อันแรกจับคำว่า cat หรือ dog อันหลังจับตัวอักษร 1 ตัวจากชุด c,a,t,|,d,o,g","อันหลังจับได้มากกว่า","อันแรก error"],"ans":1,"exp":"[...] คือเลือก 1 ตัวจากชุด ส่วน (...) คือกลุ่มลำดับตัวอักษร ใช้ | ได้"}'></div>
 <div class="quiz" data-q='{"q":"/shop.com/.test(\"shop9com\") ได้อะไร","opts":["true","false","null","error"],"ans":0,"exp":". จับตัวอะไรก็ได้รวมถึง 9 — อยากได้จุดจริงต้อง \\."}'></div>
+
+<div class="checkpoint"><p>Checkpoint — สรุปสั้น ๆ</p><ul><li>อ่าน pattern ทีละชิ้นด้วยตารางตัวอักษรพิเศษ — <code>test</code> คืน boolean, <code>match</code> คืน array หรือ <code>null</code></li><li><code>^...$</code> ปักหมุดทั้งข้อความ ส่วน <code>\.</code> escape จุดให้เป็นจุดจริง — ลืมสองอย่างนี้แล้ว pattern จะหลวมเกินไป</li><li>group ที่ทำซ้ำได้ <code>(...)+</code> คือกุญแจที่ทำให้รองรับรูปแบบซ้ำ ๆ ที่ไม่รู้จำนวนล่วงหน้า</li><li>flag <code>g</code> จำ <code>lastIndex</code> ไว้ — เอาไปเรียก <code>.test()</code> ซ้ำจะได้ผลสลับไปมา</li></ul><div class="selfcheck"><p>✓ Self-Check</p><label><input type="checkbox" data-sc="ch09-0"> อ่าน pattern ของ regex ทีละชิ้นได้โดยไม่ต้องเดา</label><label><input type="checkbox" data-sc="ch09-1"> แยกได้ว่า <code>test</code> คืน boolean แต่ <code>match</code> คืน array หรือ <code>null</code></label><label><input type="checkbox" data-sc="ch09-2"> รู้ว่าต้อง escape จุดและปักหมุดด้วย anchor เมื่อไหร่</label><label><input type="checkbox" data-sc="ch09-3"> เขียน pattern ตรวจอีเมลที่รองรับโดเมนหลายชั้นได้เอง</label></div></div>
+<div class="chnav"><a href="#ch08">← Date</a><a href="#ch10">Exception →</a></div>
 </section>
 
 <!-- ============ 10 ============ -->
 <section class="ch" id="ch10">
 <h3>10 Exception</h3>
 <p class="lead">try/catch คือด่านสุดท้ายกันไม่ให้ error เล็ก ๆ ลากทั้งไฟล์ล้ม</p>
+<div class="chmeta"><span class="pill">บทที่ 10</span><span class="pill">~22 นาที</span><span class="pill lv3">ท้าทาย</span></div>
 <div class="outcomes"><p>จบบทนี้ต้องทำได้</p><ul>
 <li>เขียนโครง try/catch/finally และอธิบายลำดับเมื่อเกิด error</li>
 <li>แยก <code>throw</code> จาก <code>return</code> — throw เป็นคำสั่ง ไม่ใช่ค่า</li>
@@ -574,20 +686,30 @@ s.replace(re, x) <span class="c">// สตริงใหม่</span></pre>
   constructor(msg, status) { <span class="k">super</span>(msg); <span class="k">this</span>.name = <span class="s">'ApiError'</span>; <span class="k">this</span>.status = status; }
 }</pre>
 
+<p>ข้อมูลจากผู้ใช้ไม่เคยสวยเป๊ะเหมือนตัวอย่างในห้องเรียน — <code>try/catch</code> คือด่านสุดท้ายที่กันไม่ให้ความผิดพลาดเล็ก ๆ ลากทั้งไฟล์ล้มตามไปด้วย</p><p>ถ้าข้อมูลที่ส่งมาเสียรูป <code>JSON.parse</code> จะไม่ได้แค่คืน <code>undefined</code> เงียบ ๆ เหมือนหลายจุดในบทก่อน ๆ — <b>มันหยุดทั้งไฟล์ทันที</b> ทุกบรรทัดหลังจากนั้นไม่ทำงานเลย ทั้งหน้าเว็บอาจค้างโดยที่ผู้ใช้ไม่รู้ว่าเกิดอะไรขึ้น</p><h4>โครงเปล่าที่ต้องเขียนได้หลับตา</h4><p>ก่อนคิดโค้ดข้างใน ต้องเขียนโครงเปล่า ๆ ให้คล่องก่อน เพราะถ้าคิดโค้ดพร้อมกังวลเรื่องปีกกาไปด้วย มักพลาดทั้งคู่ ที่เขียนไม่ได้จริงคือ <code>try</code> ไม่มีปีกกา, <code>catch</code> เดี่ยว ๆ ไม่มี <code>try</code> นำหน้า — ยกเว้นแบบเดียวที่เขียนได้โดยไม่มี <code>catch</code> คือ <code>try...finally</code></p><p>ลำดับสำคัญมาก — ถ้าเกิด error ขึ้นระหว่างบรรทัดไหนใน <code>try</code> โปรแกรมจะกระโดดเข้า <code>catch</code> ทันที บรรทัดที่เหลือใน <code>try</code> จะไม่ทำงานเลย จากนั้นไม่ว่าทางไหนก็วิ่งไปจบที่ <code>finally</code> เสมอ</p><div class="pinned"><b>จดไว้ตรงนี้</b>ผลจาก <code>try</code> ต้องรับมาใช้ด้วย — <code>JSON.parse</code> ไม่ได้แก้ string เดิม แต่คืน object ใหม่ออกมา ต้องเก็บผลที่ parse ได้ไว้ในตัวแปรใหม่แล้วใช้ตัวนั้นแทน · และตัวแปรที่จะ reassign ใน <code>finally</code> ต้องประกาศด้วย <code>let</code> ตั้งแต่แรก</div>
 <div class="play"><p class="t">เดิน try/catch/finally — ข้อมูลดี vs ข้อมูลเสีย</p>
 <div class="row"><textarea id="tc-in">{"id": 1, "total": 590}</textarea></div>
 <div class="row"><button class="chip" onclick="tcSet('good')">ข้อมูลดี</button><button class="chip" onclick="tcSet('bad')">ข้อมูลเสีย</button><button class="primary" onclick="tcRun()">รัน</button></div>
 <div class="out" id="tc-out"></div></div>
 
+<h4>throw — คำสั่งขว้าง ไม่ใช่ค่าที่คืนได้</h4><p>พอเจอ <code>throw</code> โค้ดจะหยุดทำงาน ณ จุดนั้นทันที แล้ว error ที่ขว้างไปจะถูกจับโดย <code>catch</code> ตัวที่ใกล้ที่สุดที่ครอบมันอยู่</p><div class="tw"><table><tr><th>เขียนแบบนี้</th><th>เกิดอะไรขึ้น</th></tr><tr><td><code>throw new Error('...')</code></td><td>ขว้างจริง โค้ดหยุดตรงนี้ กระโดดไปหา <code>catch</code> ทันที</td></tr><tr><td><code>return new Error('...')</code></td><td>แค่คืน object error กลับไปเฉย ๆ เหมือนคืนค่าปกติ <code>catch</code> ไม่ทำงานเลย</td></tr><tr><td><code>return throw new Error(...)</code></td><td>เขียนไม่ได้เลย — <code>throw</code> เป็นคำสั่ง ไม่ใช่ค่า จะได้ SyntaxError ตั้งแต่ยังไม่ทันรัน</td></tr></table></div><p><code>throw</code> ได้ทั้ง Error object, string หรือ object ธรรมดา แต่ <b>ควรใช้ <code>new Error(...)</code> เสมอ</b> เพราะมันมาพร้อม <code>.message</code>, <code>.name</code> และ stack trace ที่ช่วยตามรอยได้ — ถ้า throw string ตรง ๆ จะเสียข้อมูลพวกนี้ไปหมด</p><div class="concept"><b>โยน–รับ (THROW–CATCH)</b><span>error ที่เกิดจาก <code>throw</code> จะเดินทางจากจุดเกิดเหตุขึ้นไปหา <code>catch</code> ตัวที่ใกล้ที่สุดที่ครอบมันอยู่ ถ้าไม่มี <code>catch</code> เลยสักตัวในเส้นทางที่มันวิ่งผ่าน โปรแกรมจะหยุดทำงานทั้งไฟล์</span></div><h4>error.message vs error vs ${error}</h4><p>สิ่งที่ <code>catch</code> ได้รับมาไม่ใช่ข้อความ แต่เป็น <b>object</b> ที่มี property <code>.message</code> เก็บข้อความจริงไว้</p><div class="tw"><table><tr><th>ท่า</th><th>ผลที่ได้</th></tr><tr><td>hardcode ข้อความเอง</td><td>ข้อความตายตัว ถ้า error จริงเป็นเรื่องอื่นก็ยังพิมพ์อันเดิมทุกครั้ง</td></tr><tr><td><code>${error}</code></td><td>ได้ข้อความจริง แต่ติดคำว่า <code>Error:</code> นำหน้า</td></tr><tr><td><code>${error.message}</code></td><td>ได้ข้อความล้วน ๆ ตรงตามต้องการ ✓</td></tr></table></div>
 <div class="play"><p class="t">throw vs return — catch ทำงานไหม</p>
 <div class="row"><button class="chip on" onclick="tr('throw',this)">throw new Error(...)</button><button class="chip" onclick="tr('return',this)">return new Error(...)</button></div>
 <div class="out" id="tr-out"></div></div>
 
+<h4>guard จากแคบไปกว้าง</h4><p>ลำดับของเงื่อนไขสำคัญพอ ๆ กับตัวเงื่อนไขเอง เหมือนที่เจอมาแล้วในบทเงื่อนไข — เอาเงื่อนไขที่แคบกว่า (edge case ผิดปกติ) ไว้ก่อนเงื่อนไขที่กว้างกว่าเสมอ ถ้าเงื่อนไขแรกเป็น <code>total &lt; 1000</code> ซึ่งครอบคลุมค่าติดลบไปด้วย โค้ดจะ <code>return</code> ไปตั้งแต่บรรทัดแรก ไม่มีวันเดินไปถึง <code>throw</code> เลย</p>
 <div class="play"><p class="t">guard เรียงผิด — throw ไม่มีวันทำงาน</p>
 <div class="row"><button class="chip on" onclick="gd('wrong',this)">กว้างก่อนแคบ (ผิด)</button><button class="chip" onclick="gd('right',this)">แคบก่อนกว้าง (ถูก)</button> total = <input type="number" id="gd-in" value="-20" style="width:90px" oninput="gd()"></div>
 <pre id="gd-code" style="margin:6px 0"></pre>
 <div class="out" id="gd-out"></div></div>
 
+<h4>custom Error class — ขยาย Error ให้มีข้อมูลของตัวเอง</h4><p>บางครั้งข้อความ error อย่างเดียวไม่พอ เราอยากรู้ด้วยว่า error นี้เป็น "ประเภทไหน" เพื่อตัดสินใจต่อได้ไม่เหมือนกัน (error เพราะสินค้าหมด ควรพาไปหน้าตะกร้า · error เพราะเซิร์ฟเวอร์ล่ม ควรให้กดลองใหม่)</p><p>วิธีทำคือสร้างคลาสที่ <code>extends Error</code> แล้วเรียก <code>super(message)</code> เป็นบรรทัดแรกเสมอ — นั่นคือการส่งข้อความไปตั้งค่า <code>.message</code> ให้ Error ต้นแบบ <b>ถ้าลืมเรียกบรรทัดนี้ <code>.message</code> จะว่างเปล่าทันที</b></p><pre><span class="k">class</span> ApiError <span class="k">extends</span> Error {
+  constructor(message, status) {
+    <span class="k">super</span>(message);      <span class="c">// ต้องเรียกก่อนเสมอ</span>
+    <span class="k">this</span>.name = <span class="s">'ApiError'</span>;
+    <span class="k">this</span>.status = status; <span class="c">// property เสริมของเราเอง</span>
+  }
+}</pre><p>เพราะ <code>ApiError</code> สืบทอดมาจาก <code>Error</code> มันจึงเป็นทั้ง <code>instanceof ApiError</code> และ <code>instanceof Error</code> พร้อมกัน — ใช้ <code>instanceof</code> ตอน <code>catch</code> เพื่อแยกว่า error ที่รับมาเป็นชนิดที่เราออกแบบไว้ หรือเป็น error ธรรมดาที่หลุดมาจากที่อื่น</p><div class="trap"><b>พลาดกันบ่อย</b><span><code>catch</code> จับทุก error ที่เกิดใน <code>try</code> รวมถึง bug ของเราเองด้วย — เผลอพิมพ์ชื่อตัวแปรผิดในบรรทัดที่อยู่ใน <code>try</code> จะเกิด ReferenceError แล้ว <code>catch</code> จะจับไปแสดงเป็นข้อความที่เราแต่งไว้ ทั้งที่ข้อมูลดีทุกอย่าง ก่อนจะเชื่อข้อความที่เราแต่งเอง ให้ <code>console.log(error)</code> ดูตัวจริงก่อนเสมอ</span></div>
 <div class="play"><p class="t">ทาย ApiError</p>
 <div class="row" id="ae-btns"></div>
 <div class="out" id="ae-out">กดดูค่าแต่ละตัว</div></div>
@@ -597,12 +719,16 @@ s.replace(re, x) <span class="c">// สตริงใหม่</span></pre>
 <div class="mistakes"><p>พลาดกันบ่อย</p><ul><li><code>return new Error()</code> แทน <code>throw</code></li><li>ลืมส่ง message ให้ <code>super(message)</code> — ได้ .message ว่าง (ไม่เรียก super เลย = ReferenceError)</li><li>guard สลับลำดับ — throw ไม่มีวันถึง</li></ul></div>
 <div class="quiz" data-q='{"q":"ใน try เกิด error ที่บรรทัดที่ 2 จาก 4 บรรทัด อะไรเกิดขึ้น","opts":["บรรทัด 3-4 ยังทำงานต่อ","กระโดดเข้า catch ทันที บรรทัด 3-4 ถูกข้าม แล้วไป finally","finally ไม่ทำงาน","ทั้งไฟล์หยุด"],"ans":1,"exp":"error กระโดดเข้า catch ทันที ที่เหลือใน try ถูกข้าม finally ทำงานเสมอ"}'></div>
 <div class="quiz" data-q='{"q":"class ApiError extends Error { constructor(m) { super(); this.name = \"ApiError\"; } } — new ApiError(\"ไม่พบ\").message ได้อะไร","opts":["\"\" (ว่าง)","\"ไม่พบ\"","undefined","ReferenceError"],"ans":0,"exp":"เรียก super() แต่ไม่ส่ง message ต่อ → .message ว่าง (ถ้าไม่เรียก super เลยจะเป็น ReferenceError ทันทีตอนแตะ this)"}'></div>
+
+<div class="checkpoint"><p>Checkpoint — สรุปสั้น ๆ</p><ul><li>error ใน <code>try</code> กระโดดเข้า <code>catch</code> ทันที ส่วนที่เหลือใน <code>try</code> โดนข้าม แต่ <code>finally</code> ทำงานเสมอ</li><li><code>throw</code> ขว้างออกไปให้ <code>catch</code> จับ ส่วน <code>return</code> แค่คืนค่าเฉย ๆ — สองอย่างนี้ไม่เหมือนกัน</li><li>guard เงื่อนไขแคบ (edge case) ต้องเช็คก่อนเงื่อนไขกว้างเสมอ</li><li>custom Error class ต้องเรียก <code>super(message)</code> เสมอ แล้วใช้ <code>instanceof</code> แยกชนิด error ได้</li></ul><div class="selfcheck"><p>✓ Self-Check</p><label><input type="checkbox" data-sc="ch10-0"> เขียนโครง try/catch/finally ด้วยมือได้โดยไม่ต้องเปิดตัวอย่าง</label><label><input type="checkbox" data-sc="ch10-1"> แยก <code>throw</code> กับ <code>return</code> ได้ และรู้ว่า <code>throw</code> เป็นคำสั่งไม่ใช่ค่าที่ return ได้</label><label><input type="checkbox" data-sc="ch10-2"> ใช้ <code>error.message</code> ดึงข้อความจริงได้ ไม่ติดคำว่า <code>Error:</code> มาด้วย</label><label><input type="checkbox" data-sc="ch10-3"> เขียน custom Error class ด้วย <code>extends Error</code> + <code>super(message)</code> ได้ และตรวจด้วย <code>instanceof</code> เป็น</label></div></div>
+<div class="chnav"><a href="#ch09">← Regex</a><a href="#ch11">อ่าน error ให้เป็น →</a></div>
 </section>
 
 <!-- ============ 11 ============ -->
 <section class="ch" id="ch11">
 <h3>11 อ่าน error ให้เป็น</h3>
 <p class="lead">ข้อความสีแดงบอกพิกัดปัญหาตรง ๆ ถ้ารู้ว่าต้องอ่านตรงไหน</p>
+<div class="chmeta"><span class="pill">บทที่ 11</span><span class="pill">~18 นาที</span><span class="pill lv2">ปานกลาง</span></div>
 <div class="outcomes"><p>จบบทนี้ต้องทำได้</p><ul>
 <li>แปล error 5 แบบที่เจอบ่อย และรู้ว่าต้องดูบรรทัดไหน</li>
 <li>จำแนกที่มาของ <code>undefined</code> ได้ 3 ทาง</li>
@@ -610,24 +736,27 @@ s.replace(re, x) <span class="c">// สตริงใหม่</span></pre>
 <li>เช็ค 3 จุดก่อนส่ง: มี return / ข้อความตรง spec / สะกดชื่อตรง</li>
 <li>ใช้ <code>console.log</code> แทรกทีละจุด และ comment ครึ่งไฟล์</li></ul></div>
 
-<table><tr><th>error</th><th>แปลว่า</th><th>ไปดู</th></tr>
+<div class="tw"><table><tr><th>error</th><th>แปลว่า</th><th>ไปดู</th></tr>
 <tr><td><code>X is not defined</code></td><td>เรียกตัวแปรที่ไม่เคยประกาศ</td><td>บรรทัดที่ชี้ — เช็คสะกด/scope</td></tr>
 <tr><td><code>Cannot read properties of undefined (reading 'y')</code></td><td>ตัวหน้า .y เป็น undefined</td><td>บรรทัดก่อนหน้า — ตัวที่ควรมีค่าแต่ไม่มี</td></tr>
 <tr><td><code>X is not a function</code></td><td>X ไม่ใช่ฟังก์ชัน</td><td>จุดที่เรียก X() — สะกด method</td></tr>
 <tr><td><code>Unexpected token</code></td><td>syntax ผิด</td><td>มักอยู่ก่อนบรรทัดที่รายงาน — วงเล็บ/ปีกกา</td></tr>
-<tr><td><code>Assignment to constant variable</code></td><td>reassign const</td><td>บรรทัดที่ = ใหม่ — เปลี่ยนเป็น let</td></tr></table>
+<tr><td><code>Assignment to constant variable</code></td><td>reassign const</td><td>บรรทัดที่ = ใหม่ — เปลี่ยนเป็น let</td></tr></table></div>
 
+<p>ข้อความสีแดงที่ขึ้นมาไม่ได้อยากขวางทางเราเลย — มันบอกพิกัดของปัญหาตรง ๆ ถ้ารู้ว่าต้องอ่านตรงไหน บทนี้ไม่มีไวยากรณ์ใหม่ให้เรียนเลยสักตัว แต่เป็นทักษะที่ตัดเวลาแก้บั๊กได้เยอะที่สุดในบรรดาทุกบทที่ผ่านมา</p><h4>5 error ที่เจอบ่อยที่สุด</h4><p>ทั้ง 5 แบบนี้ครอบคลุมสาเหตุที่พบบ่อยเกินครึ่งของทุก error ที่เจอในงานระดับนี้ จำ "รูปร่าง" ของข้อความไว้ก่อน แล้วค่อยดูว่าแต่ละแบบพาเราไปดูตรงไหน</p><div class="tw"><table><tr><th>ข้อความ error</th><th>แปลว่าอะไร</th><th>ไปดูตรงไหน</th></tr><tr><td><code>X is not defined</code></td><td>เรียกตัวแปร/ฟังก์ชันที่ไม่เคยประกาศไว้เลย</td><td>บรรทัดที่ error ชี้ — เช็คสะกดชื่อ และ scope</td></tr><tr><td><code>Cannot read properties of undefined (reading 'y')</code></td><td>กำลังอ่าน <code>y</code> จากตัวที่เป็น <code>undefined</code> อยู่แล้ว</td><td><b>บรรทัดก่อนหน้า</b> — ตัวที่ควรมีค่าแต่ไม่มี</td></tr><tr><td><code>X is not a function</code></td><td>เรียก <code>X(...)</code> ราวกับเป็นฟังก์ชัน แต่ค่าจริงไม่ใช่</td><td>จุดที่เรียก — เช็คสะกดชื่อ method</td></tr><tr><td><code>Unexpected token</code></td><td>syntax ผิด — วงเล็บ/ปีกกาไม่ครบคู่, quote ไม่ปิด</td><td><b>มักอยู่ก่อนบรรทัดที่รายงาน</b></td></tr><tr><td><code>Assignment to constant variable</code></td><td>พยายาม reassign ให้ตัวแปรที่ประกาศด้วย <code>const</code></td><td>ย้อนไปแก้ตอนประกาศเป็น <code>let</code></td></tr></table></div><p>error แทบทุกตัวไม่ได้บอกแค่ "อะไรผิด" แต่บอก "ผิดที่ไหน" มาด้วยเสมอ — จุดที่ต้องฝึกคือ <b>อ่านบรรทัดบนสุดของข้อความก่อน</b> เพราะบางทีมี error ซ้อนกันหลายบรรทัด บรรทัดบนสุดมักตรงประเด็นที่สุด ส่วนบรรทัดล่าง ๆ มักเป็นเส้นทางที่ error เดินทางผ่านมา</p><div class="pinned"><b>จดไว้ตรงนี้</b><code>Unexpected token</code> เป็นตัวที่หลอกคนได้บ่อยที่สุด เพราะเลขบรรทัดที่ชี้มาอาจไม่ใช่บรรทัดที่ผิดจริง — ไล่ดูบรรทัดก่อนหน้าด้วยเสมอ โดยเฉพาะปีกกาและวงเล็บว่าเปิด-ปิดครบคู่ไหม</div>
 <div class="play"><p class="t">จับผิด — error บอกให้แก้บรรทัดไหน</p>
 <div id="dbg-wrap"></div>
 <div class="row"><button onclick="dbgNav(-1)">← เคสก่อน</button><button class="primary" onclick="dbgNav(1)">เคสถัดไป →</button><span id="dbg-score" class="pill"></span></div>
 <div class="out" id="dbg-out"></div></div>
 
+<h4>undefined มาจาก 3 ทาง</h4><p><code>undefined</code> เป็นค่าที่โผล่มาบ่อยที่สุดตัวหนึ่ง แต่ไม่ได้มาจากสาเหตุเดียวเสมอไป การรู้ว่ามันมาจากทางไหนช่วยตัดตัวเลือกในการหาต้นตอได้เร็วขึ้นมาก</p><div class="tw"><table><tr><th>ทางที่มา</th><th>อาการ</th><th>ไปแก้ตรงไหน</th></tr><tr><td>ตัวแปรไม่มีค่า</td><td>ประกาศไว้ (<code>let email;</code>) แต่ยังไม่เคย assign</td><td>จุดประกาศ — assign ค่าเริ่มต้นให้</td></tr><tr><td>ฟังก์ชันไม่ return</td><td>ทำงานเสร็จแต่ไม่มีบรรทัด <code>return</code></td><td>ในตัวฟังก์ชัน — เติม <code>return</code> ให้ครบทุกเส้นทาง</td></tr><tr><td>เข้าถึง property ที่ไม่มี</td><td>object มีอยู่จริง แต่ key/index ที่อ่านไม่มี</td><td>เช็คสะกดชื่อ key หรือขอบเขต index</td></tr></table></div><div class="concept"><b>ผลลัพธ์เหมือนกัน ≠ สาเหตุเหมือนกัน</b><span><code>undefined</code> คือ "อาการ" ไม่ใช่ "โรค" — เห็นค่านี้แล้วต้องถามต่อว่ามันมาจากทางไหนใน 3 ทางข้างบน ก่อนจะเริ่มแก้ ไม่งั้นอาจแก้ผิดจุดแล้วปัญหาเดิมก็ยังอยู่</span></div>
 <div class="play"><p class="t">undefined ตัวนี้มาจากทางไหน</p>
 <div class="row"><button class="chip" onclick="und(0,this)">เคส 1</button><button class="chip" onclick="und(1,this)">เคส 2</button><button class="chip" onclick="und(2,this)">เคส 3</button></div>
 <pre id="und-code" style="margin:6px 0">กดเลือกเคส</pre>
 <div class="row" id="und-ans"></div>
 <div class="out" id="und-out"></div></div>
 
+<h4>ผ่านบางเทสหลอกได้</h4><p>ระบบตรวจมักรันหลายเทสต่อ 1 ข้อ แล้วรายงานว่าผ่านกี่จากทั้งหมดกี่เทส — จุดที่ต้องระวังคือ <b>ผ่าน 2 จาก 3 ไม่ได้แปลว่า "เกือบถูกแล้ว"</b> เทสที่ผ่านอาจผ่านเพราะข้อมูลของเคสนั้นบังเอิญไม่โดนจุดที่โค้ดเราพัง หรือผ่านแบบ "บังเอิญ" เช่นคำนวณผิดสูตรแต่ได้ผลตรงกับเคสนั้นพอดี</p><p>วิธีที่ปลอดภัยกว่าคือ <b>มองเทสที่ยังไม่ผ่านเป็นเบาะแส</b> ไม่ใช่ตัวชี้วัดว่าใกล้เสร็จแค่ไหน — ดูว่าเคสที่ไม่ผ่านมีอะไรพิเศษ (ค่าติดลบ, ว่าง, ซ้ำ, ยาวผิดปกติ) ต่างจากเคสที่ผ่านตรงไหน มันมักชี้ตรงไปที่ edge case ที่โค้ดยังไม่ครอบคลุม</p>
 <div class="play"><p class="t">ผ่าน 2/3 เทส = ใกล้ถูกไหม — ดูว่าเคสที่ไม่ผ่านต่างตรงไหน</p>
 <pre style="margin:0 0 8px">function avgPrice(items) {
   let sum = 0;
@@ -637,6 +766,7 @@ s.replace(re, x) <span class="c">// สตริงใหม่</span></pre>
 <div class="row"><button class="primary" onclick="tests()">รันเทส 3 เคส</button></div>
 <div class="out" id="tests-out"></div></div>
 
+<h4>เช็ค 3 จุดก่อนกดส่ง</h4><p>ก่อนส่งคำตอบทุกครั้ง ไล่เช็ค 3 จุดนี้ตามลำดับ — ส่วนใหญ่ปัญหาที่ทำให้เทสไม่ผ่านทั้งที่ "ดูโค้ดแล้วก็ถูกนี่นา" อยู่ในนี้ทั้งหมด</p><div class="tw"><table><tr><th>#</th><th>เช็คอะไร</th></tr><tr><td>①</td><td><b>มี <code>return</code> หรือยัง</b> — ฟังก์ชันที่เขียนจบแล้วมีบรรทัด <code>return</code> อยู่จริงไหม หรือลืมไว้แค่ <code>console.log</code></td></tr><tr><td>②</td><td><b>ข้อความตรง spec เป๊ะทุกช่องว่างไหม</b> — ระบบตรวจเทียบ string แบบตรงตัวอักษร ช่องว่างเกินหรือขาดแม้ตัวเดียวก็ไม่ผ่าน</td></tr><tr><td>③</td><td><b>ชื่อตัวแปร/property สะกดตรงไหม</b> — เทียบชื่อ key ทีละตัวอักษร โดยเฉพาะตัวพิมพ์เล็ก-ใหญ่</td></tr></table></div><p>เช็คลิสต์นี้เรียงจากปัญหาที่รุนแรงที่สุดไปหาละเอียดที่สุดโดยตั้งใจ — ① เช็คก่อนว่าฟังก์ชันมีทางส่งค่ากลับหรือยัง เพราะถ้าไม่มี ต่อให้ ② กับ ③ ถูกหมดก็ยังได้ <code>undefined</code> อยู่ดี</p><h4>เทคนิคตามหาต้นเหตุ</h4><p>เมื่อ 3 จุดข้างบนเช็คแล้วยังไม่พบ ให้ใช้ 2 เทคนิคนี้ต่อ ทั้งคู่ไม่ต้องใช้เครื่องมือพิเศษอะไรเลย — <b>แทรก <code>console.log</code> ทีละจุด</b> วางไว้ระหว่างทางที่ข้อมูลไหลผ่าน แล้วดูว่าค่าเริ่มผิดตั้งแต่จุดไหน · <b>comment ครึ่งไฟล์ออก</b> ถ้า error บอกตำแหน่งไม่ชัด ลอง comment โค้ดครึ่งท้ายออกชั่วคราวแล้วรันดูว่า error ยังอยู่ไหม ถ้าหายไปแปลว่าต้นเหตุอยู่ในครึ่งที่ comment ออก แล้วแบ่งครึ่งของครึ่งนั้นต่อไปเรื่อย ๆ จนเจอบรรทัดที่แท้จริง</p>
 <div class="play"><p class="t">เช็ค 3 จุดก่อนส่ง — จุดไหนพัง</p>
 <pre style="margin:0 0 8px" id="ck-code"></pre>
 <div class="row"><button class="chip" onclick="ckCase(0,this)">โค้ด A</button><button class="chip" onclick="ckCase(1,this)">โค้ด B</button><button class="chip" onclick="ckCase(2,this)">โค้ด C</button></div>
@@ -648,23 +778,31 @@ s.replace(re, x) <span class="c">// สตริงใหม่</span></pre>
 <div class="quiz" data-q='{"q":"error ขึ้น Unexpected token ที่บรรทัด 12 ควรดูตรงไหน","opts":["บรรทัด 12 เท่านั้น","บรรทัดก่อนหน้าด้วย — วงเล็บ/ปีกกาอาจไม่ครบตั้งแต่ข้างบน","บรรทัดหลัง","ไฟล์อื่น"],"ans":1,"exp":"parser เพิ่งรู้ตัวว่าผิดตอนเจอ token ถัดไป ต้นเหตุมักอยู่ก่อนหน้า"}'></div>
 <div class="quiz" data-q='{"q":"error: Cannot read properties of undefined (reading \"role\") ที่บรรทัด return user.profile.role; ควรดูอะไรก่อน","opts":["สะกด role ถูกไหม","user.profile มีค่าจริงไหม","user มีค่าไหม","เพิ่ม try/catch"],"ans":1,"exp":"สิ่งที่เป็น undefined คือตัวหน้า .role ซึ่งคือ user.profile"}'></div>
 <div class="quiz" data-q='{"q":"ผ่าน 2 จาก 3 เทส แปลว่าอะไร","opts":["โค้ดถูก 66%","ใกล้เสร็จแล้ว","เคสที่ไม่ผ่านคือเบาะแสว่า edge case ไหนยังไม่ครอบคลุม","เทสผิด"],"ans":2,"exp":"เทสแต่ละเคสตรวจคนละมุม เคสเดียวที่ไม่ผ่านอาจสำคัญที่สุด"}'></div>
+
+<div class="checkpoint"><p>Checkpoint — สรุปสั้น ๆ</p><ul><li>error message บอกทั้ง "อะไรผิด" และ "ผิดที่ไหน" — อ่านบรรทัดบนสุดก่อนเสมอ</li><li><code>undefined</code> มาได้ 3 ทาง: ตัวแปรไม่มีค่า / ฟังก์ชันไม่ return / เข้าถึง property ที่ไม่มี</li><li>ผ่านบางเทสไม่ได้แปลว่าใกล้ถูก — ดูว่าเคสที่ไม่ผ่านต่างจากเคสที่ผ่านตรงไหน</li><li>เช็ค 3 จุดก่อนส่งเสมอ: <code>return</code> ครบไหม, ข้อความตรง spec เป๊ะไหม, สะกดชื่อตรงไหม</li></ul><div class="selfcheck"><p>✓ Self-Check</p><label><input type="checkbox" data-sc="ch11-0"> แปลความหมายของ 5 error ที่เจอบ่อยได้ และรู้ว่าต้องไปดูบรรทัดไหน</label><label><input type="checkbox" data-sc="ch11-1"> แยกได้ว่า <code>undefined</code> ที่เจอมาจากทางไหนใน 3 ทาง</label><label><input type="checkbox" data-sc="ch11-2"> ไม่เข้าใจผิดว่าผ่านบางเทสแปลว่าใกล้เสร็จแล้ว</label><label><input type="checkbox" data-sc="ch11-3"> เช็ค 3 จุดก่อนส่งคำตอบได้ทุกครั้ง</label></div></div>
+<div class="chnav"><a href="#ch10">← Exception</a><a href="#ch12">ชุดฝึกรวบยอด →</a></div>
 </section>
 
 <!-- ============ 12 ============ -->
 <section class="ch" id="ch12">
 <h3>12 ชุดฝึกรวบยอด</h3>
 <p class="lead">Perfect Match 24 ข้อ ครบทุกบท ตัวเลือกสลับตำแหน่งทุกครั้งที่เปิด — ติ๊กครบทุกข้อที่ถูก และห้ามติ๊กข้อที่ผิดแม้แต่ข้อเดียว ไม่มีคะแนนบางส่วน</p>
+<div class="chmeta"><span class="pill">บทที่ 12</span><span class="pill">~30 นาที</span><span class="pill lv3">ท้าทาย</span></div>
 <div class="outcomes"><p>จบบทนี้ต้องทำได้</p><ul>
 <li>อธิบายกติกา Perfect Match และรู้ว่าทำไม "ติ๊กเผื่อ" เสียคะแนน</li>
 <li>ตัดสินตัวเลือกทีละตัว แทนหา "ข้อที่ถูกที่สุด"</li>
 <li>จับคำเสี่ยง "เสมอ / ทุกกรณี / เท่านั้น"</li>
 <li>รู้จุดอ่อนของตัวเองแล้วย้อนไปทวนบทที่เกี่ยวข้อง</li></ul></div>
 
+<p>รู้เนื้อหาอย่างเดียวไม่พอ ถ้ายังไม่รู้วิธีอ่านตัวเลือกให้ละเอียด — บทนี้เริ่มจากกติกาของชุดฝึก แล้วให้ฝึกจริง 24 ข้อ ครบทุกหัวข้อที่ผ่านมา</p><div class="concept"><b>PERFECT MATCH</b><span>รูปแบบคำถามที่ให้ตัวเลือกหลายข้อในคำถามเดียว แล้วให้ระบุ "สถานะจริง" ของทุกตัวเลือกพร้อมกันทั้งชุด — ติ๊กข้อที่ถูกทุกข้อ และไม่ติ๊กข้อที่ผิดแม้แต่ข้อเดียว ชุดคำตอบที่ถูกจริงมีอยู่แบบเดียวเท่านั้น ผิดไปแม้แค่ตำแหน่งเดียว ก็ถือว่าทั้งข้อไม่ได้คะแนน</span></div><h4>อ่านทีละตัวเลือก ไม่ใช่หาข้อที่ถูกที่สุด</h4><p>นิสัยที่ติดมาจากแบบทดสอบปรนัยทั่วไปคืออ่านทุกตัวเลือกแล้วเลือก "ข้อที่ดูถูกที่สุด" ข้อเดียว — วิธีนี้ใช้ไม่ได้กับ Perfect Match เพราะแต่ละตัวเลือกเป็นอิสระจากกัน ต้องตัดสินทีละตัวว่า "ประโยคนี้ถูกหรือผิด" โดยไม่สนใจตัวเลือกข้างเคียงเลย วิธีที่ได้ผลคือปิดตัวเลือกอื่นในใจ แล้วถามกับตัวเลือกที่กำลังอ่านอยู่ตัวเดียวว่า "ประโยคนี้จริงไหม" ก่อนขยับไปตัวถัดไป</p><h4>คำเสี่ยง: เสมอ / ทุกกรณี / เท่านั้น</h4><p>ตัวเลือกที่มีคำเด็ดขาดแบบนี้มักเป็นกับดัก เพราะกฎในภาษาโปรแกรมมักมีข้อยกเว้นซ้อนอยู่เสมอ — ตัวเลือกที่พูดว่า "<code>for...in</code> ใช้กับ array เหมือน <code>for...of</code> ทุกกรณี" ผิดทันที เพราะ <code>for...in</code> ให้ key เป็น string ต่างจาก <code>for...of</code> ที่ให้ตัวสมาชิกตรง ๆ</p><div class="trap"><b>พลาดกันบ่อย</b><span>เจอ "เสมอ/ทุกกรณี/เท่านั้น" แล้วเชื่อทันทีโดยไม่หาข้อยกเว้น — สมองมักอ่านคำเด็ดขาดแล้วรีบตัดสินว่า "ฟังดูสมเหตุสมผลก็ต้องถูก" ทุกครั้งที่เจอคำพวกนี้ ให้หยุดแล้วถามตัวเองว่า "มีเคสไหนที่กฎนี้ไม่จริงบ้างไหม" ก่อนติ๊ก</span></div><h4>จัดเวลา</h4><p>24 ข้อด้านล่างครอบทุกหัวข้อที่ผ่านมาทั้งเล่ม ฝึกทีละชุด อย่าเร่งอ่านผ่าน ๆ เพราะจุดประสงค์ของ Perfect Match ไม่ใช่แค่ "รู้คำตอบ" แต่คือ <b>"มั่นใจในทุกตัวเลือกที่ติ๊กและไม่ติ๊ก"</b> — ข้อไหนพลาดบ่อยเป็นสัญญาณว่าควรย้อนกลับไปทวนบทนั้นอีกรอบ</p><div class="pinned"><b>จดไว้ตรงนี้</b>ถ้าข้อไหนอ่านแล้วยังไม่แน่ใจภายใน 3 รอบ ให้กลับไปอ่านบทที่เกี่ยวข้องซ้ำก่อน แล้วค่อยย้อนมาดูเฉลย — เดาส่งเดชแล้วข้ามไปเรื่อย ๆ โดยไม่ทวนต้นตอ คือการเสียโอกาสฝึกที่ป้องกันได้ง่ายที่สุด</div>
 <div class="note">วิธีทำ: ปิดตัวเลือกอื่นในใจ แล้วถามทีละข้อว่า "ประโยคนี้จริงไหม" — เจอคำว่า เสมอ/ทุกกรณี/เท่านั้น ให้หาข้อยกเว้นก่อนติ๊ก</div>
 
 <div class="coder" data-id="c12"></div>
 <div id="pm-wrap"></div>
 <div class="row"><button onclick="pmNav(-1)">← ข้อก่อน</button><button class="primary" onclick="pmNav(1)">ข้อถัดไป →</button><span id="pm-score" class="pill"></span></div>
+
+<div class="checkpoint"><p>Checkpoint — สรุปสั้น ๆ</p><ul><li>Perfect Match ต้องติ๊กครบทุกข้อที่ถูกและไม่ติ๊กข้อที่ผิด ไม่มีคะแนนบางส่วน</li><li>ตัดสินทีละตัวเลือกอย่างเป็นอิสระ อย่าหาข้อที่ "ถูกที่สุด"</li><li>คำว่า "เสมอ/ทุกกรณี/เท่านั้น" มักซ่อนข้อยกเว้นไว้ — อ่านช้าลงตรงจุดนี้</li><li>ข้อที่พลาดบ่อยในชุดฝึกคือสัญญาณว่าควรย้อนไปทวนบทนั้นอีกรอบ</li></ul><div class="selfcheck"><p>✓ Self-Check</p><label><input type="checkbox" data-sc="ch12-0"> อธิบายกติกา Perfect Match ได้ และรู้ว่าทำไมติ๊กเผื่อถึงเสียคะแนน</label><label><input type="checkbox" data-sc="ch12-1"> ตัดสินตัวเลือกทีละตัวได้ ไม่หาแค่ "ข้อที่ถูกที่สุด"</label><label><input type="checkbox" data-sc="ch12-2"> จับสัญญาณคำเสี่ยงอย่าง "เสมอ/ทุกกรณี/เท่านั้น" ในตัวเลือกได้</label><label><input type="checkbox" data-sc="ch12-3"> ทำครบทั้ง 24 ข้อในชุดฝึก และรู้แล้วว่าจุดไหนของตัวเองยังอ่อนอยู่</label></div></div>
+<div class="chnav"><a href="#ch11">← อ่าน error ให้เป็น</a><a class="sp">.</a></div>
 </section>
 
 </main>
@@ -1061,6 +1199,28 @@ function pmRender(){ const q = pm[pi]; const d = pmDone[pi];
   $('pm-score').textContent = `เต็มข้อ ${Object.values(pmDone).filter(x => x.ok).length} / ${pm.length}`; }
 function pmCheck(){ const pick = [...$('pm-wrap').querySelectorAll('input:checked')].map(x => +x.value); const ans = pm[pi].ans; const ok = pick.length === ans.length && pick.every(p => ans.includes(p)); pmDone[pi] = { pick, ok }; saved.pm = pmDone; persist(); pmRender(); updateWeak(); }
 function pmNav(d){ pi = (pi + d + pm.length) % pm.length; pmRender(); } pmRender(); updateWeak();
+/* ---------- self-check persistence ---------- */
+saved.sc = saved.sc || {};
+document.querySelectorAll('.selfcheck input[data-sc]').forEach(cb => {
+  const k = cb.dataset.sc;
+  cb.checked = !!saved.sc[k];
+  cb.parentElement.classList.toggle('done', cb.checked);
+  cb.addEventListener('change', () => {
+    if (cb.checked) saved.sc[k] = 1; else delete saved.sc[k];
+    cb.parentElement.classList.toggle('done', cb.checked);
+    persist(); updateChapterProgress();
+  });
+});
+function updateChapterProgress(){
+  const done = document.querySelectorAll('section.ch').length
+    ? [...document.querySelectorAll('section.ch')].filter(sec => {
+        const boxes = [...sec.querySelectorAll('.selfcheck input[data-sc]')];
+        return boxes.length && boxes.every(b => b.checked);
+      }).length : 0;
+  const el = document.getElementById('ch-progress');
+  if (el) el.innerHTML = 'บทที่ทวนครบ: <b>' + done + '</b> / 12';
+}
+updateChapterProgress();
 </script>
 </body>
 </html>
