@@ -996,6 +996,7 @@ console.log(htmlNode === rootNode.childNodes[<span class="n">1</span>]); <span c
 <div class="quiz" data-q='{"q":"nodeValue ของ element node คืนค่าอะไร","opts":["ข้อความที่อยู่ใน element นั้น","ชื่อ tag เช่น \"DIV\"","null","undefined"],"ans":2,"exp":"element เป็นภาชนะ ไม่ได้ถือข้อความไว้เอง nodeValue จึงเป็น null — ข้อความอยู่ใน text node ที่เป็นลูกของมัน ถ้าอยากได้ข้อความให้ใช้ textContent"}'></div>
 
 <div class="quiz" data-q='{"q":"&lt;ul&gt; มี &lt;li&gt; 3 ตัว เขียนแยกบรรทัดพร้อมย่อหน้า — ul.childNodes.length ได้เท่าไร","opts":["3","6","7","4"],"ans":2,"exp":"whitespace ระหว่าง tag นับเป็น text node ด้วย — ขึ้นบรรทัดใหม่ก่อน li ตัวแรก ระหว่าง li แต่ละคู่ 2 จุด และหลัง li ตัวสุดท้าย รวม 4 text node + 3 element = 7 ตัว ถ้าอยากได้แค่ 3 ต้องใช้ children"}'></div>
+<div class="coder" data-id="c13"></div>
 
 <div class="mistakes"><p>พลาดกันบ่อย</p><ul>
 <li>เรียก <code>root node</code> กับ <code>root element</code> สลับกัน — คนละ node คนละ nodeType</li>
@@ -1128,6 +1129,7 @@ el.closest(<span class="s">'article &gt; div'</span>); <span class="c">// &lt;di
 <div class="quiz" data-q='{"q":"document.querySelectorAll(\"div.menu &gt; li\") กับ document.querySelectorAll(\"div.menu li\") ต่างกันอย่างไร","opts":["เหมือนกันทุกประการ","แบบแรกได้ li ที่เป็นลูกโดยตรงของ div.menu · แบบสองได้ li ที่เป็นลูกหลานทุกระดับ","แบบแรกได้ตัวเดียว แบบสองได้ทุกตัว","แบบแรกเป็น live แบบสองเป็น static"],"ans":1,"exp":"เครื่องหมาย > หมายถึง immediate parent คือลูกโดยตรงเท่านั้น ส่วนเว้นวรรคหมายถึง descendant คือลูกหลานทุกระดับความลึก ทั้งคู่คืน NodeList แบบ static เหมือนกัน"}'></div>
 
 <div class="quiz" data-q='{"q":"document.querySelector(\"html\").parentElement คืนค่าอะไร","opts":["#document","null","&lt;body&gt;","undefined"],"ans":1,"exp":"แม่ของ <html> คือ #document ซึ่งเป็น node แต่ไม่ใช่ element node — parentNode จึงได้ #document แต่ parentElement ได้ null เพราะไม่มี ancestor ที่เป็น element"}'></div>
+<div class="coder" data-id="c14"></div>
 
 <div class="mistakes"><p>พลาดกันบ่อย</p><ul>
 <li>วน live collection พร้อมเพิ่ม element ที่ตรงเงื่อนไขเข้าไป — <code>length</code> โตทุกรอบ กลายเป็นลูปไม่รู้จบ</li>
@@ -1314,6 +1316,7 @@ main.appendChild(frag);       <span class="c">// ขั้นที่ 6 — แ
 <div class="quiz" data-q='{"q":"element มี &lt;b&gt;Hello&lt;/b&gt; &lt;span style=\"display:none\"&gt;hidden&lt;/span&gt; world — textContent คืนอะไร","opts":["\"Hello world\" ไม่มีคำว่า hidden","\"Hello hidden world\" มีคำว่า hidden ด้วย","\"&lt;b&gt;Hello&lt;/b&gt; world\"","\"Hello\" อย่างเดียว"],"ans":1,"exp":"textContent คืนข้อความทั้งหมดโดยไม่สนใจ CSS จึงรวมข้อความที่ซ่อนด้วย display:none มาด้วย ส่วน innerText ที่ประมวลผล CSS ต่างหากที่จะไม่มีคำว่า hidden"}'></div>
 
 <div class="quiz" data-q='{"q":"parent.insertBefore(newNode, null) ทำอะไร","opts":["เกิด error เพราะ reference node เป็น null ไม่ได้","แทรกไว้หน้าสุดของ childNodes","ต่อท้ายเหมือน appendChild","ไม่ทำอะไรเลย"],"ans":2,"exp":"ถ้า reference node เป็น null จะไม่มีตัวไหนให้แทรกข้างหน้า พฤติกรรมจึงกลายเป็นการต่อท้าย ให้ผลเหมือน appendChild ทุกประการ"}'></div>
+<div class="coder" data-id="c15"></div>
 
 <div class="mistakes"><p>พลาดกันบ่อย</p><ul>
 <li>สร้าง node เสร็จแล้วลืม <code>appendChild</code> — ไม่มี error แต่หน้าเว็บไม่เปลี่ยน</li>
@@ -1659,6 +1662,15 @@ const CODERS = {
   c12: { fn: 'getCartSummary', title: 'getCartSummary(items, shippingFee = 50)', spec: 'ตัด qty === 0 ออก · total = ผลรวม price×qty · itemCount = ผลรวม qty · shipping = 0 ถ้า total ≥ 500 ไม่งั้น shippingFee · return { total, itemCount, shipping, grandTotal, isEmpty }',
     stub: 'const getCartSummary = (items, shippingFee = 50) => {\n  \n};',
     tests: [{ args: [PRODUCTS], expect: { total: 1440, itemCount: 8, shipping: 0, grandTotal: 1440, isEmpty: false } }, { args: [[{ price: 90, qty: 2 }]], expect: { total: 180, itemCount: 2, shipping: 50, grandTotal: 230, isEmpty: false } }, { args: [[{ price: 90, qty: 2 }], 30], expect: { total: 180, itemCount: 2, shipping: 30, grandTotal: 210, isEmpty: false } }, { args: [[]], expect: { total: 0, itemCount: 0, shipping: 50, grandTotal: 50, isEmpty: true } }, { args: [[{ price: 500, qty: 0 }]], expect: { total: 0, itemCount: 0, shipping: 50, grandTotal: 50, isEmpty: true } }] },
+  c13: { fn: 'listNodeTypes', title: 'listNodeTypes(items)', spec: 'สร้าง &lt;ul&gt; แล้วผูก child ตามลำดับนี้เป๊ะ: (1) text node ข้อความ "start" ด้วย createTextNode (2) &lt;li&gt; ทีละตัวตามลำดับใน items ด้วย createElement + textContent (3) comment node ข้อความ "end" ด้วย createComment · ผูกทุกตัวด้วย appendChild แล้วคืน array ของ ul.childNodes[i].nodeName ตามลำดับ (ห้ามใช้ children — ข้อนี้ต้องเห็นทุก node type)',
+    stub: "function listNodeTypes(items) {\n  const ul = document.createElement('ul');\n  \n  return Array.from(ul.childNodes).map(n => n.nodeName);\n}",
+    tests: [{ args: [['เสื้อยืด', 'หมวก']], expect: ['#text', 'LI', 'LI', '#comment'] }, { args: [[]], expect: ['#text', '#comment'] }, { args: [['ถุงเท้า']], expect: ['#text', 'LI', '#comment'] }] },
+  c14: { fn: 'selectByCategory', title: 'selectByCategory(products, category)', spec: "สร้าง &lt;ul&gt; แล้วใส่ &lt;li class=\"...category ของสินค้านั้น...\"&gt;ชื่อสินค้า&lt;/li&gt; ทีละตัวจนครบทุกตัวใน products (ยังไม่กรองตอนสร้าง) · ใช้ querySelectorAll('li.' + category) เลือกเฉพาะ li ที่ class ตรงกับพารามิเตอร์ category · คืน array ชื่อสินค้าของ li ที่แมตช์ ตามลำดับเดิม",
+    stub: "function selectByCategory(products, category) {\n  const ul = document.createElement('ul');\n  \n  return [];\n}",
+    tests: [{ args: [[{ name: 'เสื้อยืด', category: 'shirt' }, { name: 'หมวก', category: 'hat' }, { name: 'กางเกง', category: 'pants' }, { name: 'ถุงเท้า', category: 'shirt' }], 'shirt'], expect: ['เสื้อยืด', 'ถุงเท้า'] }, { args: [[{ name: 'เสื้อยืด', category: 'shirt' }, { name: 'หมวก', category: 'hat' }], 'hat'], expect: ['หมวก'] }, { args: [[{ name: 'เสื้อยืด', category: 'shirt' }], 'shoe'], expect: [] }, { args: [[], 'shirt'], expect: [] }] },
+  c15: { fn: 'buildProductList', title: 'buildProductList(products)', spec: "products: [{ id, name, price, inStock }] · แต่ละตัวสร้าง &lt;li&gt; ด้วย createElement แล้วตั้ง textContent = `${name} — ${price} บาท` · li.dataset.id = id · li.classList.add('in-stock' ถ้า inStock เป็น true ไม่งั้น 'out-of-stock') · appendChild เข้า ul ทีละตัว · คืน array ที่อ่านค่ากลับจาก li แต่ละตัว: { text, id, cls } — cls ต้องเป็น array (สเปรดจาก li.classList) · สังเกต id: dataset เก็บเป็น string เสมอแม้ product.id จะเป็นตัวเลข",
+    stub: "function buildProductList(products) {\n  const ul = document.createElement('ul');\n  \n  return Array.from(ul.children).map(li => ({ text: li.textContent, id: li.dataset.id, cls: [...li.classList] }));\n}",
+    tests: [{ args: [[{ id: 1, name: 'เสื้อยืด', price: 250, inStock: true }, { id: 2, name: 'หมวก', price: 180, inStock: false }]], expect: [{ text: 'เสื้อยืด — 250 บาท', id: '1', cls: ['in-stock'] }, { text: 'หมวก — 180 บาท', id: '2', cls: ['out-of-stock'] }] }, { args: [[]], expect: [] }, { args: [[{ id: 9, name: 'ถุงเท้า', price: 90, inStock: true }]], expect: [{ text: 'ถุงเท้า — 90 บาท', id: '9', cls: ['in-stock'] }] }] },
 };
 const showArg = a => a instanceof Date ? `Date(${a.toISOString().slice(0, 10)})` : J(a);
 const eq = (a, b) => { if (Number.isNaN(a) && Number.isNaN(b)) return true; if (typeof a !== typeof b) return false; if (a && typeof a === 'object' && b && typeof b === 'object') { const ka = Object.keys(a).sort(), kb = Object.keys(b).sort(); return J(ka) === J(kb) && ka.every(k => eq(a[k], b[k])); } return a === b; };
